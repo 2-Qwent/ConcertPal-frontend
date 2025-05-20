@@ -10,6 +10,13 @@ import ProfileScreen from './screens/ProfileScreen'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+
+// const store = configureStore({
+//  reducer: { user },
+// });
+
 const TabNavigator = () => {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
@@ -39,11 +46,13 @@ const TabNavigator = () => {
 
 export default function App() {
   return (
+    // <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
+    // </Provider>
   );
 }

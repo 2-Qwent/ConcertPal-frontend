@@ -12,6 +12,8 @@ import { Button } from '@ant-design/react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Concert from '../components/Concert';
+import Post from "../components/Post";
+import moment from 'moment';
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -20,7 +22,15 @@ export default function HomeScreen() {
   const [date, setDate] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
   const [concerts, setConcerts] = useState([])
+  const [posts, setPosts] = useState([]);
 
+  useEffect(() => {
+    fetch(`http://192.168.1.183:3000/posts`)
+      .then((response) => response.json())
+      .then((data) => {
+        setPosts(data.posts);
+      });
+  }, []);
 
   const handleSearch = () => {
   const searchParams = { artist, venue };
@@ -63,12 +73,24 @@ export default function HomeScreen() {
   const concertsList = concerts.map( (data, i) => {
     return <Concert key={i} pic={data.pic} city={data.city} venue={data.venue} artist={data.artist} date={data.date} />
   })
+
+    const timeline = posts.map((data, i) => {
+    return (
+      <Post
+        key={i}
+        username={data.author.username}
+        text={data.text}
+        date={moment(data.date).fromNow()}
+      />
+    );
+  });
   
 
   return (
     <View style={styles.container}>
       <Button onPress={() => setModalVisible(true)}>Rechercher un concert</Button>
-
+      <Text>Feed</Text>
+      {timeline}
       <Modal
         visible={modalVisible}
         transparent
@@ -141,15 +163,15 @@ export default function HomeScreen() {
           </View>
         </View>
       </Modal>
-    </View>
-  );
+      </View>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalOverlay: {
     flex: 1,
