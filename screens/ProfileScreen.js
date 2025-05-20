@@ -58,7 +58,7 @@ export default function ProfileScreen({ navigation }) {
 
   const concerts = concertsData.map((data, i) => {
     return (
-      <View style={styles.concert}>
+      <View key={i} style={styles.concert}>
         <View style={styles.concertContainerTop}>
           <FontAwesome name="star-o" size={25} color="#000000" />
           <Text>{data.artist}</Text>
@@ -73,7 +73,7 @@ export default function ProfileScreen({ navigation }) {
 
   const posts = postsData.map((data, i) => {
     return (
-      <View style={styles.concert}>
+      <View key={i} style={styles.concert}>
         <View style={styles.concertContainerTop}>
           <Text>{data.author}</Text>
           <Text>{data.date}</Text>
