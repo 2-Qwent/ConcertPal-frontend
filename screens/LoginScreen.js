@@ -1,5 +1,5 @@
 // ConcertPal-frontend/screens/SigninScreen.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,11 +10,12 @@ import {
   Platform,
   Modal,
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login, logout, updateToken } from '../reducers/user';
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
+  // const user = useSelector((state) => state.user.value)
 
   const [signupOpen, setSignupOpen] = useState(false);
   const [signinOpen, setSigninOpen] = useState(false);
@@ -25,7 +26,7 @@ export default function LoginScreen({ navigation }) {
   const [passwordIn, setPasswordIn] = useState('')
 
   const handleSignup = () => {
-    fetch('https://127.0.0.1:3000/users/signup', {
+    fetch('http://192.168.1.4:3000/users/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: usernameUp, password: passwordUp, email: emailUp }),
@@ -34,6 +35,7 @@ export default function LoginScreen({ navigation }) {
         .then(data => {
           console.log(data)
           dispatch(login({ username: usernameUp, email: emailUp, token: data.token }))
+          navigation.navigate('TabNavigator')
           setPasswordUp('');
           setUsernameUp('');
           setEmailUp('');
@@ -42,7 +44,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   const handleSignin = () => {
-    fetch('https://127.0.0.1:3000/users/signin', {
+    fetch('http://192.168.1.4:3000/users/signin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: usernameIn, password: passwordIn }),
@@ -50,7 +52,8 @@ export default function LoginScreen({ navigation }) {
         .then(response => response.json())
         .then(data => {
           console.log(data)
-          dispatch(login({ username: usernameIn, username:data.username, token: data.token }))
+          dispatch(login({ username: data.username, token: data.token }))
+          navigation.navigate('TabNavigator')
           setPasswordIn('');
           setUsernameIn('');
           setSigninOpen(false)
@@ -61,6 +64,12 @@ export default function LoginScreen({ navigation }) {
     setSignupOpen(false);
     setSigninOpen(false)
   };
+
+/*  useEffect(() => {
+    if (user) {
+      navigation.navigate('Home')
+    }
+  }, []);*/
 
   return (
       <View style={styles.container}>
@@ -112,7 +121,8 @@ export default function LoginScreen({ navigation }) {
                       style={styles.modalButton}
                       onPress={handleSignup}
                   >
-                    <Text style={styles.buttonText}>Sign up</Text>
+                    <Text
+                        style={styles.buttonText}>Sign up</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -165,7 +175,7 @@ export default function LoginScreen({ navigation }) {
                       style={styles.modalButton}
                       onPress={handleSignin}
                   >
-                    <Text style={styles.buttonText}>Sign in</Text>
+                    <Text style={styles.buttonText} onPress={handleSignin}>Sign in</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
