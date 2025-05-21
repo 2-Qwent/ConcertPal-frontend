@@ -5,14 +5,21 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { useSelector } from "react-redux";
 
 export default function Concert(props) {
+  const user = useSelector((state) => state.user.value);
+  console.log("ici", user);
+
   const onAdd = (props) => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/add`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(props),
-    })
+    fetch(
+      `http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/add/${user.token}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(props),
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
