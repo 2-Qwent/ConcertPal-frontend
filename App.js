@@ -15,15 +15,19 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 import { Provider } from "react-redux";
-import { configureStore , combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 
-const reducers = combineReducers({ user })
+const reducers = combineReducers({ user });
 
 const persistConfig = {
   key: "ConcertPal",
   storage: AsyncStorage,
 };
+
+const reducers = combineReducers({
+  user,
+});
 
 const store = configureStore({
   reducer: persistReducer(persistConfig, reducers),

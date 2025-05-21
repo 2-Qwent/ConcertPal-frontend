@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 
 export default function Concert(props) {
   const user = useSelector((state) => state.user.value);
-  console.log("ici", user);
 
   const onAdd = (props) => {
     fetch(
@@ -33,24 +32,35 @@ export default function Concert(props) {
       });
   };
 
+  const handlePress = (props) => {
+    console.log(props);
+  };
+
   return (
     <View style={styles.card}>
-      <ImageBackground
-        source={{ uri: props.pic }}
-        style={styles.image}
-        imageStyle={{ borderRadius: 10 }}
-      >
-        <View style={styles.overlay}>
-          <Text style={styles.title}>{props.artist}</Text>
-          <Text style={styles.text}>
-            {props.venue} - {props.city}
-          </Text>
-          <Text style={styles.text}>{props.date}</Text>
-          <TouchableOpacity style={styles.button} onPress={() => onAdd(props)}>
-            <Text style={styles.buttonText}>Ajouter à mes concerts</Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
+      <TouchableOpacity onPress={() => handlePress(props)}>
+        <ImageBackground
+          source={{ uri: props.pic }}
+          style={styles.image}
+          imageStyle={{ borderRadius: 10 }}
+        >
+          <View style={styles.overlay}>
+            <Text style={styles.title}>{props.artist}</Text>
+            <Text style={styles.text}>
+              {props.venue} - {props.city}
+            </Text>
+            <Text style={styles.text}>{props.date}</Text>
+            {props.screen === "Home" && (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => onAdd(props)}
+              >
+                <Text style={styles.buttonText}>Ajouter à mes concerts</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </ImageBackground>
+      </TouchableOpacity>
     </View>
   );
 }
