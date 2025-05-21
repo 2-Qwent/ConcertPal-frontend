@@ -54,7 +54,7 @@ export default function LoginScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         dispatch(login(data.token));
         navigation.navigate("TabNavigator");
         setPasswordIn("");

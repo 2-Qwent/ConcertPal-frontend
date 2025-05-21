@@ -17,6 +17,8 @@ import { Provider } from "react-redux";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 
+const reducers = combineReducers({ user });
+
 const persistConfig = {
   key: "ConcertPal",
   storage: AsyncStorage,
