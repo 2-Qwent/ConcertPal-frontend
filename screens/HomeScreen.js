@@ -24,6 +24,8 @@ export default function HomeScreen() {
   const [concerts, setConcerts] = useState([])
   const [posts, setPosts] = useState([]);
 
+  const IP_ADDRESS="ABwootuQl3HFkWNRExHIFQ08hJpFKq5p"
+
   useEffect(() => {
     fetch(`http://192.168.1.183:3000/posts`)
       .then((response) => response.json())
@@ -38,7 +40,7 @@ export default function HomeScreen() {
     searchParams.date = date.toISOString().split('T')[0];
   }
 
-  fetch('http://192.168.1.154:3000/concerts', {
+  fetch('http://192.168.1.183:3000/concerts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(searchParams)
