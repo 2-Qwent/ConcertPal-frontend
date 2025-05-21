@@ -25,10 +25,6 @@ const persistConfig = {
   storage: AsyncStorage,
 };
 
-const reducers = combineReducers({
-  user,
-});
-
 const store = configureStore({
   reducer: persistReducer(persistConfig, reducers),
   middleware: (getDefaultMiddleware) =>
