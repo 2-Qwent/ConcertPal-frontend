@@ -26,7 +26,7 @@ export default function LoginScreen({ navigation }) {
   const [passwordIn, setPasswordIn] = useState('')
 
   const handleSignup = () => {
-    fetch('http://192.168.1.4:3000/users/signup', {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: usernameUp, password: passwordUp, email: emailUp }),
@@ -44,7 +44,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   const handleSignin = () => {
-    fetch('http://192.168.1.4:3000/users/signin', {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/signin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: usernameIn, password: passwordIn }),
