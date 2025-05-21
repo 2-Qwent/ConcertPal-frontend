@@ -24,6 +24,8 @@ export default function HomeScreen() {
   const [concerts, setConcerts] = useState([])
   const [posts, setPosts] = useState([]);
 
+  const IP_ADDRESS="ABwootuQl3HFkWNRExHIFQ08hJpFKq5p"
+
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
       .then((response) => response.json())
