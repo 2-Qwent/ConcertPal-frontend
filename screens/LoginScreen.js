@@ -9,8 +9,8 @@ import {
   Platform,
   Modal,
 } from "react-native";
-import { useDispatch , useSelector } from "react-redux";
-import { login, logout, updateToken } from "../reducers/user";
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout } from "../reducers/user";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -68,11 +68,11 @@ export default function LoginScreen({ navigation }) {
     setSigninOpen(false);
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     navigation.navigate("TabNavigator");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (user.token) {
+      navigation.navigate("TabNavigator");
+    }
+  }, []);
 
   return (
     <View style={styles.container}>

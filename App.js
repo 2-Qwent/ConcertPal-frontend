@@ -1,3 +1,4 @@
+import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -14,10 +15,10 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 import { Provider } from "react-redux";
-import { configureStore , combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 
-const reducers = combineReducers({ user })
+const reducers = combineReducers({ user });
 
 const persistConfig = {
   key: "ConcertPal",
@@ -36,24 +37,31 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName = "";
+        tabBarIcon: ({ color, size, focused }) => {
+          let iconName = '';
 
-          if (route.name === "Profile") {
-            iconName = "user-circle";
-          } else if (route.name === "Messages") {
-            iconName = "envelope";
-          } else if (route.name === "Home") {
-            iconName = "home";
+          if (route.name === 'Profile') {
+            iconName = 'user-circle';
+          } else if (route.name === 'Messages') {
+            iconName = 'envelope';
+          } else if (route.name === 'Home') {
+            iconName = 'home';
           }
 
-          return <FontAwesome name={iconName} size={size} color={color} />;
+          return (
+            <View style={[styles.tab, { backgroundColor: focused ? '#E2A5EC' : '#A5ECC0' }]}>
+              <FontAwesome
+                name={iconName}
+                size={24}
+                color='#fff'
+              />
+            </View>
+          );
         },
-        tabBarActiveTintColor: "#ec6e5b",
-        tabBarInactiveTintColor: "#335561",
+        tabBarShowLabel: false,
+        tabBarStyle: styles.tabBarStyle,
         headerShown: false,
-      })}
-    >
+      })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Messages" component={MessagesScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
@@ -75,3 +83,29 @@ export default function App() {
     </Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+  },
+  tab: {
+    height: 70,
+    width: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+    margin: 20,
+  },
+  tabBarStyle: {
+    bottom: 50,
+    marginLeft: 60,
+    marginRight: 60,
+    backgroundColor: '#E8EAED',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+});
