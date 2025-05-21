@@ -14,8 +14,10 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore , combineReducers } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+
+const reducers = combineReducers({ user })
 
 const persistConfig = {
   key: "ConcertPal",
@@ -23,7 +25,7 @@ const persistConfig = {
 };
 
 const store = configureStore({
-  reducer: persistReducer(persistConfig, user),
+  reducer: persistReducer(persistConfig, reducers),
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
 });
