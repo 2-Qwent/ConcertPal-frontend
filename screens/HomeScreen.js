@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,26 +6,26 @@ import {
   Modal,
   TouchableOpacity,
   TextInput,
-  ScrollView 
-} from 'react-native';
-import { Button } from '@ant-design/react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Concert from '../components/Concert';
+  ScrollView,
+} from "react-native";
+import { Button } from "@ant-design/react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Concert from "../components/Concert";
 import Post from "../components/Post";
-import moment from 'moment';
+import moment from "moment";
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [artist, setArtist] = useState('');
-  const [venue, setVenue] = useState('');
+  const [artist, setArtist] = useState("");
+  const [venue, setVenue] = useState("");
   const [date, setDate] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
-  const [concerts, setConcerts] = useState([])
+  const [concerts, setConcerts] = useState([]);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch(`http://192.168.1.183:3000/posts`)
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
       .then((response) => response.json())
       .then((data) => {
         setPosts(data.posts);
@@ -33,48 +33,56 @@ export default function HomeScreen() {
   }, []);
 
   const handleSearch = () => {
-  const searchParams = { artist, venue };
-  if (date) {
-    searchParams.date = date.toISOString().split('T')[0];
-  }
+    const searchParams = { artist, venue };
+    if (date) {
+      searchParams.date = date.toISOString().split("T")[0];
+    }
 
-  fetch('http://192.168.1.154:3000/concerts', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(searchParams)
-  })
-    .then(response => response.json())
-    .then(data => {
-      const showData = data.concerts.map(show => ({
-        artist: show.name,
-        venue: show._embedded?.venues?.[0]?.name || 'Lieu inconnu',
-        date: show.dates?.start?.localDate || 'Date inconnue',
-        pic: show.images?.[3]?.url || null,
-        city: show._embedded?.venues?.[0]?.city?.name || 'Ville inconnue'
-      }));
-      setConcerts(showData);
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(searchParams),
     })
-    .catch(error => {
-      console.error('Erreur pendant la recherche de concerts :', error);
-    });
-};
-  
+      .then((response) => response.json())
+      .then((data) => {
+        const showData = data.concerts.map((show) => ({
+          artist: show.name,
+          venue: show._embedded?.venues?.[0]?.name || "Lieu inconnu",
+          date: show.dates?.start?.localDate || "Date inconnue",
+          pic: show.images?.[3]?.url || null,
+          city: show._embedded?.venues?.[0]?.city?.name || "Ville inconnue",
+        }));
+        setConcerts(showData);
+      })
+      .catch((error) => {
+        console.error("Erreur pendant la recherche de concerts :", error);
+      });
+  };
 
   const handleDateChange = (event, selectedDate) => {
-    if (event.type === 'dismissed') {
+    if (event.type === "dismissed") {
       // utilisateur a annulé la sélection
       setShowPicker(false);
       return;
     }
     setDate(selectedDate);
     setShowPicker(false);
-  };  
+  };
 
-  const concertsList = concerts.map( (data, i) => {
-    return <Concert key={i} pic={data.pic} city={data.city} venue={data.venue} artist={data.artist} date={data.date} />
-  })
+  const concertsList = concerts.map((data, i) => {
+    return (
+      <Concert
+        key={i}
+        pic={data.pic}
+        city={data.city}
+        venue={data.venue}
+        artist={data.artist}
+        date={data.date}
+      />
+    );
+  });
 
-    const timeline = posts.map((data, i) => {
+  const timeline = posts.map((data, i) => {
     return (
       <Post
         key={i}
@@ -84,11 +92,12 @@ export default function HomeScreen() {
       />
     );
   });
-  
 
   return (
     <View style={styles.container}>
-      <Button onPress={() => setModalVisible(true)}>Rechercher un concert</Button>
+      <Button onPress={() => setModalVisible(true)}>
+        Rechercher un concert
+      </Button>
       <Text>Feed</Text>
       {timeline}
       <Modal
@@ -101,70 +110,82 @@ export default function HomeScreen() {
           <View style={styles.modalContainer}>
             {concerts.length === 0 ? (
               <>
-            <Text style={styles.title}>Rechercher un concert</Text>
+                <Text style={styles.title}>Rechercher un concert</Text>
 
-            <TextInput
-              placeholder="Artiste"
-              style={styles.input}
-              value={artist}
-              onChangeText={setArtist}
-            />
-            <TextInput
-              placeholder="Lieu"
-              style={styles.input}
-              value={venue}
-              onChangeText={setVenue}
-            />
+                <TextInput
+                  placeholder="Artiste"
+                  style={styles.input}
+                  value={artist}
+                  onChangeText={setArtist}
+                />
+                <TextInput
+                  placeholder="Lieu"
+                  style={styles.input}
+                  value={venue}
+                  onChangeText={setVenue}
+                />
 
-            <TouchableOpacity
-              style={styles.datePicker}
-              onPress={() => setShowPicker(true)}
-            >
-              <Icon name="calendar" size={20} color="#333" />
-              <Text style={styles.dateText}>
-                {date ? date.toISOString().split('T')[0] : 'Date'}
-              </Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.datePicker}
+                  onPress={() => setShowPicker(true)}
+                >
+                  <Icon name="calendar" size={20} color="#333" />
+                  <Text style={styles.dateText}>
+                    {date ? date.toISOString().split("T")[0] : "Date"}
+                  </Text>
+                </TouchableOpacity>
 
-            {showPicker && (
-              <DateTimePicker
-                value={date || new Date()}
-                mode="date"
-                display='default'
-                onChange={handleDateChange}
-              />
-            )}
+                {showPicker && (
+                  <DateTimePicker
+                    value={date || new Date()}
+                    mode="date"
+                    display="default"
+                    onChange={handleDateChange}
+                  />
+                )}
 
-            {date && (
-              <Button onPress={() => setDate(null)} style={{ marginBottom: 10 }}>
-                Effacer la date
-              </Button>
-            )}
+                {date && (
+                  <Button
+                    onPress={() => setDate(null)}
+                    style={{ marginBottom: 10 }}
+                  >
+                    Effacer la date
+                  </Button>
+                )}
 
-            <View style={styles.buttons}>
-              <Button type="primary" onPress={handleSearch}>Rechercher</Button>
-              <Button onPress={() => setModalVisible(false)} style={{ marginTop: 10 }}>
-                Annuler
-              </Button>
-            </View>
-            </>
+                <View style={styles.buttons}>
+                  <Button type="primary" onPress={handleSearch}>
+                    Rechercher
+                  </Button>
+                  <Button
+                    onPress={() => setModalVisible(false)}
+                    style={{ marginTop: 10 }}
+                  >
+                    Annuler
+                  </Button>
+                </View>
+              </>
             ) : (
               <>
                 <Text style={styles.title}>Résultats</Text>
                 <ScrollView style={{ maxHeight: 400, marginBottom: 10 }}>
-                 {concertsList}
-                 </ScrollView>
-                <Button onPress={() => {
-                          setConcerts([]);
-                          setModalVisible(false);
-                }}>Fermer</Button>
+                  {concertsList}
+                </ScrollView>
+                <Button
+                  onPress={() => {
+                    setConcerts([]);
+                    setModalVisible(false);
+                  }}
+                >
+                  Fermer
+                </Button>
               </>
             )}
           </View>
         </View>
       </Modal>
-      </View>
-  )
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -175,36 +196,36 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: '#000000aa',
-    justifyContent: 'center',
-    padding: 20
+    backgroundColor: "#000000aa",
+    justifyContent: "center",
+    padding: 20,
   },
   modalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
-    padding: 20
+    padding: 20,
   },
   title: {
     fontSize: 18,
     marginBottom: 10,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   input: {
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
     marginBottom: 15,
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   datePicker: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
   },
   dateText: {
     marginLeft: 10,
-    fontSize: 16
+    fontSize: 16,
   },
   buttons: {
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 });
