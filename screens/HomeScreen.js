@@ -25,7 +25,7 @@ export default function HomeScreen() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch(`http://192.168.1.183:3000/posts`)
+    fetch(`http://192.168.1.25:3000/posts`)
       .then((response) => response.json())
       .then((data) => {
         setPosts(data.posts);
@@ -38,7 +38,7 @@ export default function HomeScreen() {
     searchParams.date = date.toISOString().split('T')[0];
   }
 
-  fetch('http://192.168.1.154:3000/concerts', {
+  fetch('http://192.168.1.25:3000/concerts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(searchParams)
