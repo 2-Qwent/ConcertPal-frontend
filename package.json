@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@ant-design/icons-react-native": "^2.3.2",
+    "@ant-design/react-native": "^5.4.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/react-native-fontawesome": "^0.3.2",
     "@ant-design/icons-react-native": "^2.3.2",
