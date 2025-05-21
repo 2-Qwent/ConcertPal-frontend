@@ -1,6 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { user } from '../reducers/user'
 
 const concertsData = [
   {
@@ -50,9 +52,9 @@ export default function ProfileScreen({ navigation }) {
   const [concerts, setConcerts] = useState([]);
   const [posts, setposts] = useState([]);
   const [activeUser, setActiveUser] = useState([]);
+  const user = useSelector((state) => state.user.value)
 
-  // ───── ⋆ ───── ⚠️ To change with actual token from user reducer ⚠️ ───── ⋆ ─────
-  const token = 'Uh7bu94UL3Ww0RkHnC75iYc-ynEf94_o';
+  const token = user.token;
 
   useEffect(() => {
     console.log('bonjour?');
@@ -148,7 +150,7 @@ export default function ProfileScreen({ navigation }) {
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
             {activeTab === 'concerts' && userConcerts}
-            {activeTab === 'posts' && posts}
+            {activeTab === 'posts' && userPosts}
             <View style={styles.mediaContainer}>
               {activeTab === 'media' && media}
             </View>
