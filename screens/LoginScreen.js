@@ -25,7 +25,7 @@ export default function LoginScreen({ navigation }) {
   const [passwordIn, setPasswordIn] = useState('')
 
   const handleSignup = () => {
-    fetch('https://127.0.0.1:3000/users/signup', {
+    fetch('https://192.168.1.183:3000/users/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: usernameUp, password: passwordUp, email: emailUp }),
@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   const handleSignin = () => {
-    fetch('https://127.0.0.1:3000/users/signin', {
+    fetch('https://192.168.1.183:3000/users/signin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: usernameIn, password: passwordIn }),
@@ -70,7 +70,7 @@ export default function LoginScreen({ navigation }) {
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => setSignupOpen(true)}
+                onPress={navigation.navigate('Home')}
             >
               <Text style={styles.buttonText}>Sign up</Text>
             </TouchableOpacity>
