@@ -13,8 +13,6 @@
     "@ant-design/react-native": "^5.4.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/react-native-fontawesome": "^0.3.2",
-    "@ant-design/icons-react-native": "^2.3.2",
-    "@ant-design/react-native": "^5.4.1",
     "@react-native-community/datetimepicker": "^8.3.0",
     "@react-navigation/bottom-tabs": "^7.3.13",
     "@react-navigation/native": "^7.1.9",
