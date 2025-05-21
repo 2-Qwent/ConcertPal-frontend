@@ -1,7 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
 
 const concertsData = [
   {
@@ -23,7 +22,6 @@ const concertsData = [
     city: 'Paris',
   },
 ];
-
 const postsData = [
   {
     author: 'John Doe',
@@ -41,7 +39,6 @@ const postsData = [
     postBody: 'I loved the show!',
   },
 ];
-
 const mediaData = [
   require('../assets/placeholderConcertPics/20230826_220421.jpg'),
   require('../assets/placeholderConcertPics/20230826_220425.jpg'),
@@ -50,13 +47,31 @@ const mediaData = [
 
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('concerts');
+  const [concerts, setConcerts] = useState([]);
+  const [posts, setposts] = useState([]);
+  const [activeUser, setActiveUser] = useState([]);
+
+  // ───── ⋆ ───── ⚠️ To change with actual token from user reducer ⚠️ ───── ⋆ ─────
+  const token = 'Uh7bu94UL3Ww0RkHnC75iYc-ynEf94_o';
+
+  useEffect(() => {
+    console.log('bonjour?');
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setConcerts(data.user.concertList);
+        setposts(data.user.posts);
+        setActiveUser(data.user);
+        console.log('activeUser is : ', data.user);
+      });
+  }, []);
 
   const handleTabPress = (tabName) => {
     // console.log('I was clicked UwU');
     setActiveTab(tabName);
   };
 
-  const concerts = concertsData.map((data, i) => {
+  const userConcerts = concerts.map((data, i) => {
     return (
       <View key={i} style={styles.concert}>
         <View style={styles.concertContainerTop}>
@@ -71,7 +86,7 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
-  const posts = postsData.map((data, i) => {
+  const userPosts = posts.map((data, i) => {
     return (
       <View key={i} style={styles.concert}>
         <View style={styles.concertContainerTop}>
@@ -104,7 +119,7 @@ export default function ProfileScreen({ navigation }) {
             <Text>placeholder</Text>
           </View>
           <View style={styles.profileText}>
-            <Text style={styles.userName}>John Doe</Text>
+            <Text style={styles.userName}>{activeUser.username}</Text>
             <TouchableOpacity style={styles.button}>
               <Text>Modifier mon profil</Text>
             </TouchableOpacity>
@@ -132,9 +147,11 @@ export default function ProfileScreen({ navigation }) {
           </View>
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
-            {activeTab === 'concerts' && concerts}
+            {activeTab === 'concerts' && userConcerts}
             {activeTab === 'posts' && posts}
-            <View style={styles.mediaContainer}>{activeTab === 'media' && media}</View>
+            <View style={styles.mediaContainer}>
+              {activeTab === 'media' && media}
+            </View>
           </View>
         </View>
       </View>
