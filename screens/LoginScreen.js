@@ -34,11 +34,7 @@ export default function LoginScreen({ navigation }) {
         .then(response => response.json())
         .then(data => {
           console.log(data)
-<<<<<<< HEAD
-          dispatch(login(data.token))
-=======
           dispatch(login({ token: data.token }))
->>>>>>> 39fdd9e0dbec00a68c7397760f2557b0b8b9b47e
           navigation.navigate('TabNavigator')
           setPasswordUp('');
           setUsernameUp('');
@@ -56,11 +52,7 @@ export default function LoginScreen({ navigation }) {
         .then(response => response.json())
         .then(data => {
           console.log(data)
-<<<<<<< HEAD
-          dispatch(login(data.token ))
-=======
           dispatch(login({ token: data.token }))
->>>>>>> 39fdd9e0dbec00a68c7397760f2557b0b8b9b47e
           navigation.navigate('TabNavigator')
           setPasswordIn('');
           setUsernameIn('');
