@@ -1,8 +1,13 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { useSelector } from 'react-redux'
 
 export default function Post(props) {
+
+  const user = useSelector((state) => state.user.value)
+  const token = user.token
+  
   return (
     <View style={styles.container}>
       <View style={styles.info}>
@@ -17,6 +22,7 @@ export default function Post(props) {
         <TouchableOpacity>
           <FontAwesome name="heart" />
         </TouchableOpacity>
+        <Text>likes</Text>
         <TouchableOpacity>
           <FontAwesome name="trash" />
         </TouchableOpacity>
