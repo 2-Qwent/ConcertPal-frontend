@@ -9,12 +9,12 @@ import {
   Platform,
   Modal,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch , useSelector } from "react-redux";
 import { login, logout, updateToken } from "../reducers/user";
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
-  //const user = useSelector((state) => state.user.value);
+  const user = useSelector((state) => state.user.value);
 
   const [signupOpen, setSignupOpen] = useState(false);
   const [signinOpen, setSigninOpen] = useState(false);
@@ -54,7 +54,7 @@ export default function LoginScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         dispatch(login(data.token));
         navigation.navigate("TabNavigator");
         setPasswordIn("");

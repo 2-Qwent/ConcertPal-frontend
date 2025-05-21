@@ -53,7 +53,7 @@ export default function ProfileScreen({ navigation }) {
   const [posts, setposts] = useState([]);
   const [activeUser, setActiveUser] = useState([]);
   const user = useSelector((state) => state.user.value)
-
+  // console.log(user)
   const token = user.token;
 
   useEffect(() => {

@@ -14,6 +14,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Concert from "../components/Concert";
 import Post from "../components/Post";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -23,8 +24,14 @@ export default function HomeScreen() {
   const [showPicker, setShowPicker] = useState(false);
   const [concerts, setConcerts] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [ reload , setReload ] = useState(false);
 
-  const IP_ADDRESS = "ABwootuQl3HFkWNRExHIFQ08hJpFKq5p";
+  const reloadFunction = () => {
+    setReload(!reload)
+  }
+
+  const user = useSelector((state) => state.user.value);
+  const token = user.token;
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
@@ -32,7 +39,7 @@ export default function HomeScreen() {
       .then((data) => {
         setPosts(data.posts);
       });
-  }, []);
+  }, [reload]);
 
   const handleSearch = () => {
     const searchParams = { artist, venue };
@@ -85,12 +92,17 @@ export default function HomeScreen() {
   });
 
   const timeline = posts.map((data, i) => {
+    const isLiked = data.likes.some((post) => post === token)
     return (
       <Post
         key={i}
         username={data.author.username}
         text={data.text}
         date={moment(data.date).fromNow()}
+        nbLikes={data.likes.length}
+        isLiked={isLiked}
+        reloadFunction={reloadFunction}
+        {...data}
       />
     );
   });
