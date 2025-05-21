@@ -80,6 +80,7 @@ export default function HomeScreen() {
         venue={data.venue}
         artist={data.artist}
         date={data.date}
+        screen="Home"
       />
     );
   });
