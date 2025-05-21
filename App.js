@@ -12,10 +12,10 @@ const Tab = createBottomTabNavigator();
 
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import {updateToken, login, logout} from "./reducers/user";
+import user from './reducers/user'
 
 const store = configureStore({
-    reducer: { updateToken, login, logout },
+    reducer: { user },
 });
 
 const TabNavigator = () => {

@@ -34,7 +34,7 @@ export default function LoginScreen({ navigation }) {
         .then(response => response.json())
         .then(data => {
           console.log(data)
-          dispatch(login({ username: usernameUp, email: emailUp, token: data.token }))
+          dispatch(login(data.token))
           navigation.navigate('TabNavigator')
           setPasswordUp('');
           setUsernameUp('');
@@ -52,7 +52,7 @@ export default function LoginScreen({ navigation }) {
         .then(response => response.json())
         .then(data => {
           console.log(data)
-          dispatch(login({ username: data.username, token: data.token }))
+          dispatch(login(data.token ))
           navigation.navigate('TabNavigator')
           setPasswordIn('');
           setUsernameIn('');
@@ -79,7 +79,7 @@ export default function LoginScreen({ navigation }) {
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={navigation.navigate('Home')}
+                onPress={() => setSignupOpen(true)}
             >
               <Text style={styles.buttonText}>Sign up</Text>
             </TouchableOpacity>
