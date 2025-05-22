@@ -81,6 +81,7 @@ export default function ProfileScreen({ navigation }) {
         venue={data.venue}
         artist={data.artist}
         date={data.date}
+        seatmap={data.seatmap}
         screen="Profile"
       />
     );
@@ -88,8 +89,8 @@ export default function ProfileScreen({ navigation }) {
 
   const userPosts = posts.map((data, i) => {
     return (
-      <View key={i} style={styles.concert}>
-        <View style={styles.concertContainerTop}>
+      <View key={i}>
+        <View>
           <Text>{data.author}</Text>
           <Text>{data.date}</Text>
         </View>
@@ -231,22 +232,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
-  },
-  concert: {
-    width: "100%",
-    borderBottomWidth: 1,
-    borderColor: "#D7D7D7",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: 15,
-  },
-  concertContainerTop: {
-    width: "100%",
-    // backgroundColor: 'aqua',
-    height: 50,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
   },
   image: {
     width: 140,

@@ -60,6 +60,8 @@ export default function HomeScreen() {
           date: show.dates?.start?.localDate || "Date inconnue",
           pic: show.images?.[3]?.url || null,
           city: show._embedded?.venues?.[0]?.city?.name || "Ville inconnue",
+          seatmap: show.seatmap?.staticUrl || "Pas de plan pour ce spectacle",
+          id: show._id,
         }));
         setConcerts(showData);
       })
