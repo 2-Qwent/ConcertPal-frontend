@@ -8,13 +8,17 @@ export default function Post(props) {
   const token = user.token;
   const [trashIcon, setTrashIcon] = useState(false);
 
+
+  
+  //affiche l'icone de suppression si le token de l'auteur correspond à celui de l'utilisateur
   useEffect(() => {
     if (props.author.token === token) {
       setTrashIcon(true);
     }
   }, []);
 
-  const handleLikeTweet = () => {
+  //like un post
+  const handleLikePost = () => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/likes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -29,7 +33,8 @@ export default function Post(props) {
       });
   };
 
-  const handleDeleteTweet = () => {
+  //supprimer un post
+  const handleDeletePost = () => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${props._id}`, {
       method: "DELETE",
     })
@@ -50,7 +55,7 @@ export default function Post(props) {
         <TouchableOpacity>
           <FontAwesome name="reply" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleLikeTweet()}>
+        <TouchableOpacity onPress={() => handleLikePost()}>
           <FontAwesome
             style={{ color: props.isLiked ? "red" : "black" }}
             name="heart"
@@ -58,7 +63,7 @@ export default function Post(props) {
         </TouchableOpacity>
         <Text>{props.nbLikes}</Text>
         {trashIcon && (
-          <TouchableOpacity onPress={() => handleDeleteTweet()}>
+          <TouchableOpacity onPress={() => handleDeletePost()}>
             <FontAwesome name="trash" />
           </TouchableOpacity>
         )}
@@ -71,7 +76,7 @@ const styles = StyleSheet.create({
   container: {
     borderColor: "black",
     borderWidth: 1,
-    width: "80%",
+    width: "100%",
     height: 100,
   },
   info: {

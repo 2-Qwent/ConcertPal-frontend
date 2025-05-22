@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  Animated
 } from "react-native";
 import { Button } from "@ant-design/react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -98,7 +97,9 @@ export default function HomeScreen() {
         venue={data.venue}
         artist={data.artist}
         date={data.date}
+        seatmap={data.seatmap}
         screen="Home"
+        id={data.id}
       />
     );
   });
@@ -223,7 +224,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#E8EAED",
   },
   modalOverlay: {
     flex: 1,
