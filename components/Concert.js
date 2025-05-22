@@ -10,8 +10,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { addConcert } from "../reducers/concerts";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
+import { useNavigation } from '@react-navigation/native';
 
 export default function Concert(props) {
+  const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   const dispatch = useDispatch();
 
@@ -38,16 +40,24 @@ export default function Concert(props) {
       });
   };
 
-  const handlePress = (props) => {
-    console.log(props);
+  const handlePress = () => {
+    console.log('clicked concert info is : ', props.artist, props.date, props.venue, props.city, props.pic, props.seatmap,);
+    navigation.navigate('ConcertScreen', {
+      artist: props.artist,
+      date: props.date,
+      venue: props.venue,
+      city: props.city,
+      pic: props.pic,
+      seatmap: props.seatmap,
+    });
   };
 
   const formattedDate = moment(props.date).format("DD/MM/YYYY");
 
   return (
     <View style={styles.card}>
-      <Image source={props.seatmap}/>
-      <TouchableOpacity onPress={() => handlePress(props)}>
+    
+      <TouchableOpacity onPress={handlePress}>
         <ImageBackground
           source={{ uri: props.pic }}
           style={styles.image}
