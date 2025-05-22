@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  Animated
 } from "react-native";
 import { Button } from "@ant-design/react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -15,21 +14,17 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Concert from "../components/Concert";
 import Post from "../components/Post";
 import moment from "moment";
-import { useSelector, useDispatch } from "react-redux";
-import { setPosts } from "../reducers/post";
+import { useSelector } from "react-redux";
 
 export default function HomeScreen() {
-  const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
-  const [artist, setArtist] = useState(""); // Input artistes recherches concert
-  const [venue, setVenue] = useState(""); // Lieu de venue pour chaques artistes
-  const [date, setDate] = useState(null); // Date
-  const [showPicker, setShowPicker] = useState(false); // Menu choix date
-  const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
-  const [ reload , setReload ] = useState(false); // Reload
-  const [searchError, setSearchError] = useState(""); // Message d'erreur définissable
-  const posts = useSelector((state) => state.post.value)
-  
-  const dispatch = useDispatch()
+  const [modalVisible, setModalVisible] = useState(false);
+  const [artist, setArtist] = useState("");
+  const [venue, setVenue] = useState("");
+  const [date, setDate] = useState(null);
+  const [showPicker, setShowPicker] = useState(false);
+  const [concerts, setConcerts] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [ reload , setReload ] = useState(false);
 
   const reloadFunction = () => {
     setReload(!reload)
@@ -42,7 +37,7 @@ export default function HomeScreen() {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
       .then((response) => response.json())
       .then((data) => {
-        dispatch(setPosts(data.posts))
+        setPosts(data.posts);
       });
   }, [reload]);
 
@@ -60,21 +55,15 @@ export default function HomeScreen() {
       .then((response) => response.json())
       .then((data) => {
         const showData = data.concerts.map((show) => ({
+          
           artist: show.name,
           venue: show._embedded?.venues?.[0]?.name || "Lieu inconnu",
           date: show.dates?.start?.localDate || "Date inconnue",
           pic: show.images?.[3]?.url || null,
           city: show._embedded?.venues?.[0]?.city?.name || "Ville inconnue",
           seatmap: show.seatmap?.staticUrl || "Pas de plan pour ce spectacle",
-<<<<<<< HEAD
-          id: show.id,
-=======
->>>>>>> concerts
         }));
         setConcerts(showData);
-        if (showData.length === 0) {
-          alert("Aucun concert trouvé pour ces critères de recherche.");
-        }
       })
       .catch((error) => {
         console.error("Erreur pendant la recherche de concerts :", error);
@@ -101,10 +90,6 @@ export default function HomeScreen() {
         artist={data.artist}
         date={data.date}
         seatmap={data.seatmap}
-<<<<<<< HEAD
-        id={data.id}
-=======
->>>>>>> concerts
         screen="Home"
         id={data.id}
       />
@@ -147,9 +132,7 @@ export default function HomeScreen() {
             {concerts.length === 0 ? (
               <>
                 <Text style={styles.title}>Rechercher un concert</Text>
-                {searchError ?
-                  <Text style={styles.errorText}>{searchError}</Text>: null
-                }
+
                 <TextInput
                   placeholder="Artiste"
                   style={styles.input}
@@ -266,9 +249,4 @@ const styles = StyleSheet.create({
   buttons: {
     marginTop: 10,
   },
-  errorText: {
-  color: 'red',
-  marginBottom: 10,
-  textAlign: 'center',
-},
 });
