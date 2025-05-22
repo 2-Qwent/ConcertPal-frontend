@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Animated
 } from "react-native";
 import { Button } from "@ant-design/react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -17,14 +18,15 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 
 export default function HomeScreen() {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [artist, setArtist] = useState("");
-  const [venue, setVenue] = useState("");
-  const [date, setDate] = useState(null);
-  const [showPicker, setShowPicker] = useState(false);
-  const [concerts, setConcerts] = useState([]);
-  const [posts, setPosts] = useState([]);
-  const [ reload , setReload ] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
+  const [artist, setArtist] = useState(""); // Input artistes recherches concert
+  const [venue, setVenue] = useState(""); // Lieu de venue pour chaques artistes
+  const [date, setDate] = useState(null); // Date
+  const [showPicker, setShowPicker] = useState(false); // Menu choix date
+  const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
+  const [posts, setPosts] = useState([]); // États pour la liste des posts
+  const [ reload , setReload ] = useState(false); // Reload
+  const [searchError, setSearchError] = useState(""); // Message d'erreur définissable
 
   const reloadFunction = () => {
     setReload(!reload)
@@ -62,6 +64,9 @@ export default function HomeScreen() {
           city: show._embedded?.venues?.[0]?.city?.name || "Ville inconnue",
         }));
         setConcerts(showData);
+        if (showData.length === 0) {
+          alert("Aucun concert trouvé pour ces critères de recherche.");
+        }
       })
       .catch((error) => {
         console.error("Erreur pendant la recherche de concerts :", error);
@@ -126,7 +131,9 @@ export default function HomeScreen() {
             {concerts.length === 0 ? (
               <>
                 <Text style={styles.title}>Rechercher un concert</Text>
-
+                {searchError ?
+                  <Text style={styles.errorText}>{searchError}</Text>: null
+                }
                 <TextInput
                   placeholder="Artiste"
                   style={styles.input}
@@ -243,4 +250,9 @@ const styles = StyleSheet.create({
   buttons: {
     marginTop: 10,
   },
+  errorText: {
+  color: 'red',
+  marginBottom: 10,
+  textAlign: 'center',
+},
 });

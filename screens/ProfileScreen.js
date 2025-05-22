@@ -6,6 +6,7 @@ import {
   ImageBackground,
   Image,
   ScrollView,
+  Animated,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
@@ -44,9 +45,12 @@ export default function ProfileScreen({ navigation }) {
   const [posts, setposts] = useState([]);
   const [activeUser, setActiveUser] = useState([]);
   const user = useSelector((state) => state.user.value);
-
   const token = user.token;
   const dispatch = useDispatch()
+  const [isInputVisible, setIsInputVisible] = useState(false); // Input visible oui / non
+  const [message, setMessage] = useState(""); // Input messages
+  const [inputWidth] = useState(new Animated.Value(0)); // animation de défilement pour l'input
+
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`)
@@ -105,6 +109,21 @@ export default function ProfileScreen({ navigation }) {
       </View>
     );
   });
+
+  const toggleInputMessage = () => {
+    if (!isInputVisible) {
+      setIsInputVisible(true);
+      Animated.spring(inputWidth, {
+        toValue: 200,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.spring(inputWidth, {
+        toValue: 0,
+        useNativeDriver: false,
+      }).start(() => setIsInputVisible(false));
+    }
+  };
 
   return (
     <ImageBackground
