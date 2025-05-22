@@ -6,6 +6,8 @@ import {
   ImageBackground,
   Image,
   ScrollView,
+  TextInput,
+  Modal
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
@@ -13,6 +15,10 @@ import { useSelector, useDispatch } from "react-redux";
 import Concert from "../components/Concert";
 import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
+import Post from "../components/Post";
+import moment from "moment";
+import { addPost } from "../reducers/post";
+
 
 
 const postsData = [
@@ -40,19 +46,30 @@ const mediaData = [
 
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts");
-  const [posts, setposts] = useState([]);
+
+  //const [posts, setposts] = useState([]);
   const [activeUser, setActiveUser] = useState([]);
   const user = useSelector((state) => state.user.value);
   const concerts = useSelector((state) => state.concerts.value);
+  const [ reload , setReload ] = useState(false);
+  const posts = useSelector((state) => state.post.value)
+  const [isVisible, setIsVisible] = useState(false)
+  const [postContent, setPostContent] = useState('')
 
   const token = user.token;
   const dispatch = useDispatch()
+
+
+    const reloadFunction = () => {
+    setReload(!reload)
+  }
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`)
       .then((response) => response.json())
       .then((data) => {
-        setposts(data.user.posts);
+        dispatch(addPost(data.user.posts))
+        //setposts(data.user.posts);
         setActiveUser(data.user);
       });
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`)
@@ -60,7 +77,7 @@ export default function ProfileScreen({ navigation }) {
       .then((data) => {
         dispatch(setConcerts(data.list));
       });
-  }, []);
+  }, [reload]);
 
   const handleTabPress = (tabName) => {
     // console.log('I was clicked UwU');
@@ -87,14 +104,18 @@ export default function ProfileScreen({ navigation }) {
   });
 
   const userPosts = posts.map((data, i) => {
+    const isLiked = data.likes.some((post) => post === token);
     return (
-      <View key={i}>
-        <View>
-          <Text>{data.author}</Text>
-          <Text>{data.date}</Text>
-        </View>
-        <Text>{data.postBody}</Text>
-      </View>
+      <Post
+        key={i}
+        username={data.author.username}
+        text={data.text}
+        date={moment(data.date).fromNow()}
+        nbLikes={data.likes.length}
+        isLiked={isLiked}
+        reload={reloadFunction}
+        {...data}
+      />
     );
   });
 
@@ -105,6 +126,28 @@ export default function ProfileScreen({ navigation }) {
       </View>
     );
   });
+
+  const handleAddPost = () => {
+    setIsVisible(true)
+  }
+
+  const addPostModalContent = (
+    <Modal
+      visible={isVisible}
+      transparent
+      animationType="slide"
+      onRequestClose={() => setIsVisible(false)}
+    >
+      <TextInput
+        placeholder="Ajouter un post"
+        value={postContent}
+        onChangeText={setPostContent}
+      />
+      <TouchableOpacity>
+        <Text>Poster</Text>
+      </TouchableOpacity>
+    </Modal>
+  );
 
   return (
     <ImageBackground
@@ -130,6 +173,10 @@ export default function ProfileScreen({ navigation }) {
           </View>
         </View>
         {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
+        <TouchableOpacity onPress={() => handleAddPost()}>
+          <Text>Add post</Text>
+        </TouchableOpacity>
+        {isVisible && addPostModalContent}
         <View style={styles.contentContainer}>
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
@@ -157,7 +204,9 @@ export default function ProfileScreen({ navigation }) {
             {activeTab === "concerts" && (
               <ScrollView>{userConcerts}</ScrollView>
             )}
-            {activeTab === "posts" && userPosts}
+            {activeTab === "posts" && (
+              <ScrollView>{userPosts}</ScrollView>
+            )}
             <View style={styles.mediaContainer}>
               {activeTab === "media" && media}
             </View>
