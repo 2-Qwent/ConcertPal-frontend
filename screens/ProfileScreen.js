@@ -12,9 +12,9 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { user } from "../reducers/user";
 import Concert from "../components/Concert";
 import { logout } from "../reducers/user";
+import { setConcerts } from "../reducers/concerts";
 import Post from "../components/Post";
 import moment from "moment";
 import { addPost } from "../reducers/post";
@@ -46,10 +46,11 @@ const mediaData = [
 
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts");
-  const [concerts, setConcerts] = useState([]);
+
   //const [posts, setposts] = useState([]);
   const [activeUser, setActiveUser] = useState([]);
   const user = useSelector((state) => state.user.value);
+  const concerts = useSelector((state) => state.concerts.value);
   const [ reload , setReload ] = useState(false);
   const posts = useSelector((state) => state.post.value)
   const [isVisible, setIsVisible] = useState(false)
@@ -74,7 +75,7 @@ export default function ProfileScreen({ navigation }) {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`)
       .then((response) => response.json())
       .then((data) => {
-        setConcerts(data.list);
+        dispatch(setConcerts(data.list));
       });
   }, [reload]);
 
@@ -87,7 +88,6 @@ export default function ProfileScreen({ navigation }) {
     dispatch(logout())
     navigation.navigate('Login')
   }
-
   const userConcerts = concerts.map((data, i) => {
     return (
       <Concert
@@ -97,6 +97,7 @@ export default function ProfileScreen({ navigation }) {
         venue={data.venue}
         artist={data.artist}
         date={data.date}
+        seatmap={data.seatmap}
         screen="Profile"
       />
     );
@@ -279,22 +280,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
-  },
-  concert: {
-    width: "100%",
-    borderBottomWidth: 1,
-    borderColor: "#D7D7D7",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: 15,
-  },
-  concertContainerTop: {
-    width: "100%",
-    // backgroundColor: 'aqua',
-    height: 50,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
   },
   image: {
     width: 140,

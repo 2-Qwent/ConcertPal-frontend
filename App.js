@@ -17,9 +17,10 @@ const Tab = createBottomTabNavigator();
 import { Provider } from "react-redux";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+import concerts from "./reducers/concerts";
 import post from "./reducers/post";
 
-const reducers = combineReducers({ user, post });
+const reducers = combineReducers({ user, concerts, post });
 
 const persistConfig = {
   key: "ConcertPal",
