@@ -87,27 +87,29 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-  },
-  tab: {
-    height: 70,
-    width: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 12,
-    margin: 20,
-  },
-  tabBarStyle: {
-    bottom: 50,
-    marginLeft: 60,
-    marginRight: 60,
-    backgroundColor: '#E8EAED',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
+    container: {
+        flex: 1,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 20,
+    },
+    tab: {
+        height: 70,
+        width: 70,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 12,
+        margin: 20,
+    },
+    tabBarStyle: {
+        bottom: 50,
+        marginLeft: 60,
+        marginRight: 60,
+        backgroundColor: '#E8EAED',
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: "22",
+        boxShadow: "0px 0px 10px 10px rgba(0,0,0,0.10)"
+    }
 });
