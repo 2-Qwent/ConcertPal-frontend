@@ -116,7 +116,9 @@ export default function HomeScreen() {
         Rechercher un concert
       </Button>
       <Text>Feed</Text>
-      {timeline}
+      <ScrollView style={{ maxHeight: 400,width:"100%", marginBottom: 10, marginLeft: 70 }}>
+        {timeline}
+      </ScrollView>
       <Modal
         visible={modalVisible}
         transparent
