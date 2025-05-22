@@ -20,24 +20,6 @@ import moment from "moment";
 import { addPost } from "../reducers/post";
 
 
-
-const postsData = [
-  {
-    author: "John Doe",
-    date: "20/05/2025",
-    postBody: "Good concert",
-  },
-  {
-    author: "John Doe",
-    date: "20/05/2025",
-    postBody: "Cannot wait to meet again",
-  },
-  {
-    author: "John Doe",
-    date: "20/05/2025",
-    postBody: "I loved the show!",
-  },
-];
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
   require("../assets/placeholderConcertPics/20230826_220425.jpg"),
@@ -47,7 +29,6 @@ const mediaData = [
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts");
 
-  //const [posts, setposts] = useState([]);
   const [activeUser, setActiveUser] = useState([]);
   const user = useSelector((state) => state.user.value);
   const concerts = useSelector((state) => state.concerts.value);
@@ -56,20 +37,21 @@ export default function ProfileScreen({ navigation }) {
   const [isVisible, setIsVisible] = useState(false)
   const [postContent, setPostContent] = useState('')
 
+
+
+  const reloadFunction = () => {
+    setReload(!reload)
+  }
+
   const token = user.token;
   const dispatch = useDispatch()
 
 
-    const reloadFunction = () => {
-    setReload(!reload)
-  }
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`)
       .then((response) => response.json())
       .then((data) => {
-        dispatch(addPost(data.user.posts))
-        //setposts(data.user.posts);
         setActiveUser(data.user);
       });
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`)
@@ -105,6 +87,7 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
+  //liste des posts de l'utilisateur
   const userPosts = posts.map((data, i) => {
     const isLiked = data.likes.some((post) => post === token);
     return (
@@ -115,7 +98,7 @@ export default function ProfileScreen({ navigation }) {
         date={moment(data.date).fromNow()}
         nbLikes={data.likes.length}
         isLiked={isLiked}
-        reload={reloadFunction}
+        reloadFunction={reloadFunction}
         {...data}
       />
     );
@@ -129,10 +112,27 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
-  const handleAddPost = () => {
+  //affichage modal pour ajouter un post
+  const handleAddPostModal = () => {
     setIsVisible(true)
   }
 
+  //créer un post
+  const newPost = () => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${token}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({text: postContent}),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch(addPost(data.post))
+        setPostContent('')
+        setIsVisible(false)
+      });
+  };
+
+  //modal pour ajouter un post
   const addPostModalContent = (
     <Modal
       visible={isVisible}
@@ -140,14 +140,19 @@ export default function ProfileScreen({ navigation }) {
       animationType="slide"
       onRequestClose={() => setIsVisible(false)}
     >
-      <TextInput
-        placeholder="Ajouter un post"
-        value={postContent}
-        onChangeText={setPostContent}
-      />
-      <TouchableOpacity>
-        <Text>Poster</Text>
-      </TouchableOpacity>
+      <View style={styles.modalContainer}>
+        <TextInput
+          placeholder="Ajouter un post"
+          value={postContent}
+          onChangeText={setPostContent}
+        />
+        <TouchableOpacity onPress={() => newPost()}>
+          <Text>Poster</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setIsVisible(false)} >
+          <Text>Annuler</Text>
+        </TouchableOpacity>
+      </View>
     </Modal>
   );
 
@@ -175,7 +180,7 @@ export default function ProfileScreen({ navigation }) {
           </View>
         </View>
         {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
-        <TouchableOpacity onPress={() => handleAddPost()}>
+        <TouchableOpacity onPress={() => handleAddPostModal()}>
           <Text>Add post</Text>
         </TouchableOpacity>
         {isVisible && addPostModalContent}
@@ -309,5 +314,14 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "center",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    height: 200,
+    position: "absolute",
   },
 });

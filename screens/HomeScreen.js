@@ -15,7 +15,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Concert from "../components/Concert";
 import Post from "../components/Post";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setPosts } from "../reducers/post";
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
@@ -24,9 +25,11 @@ export default function HomeScreen() {
   const [date, setDate] = useState(null); // Date
   const [showPicker, setShowPicker] = useState(false); // Menu choix date
   const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
-  const [posts, setPosts] = useState([]); // États pour la liste des posts
   const [ reload , setReload ] = useState(false); // Reload
   const [searchError, setSearchError] = useState(""); // Message d'erreur définissable
+  const posts = useSelector((state) => state.post.value)
+  
+  const dispatch = useDispatch()
 
   const reloadFunction = () => {
     setReload(!reload)
@@ -39,7 +42,7 @@ export default function HomeScreen() {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
       .then((response) => response.json())
       .then((data) => {
-        setPosts(data.posts);
+        dispatch(setPosts(data.posts))
       });
   }, [reload]);
 
