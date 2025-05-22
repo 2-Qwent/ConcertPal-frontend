@@ -76,6 +76,18 @@ export default function ProfileScreen({ navigation }) {
         screen="Profile"
       />
     );
+    // return (
+    //   <View key={i} style={styles.concert}>
+    //     <View style={styles.concertContainerTop}>
+    //       <FontAwesome name="star-o" size={25} color="#000000" />
+    //       <Text>{data.artist}</Text>
+    //       <Text>{data.date}</Text>
+    //     </View>
+    //     <Text>
+    //       {data.venue} - {data.city}
+    //     </Text>
+    //   </View>
+    // );
   });
 
   const userPosts = posts.map((data, i) => {
