@@ -14,7 +14,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Concert from "../components/Concert";
 import Post from "../components/Post";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {setPosts} from "../reducers/post";
 import {setConcerts} from "../reducers/concerts";
 
@@ -28,10 +28,10 @@ export default function HomeScreen() {
   const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
   const [date, setDate] = useState(null); // Date
 
-  //const concerts = useSelector(state => state.concerts.value) // Appel des concerts
   const posts = useSelector((state) => state.post.value) // Appel des posts
   const user = useSelector((state) => state.user.value);
   const token = user.token;
+  const dispatch = useDispatch()
 
   const reloadFunction = () => {
     setReload(!reload)
@@ -41,7 +41,7 @@ export default function HomeScreen() {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
       .then((response) => response.json())
       .then((data) => {
-        setPosts(data.posts);
+        dispatch(setPosts(data.posts));
       });
   }, [reload]);
 
