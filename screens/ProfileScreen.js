@@ -10,9 +10,9 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { user } from "../reducers/user";
 import Concert from "../components/Concert";
 import { logout } from "../reducers/user";
+import { setConcerts } from "../reducers/concerts";
 
 
 const postsData = [
@@ -40,10 +40,10 @@ const mediaData = [
 
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts");
-  const [concerts, setConcerts] = useState([]);
   const [posts, setposts] = useState([]);
   const [activeUser, setActiveUser] = useState([]);
   const user = useSelector((state) => state.user.value);
+  const concerts = useSelector((state) => state.concerts.value);
 
   const token = user.token;
   const dispatch = useDispatch()
@@ -58,7 +58,7 @@ export default function ProfileScreen({ navigation }) {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`)
       .then((response) => response.json())
       .then((data) => {
-        setConcerts(data.list);
+        dispatch(setConcerts(data.list));
       });
   }, []);
 
@@ -71,31 +71,19 @@ export default function ProfileScreen({ navigation }) {
     dispatch(logout())
     navigation.navigate('Login')
   }
-
   const userConcerts = concerts.map((data, i) => {
     return (
-      <Concert
-        key={i}
-        pic={data.pic}
-        city={data.city}
-        venue={data.venue}
-        artist={data.artist}
-        date={data.date}
-        screen="Profile"
-      />
+      <View key={i} style={styles.concert}>
+        <View style={styles.concertContainerTop}>
+          <FontAwesome name="star-o" size={25} color="#000000" />
+          <Text>{data.artist}</Text>
+          <Text>{data.date}</Text>
+        </View>
+        <Text>
+          {data.venue} - {data.city}
+        </Text>
+      </View>
     );
-    // return (
-    //   <View key={i} style={styles.concert}>
-    //     <View style={styles.concertContainerTop}>
-    //       <FontAwesome name="star-o" size={25} color="#000000" />
-    //       <Text>{data.artist}</Text>
-    //       <Text>{data.date}</Text>
-    //     </View>
-    //     <Text>
-    //       {data.venue} - {data.city}
-    //     </Text>
-    //   </View>
-    // );
   });
 
   const userPosts = posts.map((data, i) => {

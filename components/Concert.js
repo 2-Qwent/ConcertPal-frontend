@@ -5,10 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addConcert } from "../reducers/concerts";
 
 export default function Concert(props) {
   const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
 
   const onAdd = (props) => {
     fetch(
@@ -23,6 +25,7 @@ export default function Concert(props) {
       .then((data) => {
         if (data.result) {
           alert("Concert ajouté à mes concerts");
+          dispatch(addConcert(props));
         } else {
           alert("Erreur lors de l'ajout du concert");
         }
