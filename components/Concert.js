@@ -7,7 +7,7 @@ import {
   Image
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { addConcert } from "../reducers/concerts";
+import { addConcert, removeConcert } from "../reducers/concerts";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 import { useNavigation } from '@react-navigation/native';
@@ -30,7 +30,7 @@ export default function Concert(props) {
       .then((data) => {
         if (data.result) {
           alert("Concert ajouté à mes concerts");
-          dispatch(addConcert(props));
+          dispatch(addConcert({...props, id: data.id}));
         } else {
           alert("Erreur lors de l'ajout du concert");
         }
@@ -50,14 +50,44 @@ export default function Concert(props) {
       pic: props.pic,
       seatmap: props.seatmap,
     });
-  };
+  }
+    
+  const onDelete = (props) => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/delete/${user.token}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ concertId: props.id }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          alert("Concert supprimé de mes concerts");
+          console.log(props);
+          dispatch(removeConcert(props.id));
+        } else {
+          alert("Erreur lors de la suppression du concert");
+        }
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la suppression du concert :", error);
+      });
+    }
 
   const formattedDate = moment(props.date).format("DD/MM/YYYY");
 
   return (
     <View style={styles.card}>
-    
-      <TouchableOpacity onPress={handlePress}>
+      {props.screen === 'Profile' && 
+        <View style={{ position: 'absolute', top: 10, right: 10, zIndex: 2 }}>
+          <TouchableOpacity onPress={()=>onDelete(props)}>
+            <FontAwesome name="trash" size={22} color="#ff5c5c" />
+          </TouchableOpacity>
+        </View>
+      }
+      <Image source={props.seatmap}/>
+      <TouchableOpacity onPress={() => handlePress(props)}>
         <ImageBackground
           source={{ uri: props.pic }}
           style={styles.image}

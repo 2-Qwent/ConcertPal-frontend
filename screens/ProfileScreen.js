@@ -88,6 +88,7 @@ export default function ProfileScreen({ navigation }) {
     dispatch(logout())
     navigation.navigate('Login')
   }
+
   const userConcerts = concerts.map((data, i) => {
     return (
       <Concert
@@ -99,6 +100,7 @@ export default function ProfileScreen({ navigation }) {
         date={data.date}
         seatmap={data.seatmap}
         screen="Profile"
+        id={data.id}
       />
     );
   });
@@ -280,6 +282,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
+  },
+  concert: {
+    width: "100%",
+    borderBottomWidth: 1,
+    borderColor: "#D7D7D7",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: 15,
+  },
+  concertContainerTop: {
+    width: "100%",
+    // backgroundColor: 'aqua',
+    height: 50,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   image: {
     width: 140,
