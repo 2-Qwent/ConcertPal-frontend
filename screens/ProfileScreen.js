@@ -9,9 +9,11 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { user } from "../reducers/user";
 import Concert from "../components/Concert";
+import { logout } from "../reducers/user";
+
 
 const postsData = [
   {
@@ -44,6 +46,7 @@ export default function ProfileScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
 
   const token = user.token;
+  const dispatch = useDispatch()
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`)
@@ -63,6 +66,11 @@ export default function ProfileScreen({ navigation }) {
     // console.log('I was clicked UwU');
     setActiveTab(tabName);
   };
+
+  const handleLogoutPress = () => {
+    dispatch(logout())
+    navigation.navigate('Login')
+  }
 
   const userConcerts = concerts.map((data, i) => {
     return (
@@ -127,6 +135,9 @@ export default function ProfileScreen({ navigation }) {
             <Text style={styles.userName}>{activeUser.username}</Text>
             <TouchableOpacity style={styles.button}>
               <Text>Modifier mon profil</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleLogoutPress()} style={styles.button}>
+              <Text>Me déconnecter</Text>
             </TouchableOpacity>
           </View>
         </View>
