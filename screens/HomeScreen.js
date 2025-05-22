@@ -16,24 +16,28 @@ import Concert from "../components/Concert";
 import Post from "../components/Post";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import {setPosts} from "../reducers/post";
+import {setConcerts} from "../reducers/concerts";
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
+  const [showPicker, setShowPicker] = useState(false); // Menu choix date
+  const [ reload , setReload ] = useState(false); // Reload
   const [artist, setArtist] = useState(""); // Input artistes recherches concert
   const [venue, setVenue] = useState(""); // Lieu de venue pour chaques artistes
-  const [date, setDate] = useState(null); // Date
-  const [showPicker, setShowPicker] = useState(false); // Menu choix date
-  const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
-  const [posts, setPosts] = useState([]); // États pour la liste des posts
-  const [ reload , setReload ] = useState(false); // Reload
   const [searchError, setSearchError] = useState(""); // Message d'erreur définissable
+   const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
+   const [posts, setPosts] = useState([]); // États pour la liste des posts
+  const [date, setDate] = useState(null); // Date
+
+  //const concerts = useSelector(state => state.concerts.value) // Appel des concerts
+  //const posts = useSelector((state) => state.post.value) // Appel des posts
+  const user = useSelector((state) => state.user.value);
+  const token = user.token;
 
   const reloadFunction = () => {
     setReload(!reload)
   }
-
-  const user = useSelector((state) => state.user.value);
-  const token = user.token;
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
@@ -219,6 +223,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#E8EAED",
   },
   modalOverlay: {
     flex: 1,
