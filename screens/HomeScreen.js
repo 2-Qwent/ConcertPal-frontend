@@ -28,10 +28,10 @@ export default function HomeScreen() {
    const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
   const [date, setDate] = useState(null); // Date
 
-  const dispatch = useDispatch(); // Appel du dispatch
   const posts = useSelector((state) => state.post.value) // Appel des posts
   const user = useSelector((state) => state.user.value);
   const token = user.token;
+  const dispatch = useDispatch()
 
   const reloadFunction = () => {
     setReload(!reload)
