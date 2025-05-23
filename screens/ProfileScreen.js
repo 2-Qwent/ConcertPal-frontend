@@ -10,13 +10,13 @@ import {
   Modal
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Concert from "../components/Concert";
+import Post from "../components/Post";
 import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
-import Post from "../components/Post";
-import moment from "moment";
 import { addPost } from "../reducers/post";
 
 
@@ -28,24 +28,33 @@ const mediaData = [
 
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts");
-
-  const [activeUser, setActiveUser] = useState([]);
-  const user = useSelector((state) => state.user.value);
-  const concerts = useSelector((state) => state.concerts.value);
-  const [ reload , setReload ] = useState(false);
-  const posts = useSelector((state) => state.post.value)
-  const [isVisible, setIsVisible] = useState(false)
   const [postContent, setPostContent] = useState('')
+  const [activeUser, setActiveUser] = useState([]);
+  const [ reload , setReload ] = useState(false);
+  const [isVisible, setIsVisible] = useState(false)
 
+  // Séléction des concerts, posts et nom de l'utilisateur :
+  const concerts = useSelector((state) => state.concerts.value);
+  const posts = useSelector((state) => state.post.value)
+  const user = useSelector((state) => state.user.value);
 
+  const token = user.token;
+  const dispatch = useDispatch()
 
   const reloadFunction = () => {
     setReload(!reload)
   }
 
-  const token = user.token;
-  const dispatch = useDispatch()
+  const handleTabPress = (tabName) => {
+    // console.log('I was clicked UwU');
+    setActiveTab(tabName);
+  };
 
+  // bouton déconnexion
+  const handleLogoutPress = () => {
+    dispatch(logout())
+    navigation.navigate('Login')
+  }
 
 
   useEffect(() => {
@@ -61,16 +70,7 @@ export default function ProfileScreen({ navigation }) {
       });
   }, [reload]);
 
-  const handleTabPress = (tabName) => {
-    // console.log('I was clicked UwU');
-    setActiveTab(tabName);
-  };
-
-  const handleLogoutPress = () => {
-    dispatch(logout())
-    navigation.navigate('Login')
-  }
-
+  // liste des concerts de l'utilisateur
   const userConcerts = concerts.map((data, i) => {
     return (
       <Concert
@@ -87,7 +87,7 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
-  //liste des posts de l'utilisateur
+  // liste des posts de l'utilisateur
   const userPosts = posts.map((data, i) => {
     const isLiked = data.likes.some((post) => post === token);
     return (
@@ -112,12 +112,7 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
-  //affichage modal pour ajouter un post
-  const handleAddPostModal = () => {
-    setIsVisible(true)
-  }
-
-  //créer un post
+  //création d'un post
   const newPost = () => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${token}`, {
       method: "POST",
@@ -131,6 +126,11 @@ export default function ProfileScreen({ navigation }) {
         setIsVisible(false)
       });
   };
+
+  //affichage modal pour ajouter un post
+  const handleAddPostModal = () => {
+    setIsVisible(true)
+  }
 
   //modal pour ajouter un post
   const addPostModalContent = (

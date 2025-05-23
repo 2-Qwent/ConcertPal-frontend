@@ -105,7 +105,7 @@ export default function HomeScreen() {
     );
   });
 
-  const timeline = posts.map((data, i) => {
+  const timeline = posts?.map((data, i) => {
     const isLiked = data.likes.some((post) => post === token)
     return (
       <Post
