@@ -17,6 +17,8 @@ import Concert from "../components/Concert";
 import Post from "../components/Post";
 import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
+import Post from "../components/Post";
+import AddPostModal from "../components/AddPostModal";
 import { addPost } from "../reducers/post";
 
 
@@ -30,13 +32,15 @@ export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts");
   const [postContent, setPostContent] = useState('')
   const [activeUser, setActiveUser] = useState([]);
+  const user = useSelector((state) => state.user.value);
   const [ reload , setReload ] = useState(false);
   const [isVisible, setIsVisible] = useState(false)
 
   // Séléction des concerts, posts et nom de l'utilisateur :
   const concerts = useSelector((state) => state.concerts.value);
   const posts = useSelector((state) => state.post.value)
-  const user = useSelector((state) => state.user.value);
+
+  const filteredPosts = posts.filter((post) => post.author.token === token)
 
   const token = user.token;
   const dispatch = useDispatch()
@@ -87,8 +91,8 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
-  // liste des posts de l'utilisateur
-  const userPosts = posts.map((data, i) => {
+  //liste des posts de l'utilisateur
+  const userPosts = filteredPosts.map((data, i) => {
     const isLiked = data.likes.some((post) => post === token);
     return (
       <Post
@@ -179,11 +183,16 @@ export default function ProfileScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
+        {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
         <TouchableOpacity onPress={() => handleAddPostModal()}>
           <Text>Add post</Text>
         </TouchableOpacity>
-        {isVisible && addPostModalContent}
+          <AddPostModal
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
+            reloadFunction={reloadFunction}
+          />
+        {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
         <View style={styles.contentContainer}>
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
