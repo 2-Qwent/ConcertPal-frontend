@@ -16,8 +16,7 @@ import Concert from "../components/Concert";
 import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
 import Post from "../components/Post";
-import moment from "moment";
-import { addPost } from "../reducers/post";
+import AddPostModal from "../components/AddPostModal";
 
 
 const mediaData = [
@@ -35,15 +34,14 @@ export default function ProfileScreen({ navigation }) {
   const [ reload , setReload ] = useState(false);
   const posts = useSelector((state) => state.post.value)
   const [isVisible, setIsVisible] = useState(false)
-  const [postContent, setPostContent] = useState('')
+  const token = user.token;
 
-
+  const filteredPosts = posts.filter((post) => post.author.token === token)
 
   const reloadFunction = () => {
     setReload(!reload)
   }
 
-  const token = user.token;
   const dispatch = useDispatch()
 
 
@@ -88,14 +86,14 @@ export default function ProfileScreen({ navigation }) {
   });
 
   //liste des posts de l'utilisateur
-  const userPosts = posts.map((data, i) => {
+  const userPosts = filteredPosts.map((data, i) => {
     const isLiked = data.likes.some((post) => post === token);
     return (
       <Post
         key={i}
         username={data.author.username}
         text={data.text}
-        date={moment(data.date).fromNow()}
+        date={data.date}
         nbLikes={data.likes.length}
         isLiked={isLiked}
         reloadFunction={reloadFunction}
@@ -116,45 +114,6 @@ export default function ProfileScreen({ navigation }) {
   const handleAddPostModal = () => {
     setIsVisible(true)
   }
-
-  //créer un post
-  const newPost = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${token}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({text: postContent}),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        dispatch(addPost(data.post))
-        setPostContent('')
-        setIsVisible(false)
-      });
-  };
-
-  //modal pour ajouter un post
-  const addPostModalContent = (
-    <Modal
-      visible={isVisible}
-      transparent
-      animationType="slide"
-      onRequestClose={() => setIsVisible(false)}
-    >
-      <View style={styles.modalContainer}>
-        <TextInput
-          placeholder="Ajouter un post"
-          value={postContent}
-          onChangeText={setPostContent}
-        />
-        <TouchableOpacity onPress={() => newPost()}>
-          <Text>Poster</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setIsVisible(false)} >
-          <Text>Annuler</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
-  );
 
   return (
     <ImageBackground
@@ -179,11 +138,16 @@ export default function ProfileScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
+        {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
         <TouchableOpacity onPress={() => handleAddPostModal()}>
           <Text>Add post</Text>
         </TouchableOpacity>
-        {isVisible && addPostModalContent}
+          <AddPostModal 
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
+            reloadFunction={reloadFunction}
+          />
+        {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
         <View style={styles.contentContainer}>
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
@@ -314,14 +278,5 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "center",
-  },
-  modalContainer: {
-    backgroundColor: "white",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "90%",
-    height: 200,
-    position: "absolute",
   },
 });

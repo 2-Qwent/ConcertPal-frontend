@@ -7,6 +7,18 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "expo": {
+      "plugins": [
+        [
+          "expo-camera",
+          {
+            "cameraPermission": "Allow Concert Pal to access your camera",
+            "microphonePermission": "Allow Concert Pal to access your microphone",
+            "recordAudioAndroid": true
+          }
+        ]
+      ]
+    },
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",

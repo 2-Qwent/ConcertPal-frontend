@@ -106,13 +106,13 @@ export default function HomeScreen() {
   });
 
   const timeline = posts.map((data, i) => {
-    const isLiked = data.likes.some((post) => post === token)
+    const isLiked = data.likes?.some((post) => post === token) || false
     return (
       <Post
         key={i}
         username={data.author.username}
         text={data.text}
-        date={moment(data.date).fromNow()}
+        date={data.date}
         nbLikes={data.likes.length}
         isLiked={isLiked}
         reloadFunction={reloadFunction}
@@ -127,9 +127,26 @@ export default function HomeScreen() {
         Rechercher un concert
       </Button>
       <Text>Feed</Text>
-      <ScrollView style={{ maxHeight: 400,width:"100%", marginBottom: 10, marginLeft: 70 }}>
+      <ScrollView
+        style={{
+          maxHeight: 400,
+          width: "100%",
+          marginBottom: 10,
+          marginLeft: 70,
+        }}
+      >
         {timeline}
       </ScrollView>
+      {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
+      <TouchableOpacity onPress={() => handleAddPostModal()}>
+        <Text>Add post</Text>
+      </TouchableOpacity>
+      <AddPostModal
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        reloadFunction={reloadFunction}
+      />
+      {/* ───── ⋆ ───── searchModal ───── ⋆ ───── */}
       <Modal
         visible={modalVisible}
         transparent
@@ -141,9 +158,9 @@ export default function HomeScreen() {
             {concerts.length === 0 ? (
               <>
                 <Text style={styles.title}>Rechercher un concert</Text>
-                {searchError ?
-                  <Text style={styles.errorText}>{searchError}</Text>: null
-                }
+                {searchError ? (
+                  <Text style={styles.errorText}>{searchError}</Text>
+                ) : null}
                 <TextInput
                   placeholder="Artiste"
                   style={styles.input}
