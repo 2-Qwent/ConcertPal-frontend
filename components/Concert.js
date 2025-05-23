@@ -41,7 +41,7 @@ export default function Concert(props) {
   };
 
   const handlePress = () => {
-    console.log('clicked concert info is : ', props.artist, props.date, props.venue, props.city, props.pic, props.seatmap,);
+    console.log('clicked concert info is : ', props.artist, props.date, props.venue, props.city, props.pic, 'seatmap is ', props.seatmap,);
     navigation.navigate('ConcertScreen', {
       artist: props.artist,
       date: props.date,
