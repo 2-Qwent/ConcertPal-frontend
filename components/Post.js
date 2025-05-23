@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { deletePost } from "../reducers/post";
 
 export default function Post(props) {
   const user = useSelector((state) => state.user.value);
   const token = user.token;
   const [trashIcon, setTrashIcon] = useState(false);
-
+  const dispatch = useDispatch()
 
   
   //affiche l'icone de suppression si le token de l'auteur correspond à celui de l'utilisateur
@@ -40,6 +41,7 @@ export default function Post(props) {
     })
       .then((response) => response.json())
       .then(() => {
+        dispatch(deletePost(props._id))
         props.reloadFunction();
       });
   };

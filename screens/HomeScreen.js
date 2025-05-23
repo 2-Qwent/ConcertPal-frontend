@@ -25,13 +25,15 @@ export default function HomeScreen() {
   const [artist, setArtist] = useState(""); // Input artistes recherches concert
   const [venue, setVenue] = useState(""); // Lieu de venue pour chaques artistes
   const [searchError, setSearchError] = useState(""); // Message d'erreur définissable
-   const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
+  const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
   const [date, setDate] = useState(null); // Date
 
   const posts = useSelector((state) => state.post.value) // Appel des posts
   const user = useSelector((state) => state.user.value);
   const token = user.token;
   const dispatch = useDispatch()
+
+  console.log(posts)
 
   const reloadFunction = () => {
     setReload(!reload)
