@@ -17,6 +17,8 @@ import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import {setPosts} from "../reducers/post";
 import {setConcerts} from "../reducers/concerts";
+import { persistor } from "../App"
+import AddPostModal from "../components/AddPostModal";
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
@@ -27,13 +29,16 @@ export default function HomeScreen() {
   const [searchError, setSearchError] = useState(""); // Message d'erreur définissable
   const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
   const [date, setDate] = useState(null); // Date
+  const [isVisible, setIsVisible] = useState(false); // Modal pour ajouter un post
 
   const posts = useSelector((state) => state.post.value) // Appel des posts
   const user = useSelector((state) => state.user.value);
   const token = user.token;
   const dispatch = useDispatch()
 
-  console.log(posts)
+  const handleAddPostModal = () => {
+  setIsVisible(true);
+};
 
   const reloadFunction = () => {
     setReload(!reload)
@@ -126,6 +131,9 @@ export default function HomeScreen() {
       <Button onPress={() => setModalVisible(true)}>
         Rechercher un concert
       </Button>
+      <TouchableOpacity onPress={() => {persistor.purge()}}> 
+        <Text>purge</Text> 
+      </TouchableOpacity>
       <Text>Feed</Text>
       <ScrollView
         style={{

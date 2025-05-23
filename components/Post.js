@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useSelector, useDispatch, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { deletePost, setPosts } from "../reducers/post";
 import moment from "moment";
-import { deletePost } from "../reducers/post";
+import { useNavigation } from '@react-navigation/native';
 
 export default function Post(props) {
   const user = useSelector((state) => state.user.value);
   const token = user.token;
   const [trashIcon, setTrashIcon] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const formattedDate = moment(props.date).fromNow();
 
   //affiche l'icone de suppression si le token de l'auteur correspond à celui de l'utilisateur
@@ -23,8 +24,8 @@ export default function Post(props) {
   //like un post
   const handleLikePost = () => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/likes`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         token: token,
         _id: props._id,
@@ -44,7 +45,7 @@ export default function Post(props) {
   //supprimer un post
   const handleDeletePost = () => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${props._id}`, {
-      method: "DELETE",
+      method: 'DELETE',
     })
       .then((response) => response.json())
       .then(() => {
@@ -53,11 +54,22 @@ export default function Post(props) {
       });
   };
 
+  // ───── ⋆ ───── Naviguer vers le profile d'un autre ───── ⋆ ─────
+  const viewProfile = () => {
+    console.log(`clicked to visit ${props.username}'s profile`);
+    navigation.navigate('UserProfileScreen', {
+      username: props.author.username,
+      userToken: props.author.token,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.info}>
-        <Text>{props.username}</Text>
-        <Text>{formattedDate}</Text>
+        <TouchableOpacity onPress={() => viewProfile()}>
+          <Text>{props.username}</Text>
+        </TouchableOpacity>
+        <Text>{props.date}</Text>
       </View>
       <Text>{props.text}</Text>
       <View style={styles.icones}>
@@ -66,7 +78,7 @@ export default function Post(props) {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleLikePost()}>
           <FontAwesome
-            style={{ color: props.isLiked ? "red" : "black" }}
+            style={{ color: props.isLiked ? 'red' : 'black' }}
             name="heart"
             size={18}
           />
