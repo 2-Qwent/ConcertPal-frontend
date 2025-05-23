@@ -49,7 +49,7 @@ export default function UserProfileScreen({ route, navigation }) {
     console.log('navigate to chat with : ', username);
     navigation.navigate('ChatScreen', {
       sender: username,
-      userToken,
+      token: userToken,
     });
   };
 

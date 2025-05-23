@@ -127,7 +127,9 @@ export default function HomeScreen() {
       <Button onPress={() => setModalVisible(true)}>
         Rechercher un concert
       </Button>
-      <TouchableOpacity onPress={() => {persistor.purge()}}> <Text>purge</Text> </TouchableOpacity>
+      <TouchableOpacity onPress={() => {persistor.purge()}}> 
+        <Text>purge</Text> 
+      </TouchableOpacity>
       <Text>Feed</Text>
       <ScrollView style={{ maxHeight: 400,width:"100%", marginBottom: 10, marginLeft: 70 }}>
         {timeline}
