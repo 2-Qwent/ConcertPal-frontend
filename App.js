@@ -9,6 +9,7 @@ import MessagesScreen from "./screens/MessagesScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ConcertScreen from './screens/ConcertScreen.js';
 import ChatScreen from './screens/ChatScreen.js';
+import UserProfileScreen from './screens/UserProfileScreen.js';
 import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -36,6 +37,7 @@ const store = configureStore({
 });
 
 const persistor = persistStore(store);
+export {persistor}
 
 const TabNavigator = () => {
   return (
@@ -85,6 +87,7 @@ export default function App() {
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
             <Stack.Screen name="ConcertScreen" component={ConcertScreen} />
             <Stack.Screen name="ChatScreen" component={ChatScreen} />
+            <Stack.Screen name="UserProfileScreen" component={UserProfileScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>

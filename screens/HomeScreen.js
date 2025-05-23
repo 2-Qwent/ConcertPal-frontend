@@ -17,6 +17,7 @@ import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import {setPosts} from "../reducers/post";
 import {setConcerts} from "../reducers/concerts";
+import { persistor } from "../App"
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
@@ -126,6 +127,7 @@ export default function HomeScreen() {
       <Button onPress={() => setModalVisible(true)}>
         Rechercher un concert
       </Button>
+      <TouchableOpacity onPress={() => {persistor.purge()}}> <Text>purge</Text> </TouchableOpacity>
       <Text>Feed</Text>
       <ScrollView style={{ maxHeight: 400,width:"100%", marginBottom: 10, marginLeft: 70 }}>
         {timeline}
