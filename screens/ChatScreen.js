@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from "react";
 import Pusher from 'pusher-js/react-native'; 
 import { useSelector } from "react-redux";
@@ -63,7 +64,7 @@ export default function ChatScreen({ route }) {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.head}>Messages with {sender}</Text>
         <FlatList
           data={messages}
@@ -83,7 +84,7 @@ export default function ChatScreen({ route }) {
             <Text style={{ color: 'white', fontWeight: 'bold' }}>Envoyer</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }
