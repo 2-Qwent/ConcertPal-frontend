@@ -8,6 +8,7 @@ import HomeScreen from "./screens/HomeScreen";
 import MessagesScreen from "./screens/MessagesScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ConcertScreen from './screens/ConcertScreen.js';
+import ChatScreen from './screens/ChatScreen.js';
 import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,15 +16,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
-
 import { Provider } from "react-redux";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import concerts from "./reducers/concerts";
 import post from "./reducers/post";
-
-
 
 const reducers = combineReducers({ user, concerts, post });
 
@@ -87,6 +84,7 @@ export default function App() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
             <Stack.Screen name="ConcertScreen" component={ConcertScreen} />
+            <Stack.Screen name="ChatScreen" component={ChatScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>
