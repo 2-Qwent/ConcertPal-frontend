@@ -54,7 +54,7 @@ export default function Post(props) {
       });
   };
 
-  // ───── ⋆ ───── Naviguer vers le profile d'un autre ───── ⋆ ─────
+  // ───── ⋆ ───── Naviguer vers le profile d'un autre user ───── ⋆ ─────
   const viewProfile = () => {
     console.log(`clicked to visit ${props.username}'s profile`);
     navigation.navigate('UserProfileScreen', {
@@ -65,30 +65,44 @@ export default function Post(props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.info}>
-        <TouchableOpacity onPress={() => viewProfile()}>
-          <Text>{props.username}</Text>
-        </TouchableOpacity>
-        <Text>{props.date}</Text>
+      {/*───── ⋆ ───── Profile Picture ───── ⋆ ─────*/}
+      <View style={styles.profilePic}>
+        <FontAwesome name="user-circle" size={45} color="#000000" />
+        <Text style={styles.profilePlaceholderPicText}>placeholder profile pic</Text>
       </View>
-      <Text>{props.text}</Text>
-      <View style={styles.icones}>
-        <TouchableOpacity>
-          <FontAwesome name="reply" size={18}/>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleLikePost()}>
-          <FontAwesome
-            style={{ color: props.isLiked ? 'red' : 'black' }}
-            name="heart"
-            size={18}
-          />
-        </TouchableOpacity>
-        <Text>{props.nbLikes}</Text>
-        {trashIcon && (
-          <TouchableOpacity onPress={() => handleDeletePost()}>
-            <FontAwesome name="trash" size={18}/>
+
+      {/*───── ⋆ ───── Post Content ───── ⋆ ─────*/}
+      <View style={styles.content}>
+        {/* ───── ⋆ ───── Username + Date ───── ⋆ ─────*/}
+        <View style={styles.info}>
+          <TouchableOpacity onPress={() => viewProfile()}>
+            <Text style={styles.username}>{props.username}</Text>
           </TouchableOpacity>
-        )}
+          <Text style={styles.date}>{formattedDate}</Text>
+        </View>
+
+        {/* ───── ⋆ ───── post text ───── ⋆ ─────*/}
+        <Text style={styles.postText}>{props.text}</Text>
+
+        {/*───── ⋆ ───── Icons ───── ⋆ ─────*/}
+        <View style={styles.icons}>
+          <TouchableOpacity>
+            <FontAwesome name="reply" size={18} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleLikePost()}>
+            <FontAwesome
+              style={{ color: props.isLiked ? 'red' : 'black' }}
+              name="heart"
+              size={18}
+            />
+          </TouchableOpacity>
+          <Text>{props.nbLikes}</Text>
+          {trashIcon && (
+            <TouchableOpacity onPress={() => handleDeletePost()}>
+              <FontAwesome name="trash" size={18} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -96,20 +110,40 @@ export default function Post(props) {
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: "black",
-    borderWidth: 1,
-    width: "100%",
-    height: 100,
+    flexDirection: 'row',
+    padding: 15,
+    borderBottomColor: '#A5ECC0',
+    borderBottomWidth: 1,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  profilePic: {
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  profilePlaceholderPicText: {
+    fontSize: 7,
+    color: 'rgba(0,0,0,0.5)',
+  },
+  content: {
+    flex: 1,
+    flexDirection: 'column',
   },
   info: {
-    flex: 1,
-    flexDirection: "row",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
   },
-  icones: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "flex-end",
+  date: {
+    color: '#565656',
+    fontSize: 12,
+  },
+  postText: {
     marginBottom: 5,
+    fontSize: 14,
+  },
+  icons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

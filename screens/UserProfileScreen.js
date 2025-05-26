@@ -1,6 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ScrollView } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import Concert from "../components/Concert";
+import Post from "../components/Post";
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -11,16 +14,26 @@ const mediaData = [
 export default function UserProfileScreen({ route, navigation }) {
   const { username, userToken } = route.params;
   const [activeTab, setActiveTab] = useState('concerts');
+  const [concerts, setConcerts] = useState([])
+  const [posts, setPosts] = useState([])
+  // const myToken = user.token;
+
+  // const user = useSelector((state) => state.user.value)
 
   const [reload, setReload] = useState(false);
 
-//   useEffect(() => {
-//     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${userToken}`)
-//       .then((response) => response.json())
-//       .then((data) => {
-//         setActiveUser(data.user);
-//       });
-//   }, [reload]);
+  useEffect(() => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${userToken}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setConcerts(data.list);
+      });
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${userToken}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setPosts(data.posts);
+      });
+  }, [reload]);
 
   const handleTabPress = (tabName) => {
     // console.log('I was clicked UwU');
@@ -28,14 +41,38 @@ export default function UserProfileScreen({ route, navigation }) {
   };
 
   // ───── ⋆ ───── Liste des concerts de l'utilisateur ───── ⋆ ─────
-  const userConcerts = () => {
-    return (<Text>les concerts de {username}</Text>);
-  };
+  const userConcerts = concerts.map((data, i) => {
+      return (
+        <Concert
+          key={i}
+          pic={data.pic}
+          city={data.city}
+          venue={data.venue}
+          artist={data.artist}
+          date={data.date}
+          seatmap={data.seatmap}
+          id={data.id}
+          screen="UserProfile"
+        />
+      );
+    });
 
   // ───── ⋆ ───── Liste des posts de l'utilisateur ───── ⋆ ─────
-  const userPosts = () => {
-    return <Text>les posts de {username}</Text>;
-  };
+  const userPosts = posts.map((data, i) => {
+      // const isLiked = data.likes.some((data) => data === myToken);
+      return (
+        <Post
+          key={i}
+          username={data.author.username}
+          text={data.text}
+          date={data.date}
+          nbLikes={data.likes.length}
+          // isLiked={isLiked}
+          // reloadFunction={reloadFunction}
+          {...data}
+        />
+      );
+    });
 
   const media = mediaData.map((data, i) => {
     return (
@@ -98,11 +135,11 @@ export default function UserProfileScreen({ route, navigation }) {
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
             {activeTab === 'concerts' && (
-              <ScrollView>{userConcerts()}</ScrollView>
+              <ScrollView>{userConcerts}</ScrollView>
             )}
             {activeTab === 'posts' && (
               <ScrollView>
-                {userPosts()}
+                {userPosts}
               </ScrollView>
             )}
             <View style={styles.mediaContainer}>
