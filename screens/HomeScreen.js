@@ -74,7 +74,6 @@ export default function HomeScreen() {
           pic: show.images?.[3]?.url || null,
           city: show._embedded?.venues?.[0]?.city?.name || "Ville inconnue",
           seatmap: show.seatmap?.staticUrl || "Pas de plan pour ce spectacle",
-          id: show._id,
         }));
         setConcerts(showData);
         if (showData.length === 0) {
@@ -107,7 +106,6 @@ export default function HomeScreen() {
         date={data.date}
         seatmap={data.seatmap}
         screen="Home"
-        id={data.id}
       />
     );
   });

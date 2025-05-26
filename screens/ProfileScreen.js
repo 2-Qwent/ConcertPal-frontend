@@ -44,7 +44,6 @@ export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch()
 
 
-
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`)
       .then((response) => response.json())
@@ -54,8 +53,12 @@ export default function ProfileScreen({ navigation }) {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log('concerts data', data.list)
-        dispatch(setConcerts(data.list));
+        // On mappe pour renommer _id en id
+        const concertsWithId = data.list.map(concert => ({
+          ...concert,
+          id: concert._id,
+        }));
+        dispatch(setConcerts(concertsWithId));
       });
   }, [reload]);
 
