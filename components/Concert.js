@@ -15,9 +15,23 @@ import { useNavigation } from '@react-navigation/native';
 export default function Concert(props) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
+  const concerts = useSelector((state) => state.concerts.value);
   const dispatch = useDispatch();
 
   const onAdd = (props) => {
+    // Vérifie si le concert est déjà dans le reducer (par exemple via artist, venue, date)
+    const alreadyExists = concerts.some( 
+      c =>
+        c.artist === props.artist &&
+        c.venue === props.venue &&
+        c.date === props.date
+    );
+
+    if (alreadyExists) {
+      alert("Ce concert est déjà dans vos concerts !");
+      return;
+    }
+
     fetch(
       `http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/add/${user.token}`,
       {
@@ -30,7 +44,7 @@ export default function Concert(props) {
       .then((data) => {
         if (data.result) {
           alert("Concert ajouté à mes concerts");
-          dispatch(addConcert({...props, id: data.id}));
+          dispatch(addConcert({ ...props, id: data.id }));
         } else {
           alert("Erreur lors de l'ajout du concert");
         }

@@ -55,6 +55,7 @@ export default function HomeScreen() {
   const handleSearch = () => {
     const searchParams = { artist, venue };
     if (date) {
+      console.log(date)
       searchParams.date = date.toISOString().split("T")[0];
     }
 
