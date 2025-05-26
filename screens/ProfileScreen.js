@@ -31,7 +31,7 @@ export default function ProfileScreen({ navigation }) {
   const [activeUser, setActiveUser] = useState([]);
   const user = useSelector((state) => state.user.value);
   const concerts = useSelector((state) => state.concerts.value);
-  const [ reload , setReload ] = useState(false);
+  const [reload, setReload] = useState(false);
   const posts = useSelector((state) => state.post.value)
   const [isVisible, setIsVisible] = useState(false)
   const token = user.token;
@@ -55,6 +55,7 @@ export default function ProfileScreen({ navigation }) {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log('concerts data', data.list)
         dispatch(setConcerts(data.list));
       });
   }, [reload]);
@@ -142,11 +143,11 @@ export default function ProfileScreen({ navigation }) {
         <TouchableOpacity onPress={() => handleAddPostModal()}>
           <Text>Add post</Text>
         </TouchableOpacity>
-          <AddPostModal 
-            isVisible={isVisible}
-            setIsVisible={setIsVisible}
-            reloadFunction={reloadFunction}
-          />
+        <AddPostModal
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}
+          reloadFunction={reloadFunction}
+        />
         {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
         <View style={styles.contentContainer}>
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}

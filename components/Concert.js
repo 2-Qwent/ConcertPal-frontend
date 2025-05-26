@@ -20,7 +20,7 @@ export default function Concert(props) {
 
   const onAdd = (props) => {
     // Vérifie si le concert est déjà dans le reducer (par exemple via artist, venue, date)
-    const alreadyExists = concerts.some( 
+    const alreadyExists = concerts.some(
       c =>
         c.artist === props.artist &&
         c.venue === props.venue &&
@@ -63,9 +63,10 @@ export default function Concert(props) {
       city: props.city,
       pic: props.pic,
       seatmap: props.seatmap,
+      concertId: props.id,
     });
   }
-    
+
   const onDelete = (props) => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/delete/${user.token}`,
       {
@@ -87,28 +88,28 @@ export default function Concert(props) {
       .catch((error) => {
         console.error("Erreur lors de la suppression du concert :", error);
       });
-    }
+  }
 
   const formattedDate = moment(props.date).format("DD/MM/YYYY");
 
   return (
     <View style={styles.card}>
-      {props.screen === 'Profile' && 
+      {props.screen === 'Profile' &&
         <View style={{ position: 'absolute', top: 10, right: 10, zIndex: 2 }}>
-          <TouchableOpacity onPress={()=>onDelete(props)}>
+          <TouchableOpacity onPress={() => onDelete(props)}>
             <FontAwesome name="trash" size={22} color="#ff5c5c" />
           </TouchableOpacity>
         </View>
       }
-      <Image source={props.seatmap}/>
+      <Image source={props.seatmap} />
       <TouchableOpacity onPress={() => handlePress(props)}>
         <ImageBackground
           source={{ uri: props.pic }}
           style={styles.image}
           imageStyle={{ borderRadius: 12 }}>
           <View style={styles.overlay}>
-            <View style={{flexDirection: 'row', alignItems: 'center', paddingLeft: 5, }}>
-              <FontAwesome style={{ marginRight: 10 }} name="star-o" size={25} color="#565656"/>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 5, }}>
+              <FontAwesome style={{ marginRight: 10 }} name="star-o" size={25} color="#565656" />
               <View>
                 <Text style={styles.title}>{props.artist}</Text>
                 <Text style={[styles.text, { fontSize: 12, marginBottom: 10, marginLeft: 10 }]}>{formattedDate}</Text>
