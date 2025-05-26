@@ -22,8 +22,9 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import concerts from "./reducers/concerts";
 import post from "./reducers/post";
+import following from "./reducers/following";
 
-const reducers = combineReducers({ user, concerts, post });
+const reducers = combineReducers({ user, concerts, post, following });
 
 const persistConfig = {
   key: "ConcertPal",

@@ -1,6 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ScrollView, Modal } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { newFollow, unfollow } from "../reducers/following";
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -11,8 +13,12 @@ const mediaData = [
 export default function UserProfileScreen({ route, navigation }) {
   const { username, userToken } = route.params;
   const [activeTab, setActiveTab] = useState('concerts');
-
+  const user = useSelector((state) => state.user.value);
+  const token = user.token; // token de l'utilisateur connecté
   const [reload, setReload] = useState(false);
+  const dispatch = useDispatch();
+  const following = useSelector((state) => state.following.value) || [];
+  const [modalVisible, setModalVisible] = useState(false); //modal pour confirmation de désabonnement
 
 //   useEffect(() => {
 //     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${userToken}`)
@@ -53,6 +59,74 @@ export default function UserProfileScreen({ route, navigation }) {
     });
   };
 
+  const followUser = () => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/follow/${token}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ friendToken: userToken }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          dispatch(newFollow(userToken));
+        }
+      });
+  };
+
+  const unfollowUser = () => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/unfollow/${token}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ friendToken: userToken }),
+    }).then((response) => response.json())
+      .then(data => {
+        if (data.result) {
+          dispatch(unfollow(userToken))
+          setModalVisible(false);
+        }
+      })
+  }
+
+  let followButton = (
+    <TouchableOpacity onPress={followUser} style={styles.button}>
+      <Text>Suivre</Text>
+    </TouchableOpacity>
+  );
+
+  if (following.includes(userToken)) {
+    followButton = (
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
+        <Text>Abonné</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  const unfollowModalContent = (
+    <Modal
+      visible={modalVisible}
+      transparent
+      animationType="slide"
+      onRequestClose={() => setModalVisible(false)}
+    >
+      <View style={{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0,0,0,0.3)',
+    }}>
+        <View style={styles.modalContainer}>
+          <Text>Etes vous sûr de vouloir vous désabonner de {username} ?</Text>
+          <TouchableOpacity onPress={unfollowUser}>
+            <Text>Oui</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <Text>Annuler</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+
   return (
     <ImageBackground
       source={require('../assets/IMG_background.png')}
@@ -67,9 +141,8 @@ export default function UserProfileScreen({ route, navigation }) {
           </View>
           <View style={styles.profileText}>
             <Text style={styles.userName}>{username}</Text>
-            <TouchableOpacity style={styles.button}>
-              <Text>Ajouter en ami</Text>
-            </TouchableOpacity>
+            {followButton}
+            {unfollowModalContent}
             <TouchableOpacity onPress={()=>{goToChat(userToken)}} style={styles.button}>
               <Text>Envoyer un message</Text>
             </TouchableOpacity>
@@ -208,11 +281,9 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     backgroundColor: 'white',
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
     height: 200,
-    position: 'absolute',
   },
 });

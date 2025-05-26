@@ -27,7 +27,6 @@ const mediaData = [
 
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts");
-
   const [activeUser, setActiveUser] = useState([]);
   const user = useSelector((state) => state.user.value);
   const concerts = useSelector((state) => state.concerts.value);

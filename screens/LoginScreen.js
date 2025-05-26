@@ -15,7 +15,6 @@ import { login, logout } from "../reducers/user";
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-
   const [signupOpen, setSignupOpen] = useState(false);
   const [signinOpen, setSigninOpen] = useState(false);
   const [emailUp, setEmailUp] = useState("");
