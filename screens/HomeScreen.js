@@ -15,15 +15,16 @@ import Concert from "../components/Concert";
 import Post from "../components/Post";
 import moment from "moment";
 import { useSelector, useDispatch } from "react-redux";
-import {setPosts} from "../reducers/post";
-import {setConcerts} from "../reducers/concerts";
+import { setPosts } from "../reducers/post";
+import { setConcerts } from "../reducers/concerts";
 import { persistor } from "../App"
 import AddPostModal from "../components/AddPostModal";
 
 export default function HomeScreen() {
+
   const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
   const [showPicker, setShowPicker] = useState(false); // Menu choix date
-  const [ reload , setReload ] = useState(false); // Reload
+  const [reload, setReload] = useState(false); // Reload
   const [artist, setArtist] = useState(""); // Input artistes recherches concert
   const [venue, setVenue] = useState(""); // Lieu de venue pour chaques artistes
   const [searchError, setSearchError] = useState(""); // Message d'erreur définissable
@@ -37,8 +38,8 @@ export default function HomeScreen() {
   const dispatch = useDispatch()
 
   const handleAddPostModal = () => {
-  setIsVisible(true);
-};
+    setIsVisible(true);
+  };
 
   const reloadFunction = () => {
     setReload(!reload)
@@ -132,8 +133,8 @@ export default function HomeScreen() {
       <Button onPress={() => setModalVisible(true)}>
         Rechercher un concert
       </Button>
-      <TouchableOpacity onPress={() => {persistor.purge()}}> 
-        <Text>purge</Text> 
+      <TouchableOpacity onPress={() => { persistor.purge() }}>
+        <Text>purge</Text>
       </TouchableOpacity>
       <Text>Feed</Text>
       <ScrollView
@@ -287,8 +288,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   errorText: {
-  color: 'red',
-  marginBottom: 10,
-  textAlign: 'center',
-},
+    color: 'red',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
 });

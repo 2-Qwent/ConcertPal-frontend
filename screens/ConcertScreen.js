@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity, Modal, Pressable, TextInput } from 'react-native';
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
+import { useNavigation } from '@react-navigation/native';
 
 const postsData = [
   {
@@ -22,9 +24,28 @@ const postsData = [
 ];
 
 export default function ConcertScreen({ route }) {
-  const { artist, city, venue, seatmap, pic, date } = route.params;
+  const user = useSelector((state) => state.user.value);
+  const { artist, city, venue, seatmap, pic, date, concertId } = route.params;
   const formattedDate = moment(date).format("DD/MM/YYYY");
   const [modalVisible, setModalVisible] = useState(false);
+  const [usersModalVisible, setUsersModalVisible] = useState(false);
+  const [zone, setZone] = useState('');
+  const [myZone, setMyZone] = useState(null);
+  const [zoneUsers, setZoneUsers] = useState([]);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    console.log("route", route.params)
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getUserZone/${concertId}/${user.token}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.result && data.zone) {
+          setMyZone(data.zone);
+        } else {
+          setMyZone(null);
+        }
+      });
+  }, [concertId]);
 
   const userPosts = postsData.map((data, i) => {
     return (
@@ -55,6 +76,52 @@ export default function ConcertScreen({ route }) {
     setModalVisible(true);
   }
 
+  const handleAddZone = () => {
+    if (!zone.trim()) {
+      alert("Merci de renseigner une zone !");
+      return;
+    }
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/addZone/${user.token}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        zoneNumber: zone,
+        concertId: concertId,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.result) {
+          alert("Zone ajoutée avec succès !");
+          setModalVisible(false);
+          setMyZone(zone);
+          setZone('');
+        } else {
+          alert("Erreur lors de l'ajout de la zone");
+        }
+      })
+  }
+
+  const handleShowZoneUsers = () => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getZoneUsers/${concertId}/${myZone}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.result) {
+          setZoneUsers(data.users);
+          setUsersModalVisible(true);
+        } else {
+          alert("Erreur lors de la récupération des utilisateurs");
+        }
+      });
+  };
+
+  const viewProfile = (user) => {
+    navigation.navigate('UserProfileScreen', {
+      username: user.username,
+      userToken: user.token,
+    });
+  };
+
   return (
     <ImageBackground
       source={require('../assets/IMG_background.png')}
@@ -80,26 +147,79 @@ export default function ConcertScreen({ route }) {
           </View>
         )}
 
-        {/* ───── ⋆ ───── Modal pour la seatmap ───── ⋆ ───── */}
+        {myZone ? (
+          <View style={{ alignItems: 'center', marginVertical: 10 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Ma zone : {myZone}</Text>
+            <TouchableOpacity
+              style={{ marginTop: 10, backgroundColor: '#A5ECC0', padding: 10, borderRadius: 8 }}
+              onPress={handleShowZoneUsers}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Voir les utilisateurs de ma zone</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          // Affiche l'input et le bouton d'ajout tant que la zone n'est pas renseignée
+          <Modal
+            visible={modalVisible}
+            transparent={true}
+            onRequestClose={() => setModalVisible(false)}>
+            <View style={styles.modalContainer}>
+              <Pressable
+                style={styles.modalBackground}
+                onPress={() => setModalVisible(false)}
+              />
+              <View style={styles.modalContent}>
+                <Image
+                  style={styles.fullscreenSeatmap}
+                  source={{ uri: seatmap }}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Trouver mon siège..."
+                  value={zone}
+                  onChangeText={setZone}
+                />
+                <TouchableOpacity
+                  style={{ marginTop: 10, padding: 10, borderRadius: 8, backgroundColor: '#A5ECC0' }}
+                  onPress={handleAddZone}
+                >
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Ajouter ma zone</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        )}
+
         <Modal
-          visible={modalVisible}
+          visible={usersModalVisible}
           transparent={true}
-          onRequestClose={() => setModalVisible(false)}>
+          onRequestClose={() => setUsersModalVisible(false)}
+        >
           <View style={styles.modalContainer}>
             <Pressable
               style={styles.modalBackground}
-              onPress={() => setModalVisible(false)}
+              onPress={() => setUsersModalVisible(false)}
             />
             <View style={styles.modalContent}>
-              <Image
-                style={styles.fullscreenSeatmap}
-                source={{ uri: seatmap }}
-              />
-              <TextInput style={styles.input} placeholder="Trouver mon siège..." />
+              <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Utilisateurs dans la zone {myZone}</Text>
+              {zoneUsers.length === 0 ? (
+                <Text>Aucun autre utilisateur dans cette zone.</Text>
+              ) : (
+                zoneUsers.map((u, i) => (
+                  <TouchableOpacity key={i} onPress={() => viewProfile(u)}>
+                    <Text key={i}>{u.username}</Text>
+                  </TouchableOpacity>
+                ))
+              )}
+              <TouchableOpacity
+                style={{ marginTop: 20, padding: 10, borderRadius: 8 }}
+                onPress={() => setUsersModalVisible(false)}
+              >
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Fermer</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
-
         <View style={styles.wrapper}>{userPosts}</View>
       </View>
     </ImageBackground>
