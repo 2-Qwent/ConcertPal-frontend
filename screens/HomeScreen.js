@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { Button } from "@ant-design/react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -162,6 +163,10 @@ export default function HomeScreen() {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
+          <Pressable
+            style={styles.modalBackground}
+            onPress={() => setModalVisible(false)}
+          />
           <View style={styles.modalContainer}>
             {concerts.length === 0 ? (
               <>
@@ -253,7 +258,6 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "#000000aa",
     justifyContent: "center",
     padding: 20,
   },
@@ -289,5 +293,13 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
     textAlign: 'center',
+  },
+  modalBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(29, 3, 0, 0.6)',
   },
 });
