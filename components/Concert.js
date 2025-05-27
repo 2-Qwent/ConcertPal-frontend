@@ -55,7 +55,6 @@ export default function Concert(props) {
   };
 
   const handlePress = () => {
-    console.log('clicked concert info is : ', props.artist, props.date, props.venue, props.city, props.pic, 'seatmap is ', props.seatmap, "id", props.id);
     navigation.navigate('ConcertScreen', {
       artist: props.artist,
       date: props.date,
@@ -68,7 +67,6 @@ export default function Concert(props) {
   }
 
   const onDelete = (props) => {
-    console.log('clicked delete concert', props.id);
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/delete/${user.token}`,
       {
         method: "DELETE",

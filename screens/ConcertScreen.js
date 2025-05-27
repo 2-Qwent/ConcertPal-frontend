@@ -35,7 +35,6 @@ export default function ConcertScreen({ route }) {
   const navigation = useNavigation();
 
   useEffect(() => {
-    console.log("route", route.params)
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getUserZone/${concertId}/${user.token}`)
       .then(res => res.json())
       .then(data => {
@@ -116,7 +115,6 @@ export default function ConcertScreen({ route }) {
   };
 
   const viewProfile = (user) => {
-    setUsersModalVisible(false);
     navigation.navigate('UserProfileScreen', {
       username: user.username,
       userToken: user.token,
@@ -148,7 +146,7 @@ export default function ConcertScreen({ route }) {
           </View>
         )}
 
-        {myZone ? (
+        {myZone && (
           <View style={{ alignItems: 'center', marginVertical: 10 }}>
             <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Ma zone : {myZone}</Text>
             <TouchableOpacity
@@ -158,38 +156,42 @@ export default function ConcertScreen({ route }) {
               <Text style={{ color: '#fff', fontWeight: 'bold' }}>Voir les utilisateurs de ma zone</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          // Affiche l'input et le bouton d'ajout tant que la zone n'est pas renseignée
-          <Modal
-            visible={modalVisible}
-            transparent={true}
-            onRequestClose={() => setModalVisible(false)}>
-            <View style={styles.modalContainer}>
-              <Pressable
-                style={styles.modalBackground}
-                onPress={() => setModalVisible(false)}
-              />
-              <View style={styles.modalContent}>
-                <Image
-                  style={styles.fullscreenSeatmap}
-                  source={{ uri: seatmap }}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Trouver mon siège..."
-                  value={zone}
-                  onChangeText={setZone}
-                />
-                <TouchableOpacity
-                  style={{ marginTop: 10, padding: 10, borderRadius: 8, backgroundColor: '#A5ECC0' }}
-                  onPress={handleAddZone}
-                >
-                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Ajouter ma zone</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
         )}
+          // Affiche l'input et le bouton d'ajout tant que la zone n'est pas renseignée
+        <Modal
+          visible={modalVisible}
+          transparent={true}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <Pressable
+              style={styles.modalBackground}
+              onPress={() => setModalVisible(false)}
+            />
+            <View style={styles.modalContent}>
+              <Image
+                style={styles.fullscreenSeatmap}
+                source={{ uri: seatmap }}
+              />
+              {!myZone && (
+                <>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Trouver mon siège..."
+                    value={zone}
+                    onChangeText={setZone}
+                  />
+                  <TouchableOpacity
+                    style={{ marginTop: 10, padding: 10, borderRadius: 8, backgroundColor: '#A5ECC0' }}
+                    onPress={handleAddZone}
+                  >
+                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>Ajouter ma zone</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </View>
+        </Modal>
+
 
         <Modal
           visible={usersModalVisible}
@@ -206,7 +208,8 @@ export default function ConcertScreen({ route }) {
               {zoneUsers.length === 0 ? (
                 <Text>Aucun autre utilisateur dans cette zone.</Text>
               ) : (
-                zoneUsers.filter(u => u.token !== user.token)
+                zoneUsers
+                  .filter(u => u.token !== user.token)
                   .map((u, i) => (
                     <TouchableOpacity key={i} onPress={() => viewProfile(u)}>
                       <Text key={i}>{u.username}</Text>
