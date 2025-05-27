@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, TextInput } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useSelector, useDispatch } from "react-redux";
 import { deletePost, setPosts } from "../reducers/post";
@@ -15,6 +15,9 @@ export default function Post(props) {
   const navigation = useNavigation();
   moment.locale('fr'); // Heure en français
   const formattedDate = moment(props.date).fromNow();
+
+  const [showCommentInput, setShowCommentInput] = useState(false);
+  const [commentText, setCommentText] = useState('');
 
   //affiche l'icone de suppression si le token de l'auteur correspond à celui de l'utilisateur
   useEffect(() => {
@@ -65,6 +68,36 @@ export default function Post(props) {
     });
   };
 
+  // ───── ⋆ ───── Poster un commenter ───── ⋆ ─────
+  const handleSubmitComment = () => {
+    if (!commentText) return;
+
+    fetch(
+      `http://${process.env.EXPO_PUBLIC_IP}:3000/comments/${token}/${props._id}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: commentText,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          console.log('commenté :', data.comment);
+          setCommentText('');
+          setShowCommentInput(false);
+          props.reloadFunction();
+        } else {
+          console.error("Erreur lors de l'envoi :", data.error);
+        }
+      })
+      .catch((err) => {
+        console.error('Erreur :', err);
+      });
+  };
+
   return (
     <View style={styles.container}>
       {/*───── ⋆ ───── Profile Picture ───── ⋆ ─────*/}
@@ -89,7 +122,6 @@ export default function Post(props) {
               alignItems: 'center',
             }}>
             <Text style={styles.date}>{formattedDate}</Text>
-
           </View>
         </View>
 
@@ -98,27 +130,52 @@ export default function Post(props) {
 
         {/*───── ⋆ ───── Icons ───── ⋆ ─────*/}
         <View style={styles.icons}>
-          <TouchableOpacity>
-            <FontAwesome style={{marginHorizontal: 20,}} name="reply" size={18} />
+          <TouchableOpacity
+            onPress={() => setShowCommentInput(!showCommentInput)}>
+            <FontAwesome
+              style={{ marginHorizontal: 20 }}
+              name="reply"
+              size={18}
+            />
           </TouchableOpacity>
-          <View style={{ flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity onPress={() => handleLikePost()}>
               <FontAwesome
-                style={{ color: props.isLiked ? '#F16364' : '#1D0322' , marginHorizontal: 20,}}
+                style={{
+                  color: props.isLiked ? '#F16364' : '#1D0322',
+                  marginHorizontal: 20,
+                }}
                 name="heart"
                 size={18}
               />
             </TouchableOpacity>
             <Text>{props.nbLikes}</Text>
           </View>
-            {trashIcon && (
-              <TouchableOpacity
-                style={{ paddingHorizontal: 10 }}
-                onPress={() => handleDeletePost()}>
-                <FontAwesome style={{marginHorizontal: 20, color:'#565656'}} name="trash" size={18} />
-              </TouchableOpacity>
-            )}
+          {trashIcon && (
+            <TouchableOpacity
+              style={{ paddingHorizontal: 10 }}
+              onPress={() => handleDeletePost()}>
+              <FontAwesome
+                style={{ marginHorizontal: 20, color: '#565656' }}
+                name="trash"
+                size={18}
+              />
+            </TouchableOpacity>
+          )}
         </View>
+
+        {showCommentInput && (
+          <View>
+            <TextInput
+              placeholder="Ajouter un commentaire..."
+              value={commentText}
+              onChangeText={setCommentText}
+            />
+            <TouchableOpacity onPress={handleSubmitComment}>
+              <Text>Envoyer</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
