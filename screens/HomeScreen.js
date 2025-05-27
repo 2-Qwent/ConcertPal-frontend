@@ -111,20 +111,22 @@ export default function HomeScreen() {
   });
 
   const timeline = posts?.map((data, i) => {
-    const isLiked = data.likes?.some((post) => post === token) || false
+    if (!data || !data.likes) return null;
+    
+    const isLiked = data.likes.some((post) => post === token);
     return (
-      <Post
-        key={i}
-        username={data.author.username}
-        text={data.text}
-        date={moment(data.date).fromNow()}
-        nbLikes={data.likes.length}
-        isLiked={isLiked}
-        reloadFunction={reloadFunction}
-        {...data}
-      />
+        <Post
+            key={i}
+            username={data.author?.username}
+            text={data.text}
+            date={moment(data.date).fromNow()}
+            nbLikes={data.likes.length}
+            isLiked={isLiked}
+            reloadFunction={reloadFunction}
+            {...data}
+        />
     );
-  });
+}).filter(Boolean); // Filtre les éléments null
 
   return (
     <View style={styles.container}>

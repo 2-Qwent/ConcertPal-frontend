@@ -102,7 +102,6 @@ export default function AddPostModal({
 
 const styles = StyleSheet.create({
   modalContainer: {
-    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
     width: "90%",

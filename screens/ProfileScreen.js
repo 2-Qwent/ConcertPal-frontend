@@ -15,12 +15,12 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Concert from "../components/Concert";
 import Post from "../components/Post";
+import EditProfileModal from "../components/EditProfileModal";
 import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
-import Post from "../components/Post";
 import AddPostModal from "../components/AddPostModal";
 import { addPost } from "../reducers/post";
-
+import * as ImagePicker from 'expo-image-picker';
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -32,25 +32,36 @@ export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts");
   const [postContent, setPostContent] = useState('')
   const [activeUser, setActiveUser] = useState([]);
-  const user = useSelector((state) => state.user.value);
   const [ reload , setReload ] = useState(false);
   const [isVisible, setIsVisible] = useState(false)
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
-  // Séléction des concerts, posts et nom de l'utilisateur :
-  const concerts = useSelector((state) => state.concerts.value);
-  const posts = useSelector((state) => state.post.value)
+  // Séléction des concerts et posts :
+  const concerts = useSelector((state) => state.concerts.value) || [];
+  const posts = useSelector((state) => state.post.value) || [];
+  const user = useSelector((state) => state.user.value);
 
   const filteredPosts = posts.filter((post) => post.author.token === token)
 
   const token = user.token;
   const dispatch = useDispatch()
 
-  const reloadFunction = () => {
-    setReload(!reload)
-  }
+  const reloadFunction = async () => {
+    try {
+      const response = await fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/user/${user.token}`, {
+        method: 'PUT',
+      });
+      const data = await response.json();
+      console.log(data)
+      if (data.success) {
+        setActiveUser(data.user); // Met à jour l'utilisateur actif avec les nouvelles données
+      }
+    } catch (error) {
+      console.error('Erreur lors du rechargement du profil:', error);
+    }
+  };
 
   const handleTabPress = (tabName) => {
-    // console.log('I was clicked UwU');
     setActiveTab(tabName);
   };
 
@@ -170,14 +181,27 @@ export default function ProfileScreen({ navigation }) {
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
           <View style={styles.profilePic}>
-            <FontAwesome name="user-circle" size={80} color="#000000" />
-            <Text>placeholder</Text>
+            {activeUser.avatar ? (
+                <Image
+                    source={{ uri: activeUser.avatar }}
+                    style={styles.userAvatar}
+                />
+            ) : (
+                <FontAwesome name="user-circle" size={80} color="#000000" />
+            )}
           </View>
           <View style={styles.profileText}>
             <Text style={styles.userName}>{activeUser.username}</Text>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => setIsEditModalVisible(true)}>
               <Text>Modifier mon profil</Text>
             </TouchableOpacity>
+
+            <EditProfileModal
+                isVisible={isEditModalVisible}
+                setIsVisible={setIsEditModalVisible}
+                user={activeUser}
+                reloadFunction={reloadFunction}
+            />
             <TouchableOpacity onPress={() => handleLogoutPress()} style={styles.button}>
               <Text>Me déconnecter</Text>
             </TouchableOpacity>
@@ -250,6 +274,13 @@ const styles = StyleSheet.create({
     height: 200,
     justifyContent: "center",
     alignItems: "center",
+  },
+  userAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
   },
   profileText: {
     width: "60%",

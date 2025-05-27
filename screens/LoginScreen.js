@@ -84,7 +84,7 @@ export default function LoginScreen({ navigation }) {
           style={styles.button}
           onPress={() => setSignupOpen(true)}
         >
-          <Text style={styles.buttonText}>Sign up</Text>
+          <Text style={styles.buttonText}>Créer un compte</Text>
         </TouchableOpacity>
 
         <Modal
@@ -99,7 +99,7 @@ export default function LoginScreen({ navigation }) {
           >
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>
-                Create your ConcertPal account
+                Créer ton compte ConcertPal
               </Text>
 
               <TextInput
@@ -110,13 +110,13 @@ export default function LoginScreen({ navigation }) {
               />
               <TextInput
                 style={styles.input}
-                placeholder="Username"
+                placeholder="nom d'utilisateur"
                 value={usernameUp}
                 onChangeText={setUsernameUp}
               />
               <TextInput
                 style={styles.input}
-                placeholder="Password"
+                placeholder="Mot de passe"
                 secureTextEntry
                 value={passwordUp}
                 onChangeText={setPasswordUp}
@@ -126,26 +126,26 @@ export default function LoginScreen({ navigation }) {
                 style={styles.modalButton}
                 onPress={handleSignup}
               >
-                <Text style={styles.buttonText}>Sign up</Text>
+                <Text style={styles.buttonText}>Créer un compte</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={handleCancel}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>Annuler</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
         </Modal>
 
-        <Text style={styles.already}>Already have an account?</Text>
+        <Text style={styles.already}>Vous possédez déja un compte ? Connectez-vous</Text>
 
         <TouchableOpacity
           style={[styles.button, styles.signinButton]}
           onPress={() => setSigninOpen(true)}
         >
-          <Text style={styles.buttonText}>Sign in</Text>
+          <Text style={styles.buttonText}>Connexion</Text>
         </TouchableOpacity>
 
         <Modal
@@ -159,17 +159,17 @@ export default function LoginScreen({ navigation }) {
             style={styles.modalContainer}
           >
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Connect to ConcertPal</Text>
+              <Text style={styles.modalTitle}>Connexion a ConcertPal</Text>
 
               <TextInput
                 style={styles.input}
-                placeholder="Username"
+                placeholder="nom d'utilisateur"
                 value={usernameIn}
                 onChangeText={setUsernameIn}
               />
               <TextInput
                 style={styles.input}
-                placeholder="Password"
+                placeholder="Mot de passe"
                 secureTextEntry
                 value={passwordIn}
                 onChangeText={setPasswordIn}
@@ -180,7 +180,7 @@ export default function LoginScreen({ navigation }) {
                 onPress={handleSignin}
               >
                 <Text style={styles.buttonText} onPress={handleSignin}>
-                  Sign in
+                  Connexion
                 </Text>
               </TouchableOpacity>
 
@@ -188,7 +188,7 @@ export default function LoginScreen({ navigation }) {
                 style={styles.cancelButton}
                 onPress={handleCancel}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>Annuler</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
@@ -201,7 +201,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "",
+    backgroundColor: "#3c3149",
     padding: 20,
   },
   btnContainer: {
