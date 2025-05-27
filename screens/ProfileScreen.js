@@ -37,21 +37,21 @@ export default function ProfileScreen({ navigation }) {
   const [activeUser, setActiveUser] = useState([]); // Utilisateur actif
   const [reload, setReload] = useState(false); // Pour recharger les données
   const [isVisible, setIsVisible] = useState(false) // Pour afficher la modal d'ajout de post
-  const token = user.token; // Token de l'utilisateur connecté
   const following = useSelector((state) => state.following.value); // Données du reducer following
   const followingList = following.following; // Liste des utilisateurs suivis
   const [followingModal, setFollowingModal] = useState(false); // Pour afficher la modal des utilisateurs suivis
   const [followersModal, setFollowersModal] = useState(false); // Pour afficher la modal des utilisateurs suivis
   const followersList = following.followers; // Liste des followers de l'utilisateur
-
+  
   // Posts de l'utilisateur uniquement
   const [postContent, setPostContent] = useState('')
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-
+  
   // Séléction des concerts et posts :
   const concerts = useSelector((state) => state.concerts.value) || [];
   const posts = useSelector((state) => state.post.value) || [];
   const user = useSelector((state) => state.user.value);
+  const token = user.token; // Token de l'utilisateur connecté
 
   const filteredPosts = posts.filter((post) => post.author.token === token)
 
@@ -277,8 +277,8 @@ export default function ProfileScreen({ navigation }) {
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.gradient, { width: 200, height: 30 }]}>
-              <TouchableOpacity style={styles.button}>
-                <Text style={{ color: '#565656' }}>Modifier mon profil</Text>
+              <TouchableOpacity style={styles.button} >
+                <Text style={{ color: '#565656' }} onPress={() => setIsEditModalVisible(true)}>Modifier mon profil</Text>
               </TouchableOpacity>
             </LinearGradient>
             <LinearGradient
@@ -292,9 +292,6 @@ export default function ProfileScreen({ navigation }) {
                 <Text style={{ color: '#565656' }}>Me déconnecter</Text>
               </TouchableOpacity>
             </LinearGradient>
-            <TouchableOpacity style={styles.button} onPress={() => setIsEditModalVisible(true)}>
-              <Text>Modifier mon profil</Text>
-            </TouchableOpacity>
 
             <EditProfileModal
                 isVisible={isEditModalVisible}
@@ -302,9 +299,6 @@ export default function ProfileScreen({ navigation }) {
                 user={activeUser}
                 reloadFunction={reloadFunction2}
             />
-            <TouchableOpacity onPress={() => handleLogoutPress()} style={styles.button}>
-              <Text>Me déconnecter</Text>
-            </TouchableOpacity>
           </View>
         </View>
           <View style={styles.followContent}>
