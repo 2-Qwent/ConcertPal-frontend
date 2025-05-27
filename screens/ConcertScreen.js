@@ -116,6 +116,7 @@ export default function ConcertScreen({ route }) {
   };
 
   const viewProfile = (user) => {
+    setUsersModalVisible(false);
     navigation.navigate('UserProfileScreen', {
       username: user.username,
       userToken: user.token,
@@ -205,11 +206,12 @@ export default function ConcertScreen({ route }) {
               {zoneUsers.length === 0 ? (
                 <Text>Aucun autre utilisateur dans cette zone.</Text>
               ) : (
-                zoneUsers.map((u, i) => (
-                  <TouchableOpacity key={i} onPress={() => viewProfile(u)}>
-                    <Text key={i}>{u.username}</Text>
-                  </TouchableOpacity>
-                ))
+                zoneUsers.filter(u => u.token !== user.token)
+                  .map((u, i) => (
+                    <TouchableOpacity key={i} onPress={() => viewProfile(u)}>
+                      <Text key={i}>{u.username}</Text>
+                    </TouchableOpacity>
+                  ))
               )}
               <TouchableOpacity
                 style={{ marginTop: 20, padding: 10, borderRadius: 8 }}

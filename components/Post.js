@@ -68,7 +68,9 @@ export default function Post(props) {
       {/*───── ⋆ ───── Profile Picture ───── ⋆ ─────*/}
       <View style={styles.profilePic}>
         <FontAwesome name="user-circle" size={45} color="#000000" />
-        <Text style={styles.profilePlaceholderPicText}>placeholder profile pic</Text>
+        <Text style={styles.profilePlaceholderPicText}>
+          placeholder profile pic
+        </Text>
       </View>
 
       {/*───── ⋆ ───── Post Content ───── ⋆ ─────*/}
@@ -78,7 +80,15 @@ export default function Post(props) {
           <TouchableOpacity onPress={() => viewProfile()}>
             <Text style={styles.username}>{props.username}</Text>
           </TouchableOpacity>
-          <Text style={styles.date}>{formattedDate}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text style={styles.date}>{formattedDate}</Text>
+
+          </View>
         </View>
 
         {/* ───── ⋆ ───── post text ───── ⋆ ─────*/}
@@ -87,21 +97,25 @@ export default function Post(props) {
         {/*───── ⋆ ───── Icons ───── ⋆ ─────*/}
         <View style={styles.icons}>
           <TouchableOpacity>
-            <FontAwesome name="reply" size={18} />
+            <FontAwesome style={{marginHorizontal: 20,}} name="reply" size={18} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleLikePost()}>
-            <FontAwesome
-              style={{ color: props.isLiked ? 'red' : 'black' }}
-              name="heart"
-              size={18}
-            />
-          </TouchableOpacity>
-          <Text>{props.nbLikes}</Text>
-          {trashIcon && (
-            <TouchableOpacity onPress={() => handleDeletePost()}>
-              <FontAwesome name="trash" size={18} />
+          <View style={{ flexDirection: 'row'}}>
+            <TouchableOpacity onPress={() => handleLikePost()}>
+              <FontAwesome
+                style={{ color: props.isLiked ? '#F16364' : '#1D0322' , marginHorizontal: 20,}}
+                name="heart"
+                size={18}
+              />
             </TouchableOpacity>
-          )}
+            <Text>{props.nbLikes}</Text>
+          </View>
+            {trashIcon && (
+              <TouchableOpacity
+                style={{ paddingHorizontal: 10 }}
+                onPress={() => handleDeletePost()}>
+                <FontAwesome style={{marginHorizontal: 20, color:'#565656'}} name="trash" size={18} />
+              </TouchableOpacity>
+            )}
         </View>
       </View>
     </View>
@@ -144,6 +158,6 @@ const styles = StyleSheet.create({
   },
   icons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    margin: 5,
   },
 });
