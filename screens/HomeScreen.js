@@ -59,7 +59,6 @@ export default function HomeScreen() {
   const handleSearch = () => {
     const searchParams = { artist, venue };
     if (date) {
-      console.log(date)
       searchParams.date = date.toISOString().split("T")[0];
     }
 
@@ -116,16 +115,16 @@ export default function HomeScreen() {
   const timeline = posts.map((data, i) => {
     const isLiked = data.likes?.some((post) => post === token) || false;
     return (
-      <Post
-        key={i}
-        username={data.author.username}
-        text={data.text}
-        date={data.date}
-        nbLikes={data.likes.length}
-        isLiked={isLiked}
-        reloadFunction={reloadFunction}
-        {...data}
-      />
+        <Post
+            key={i}
+            username={data.author?.username}
+            text={data.text}
+            date={moment(data.date).fromNow()}
+            nbLikes={data.likes.length}
+            isLiked={isLiked}
+            reloadFunction={reloadFunction}
+            {...data}
+        />
     );
   });
 
@@ -360,7 +359,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: '95%',
     height: 550,
-    marginBottom: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -11,9 +11,11 @@ import {
   Pressable,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Concert from "../components/Concert";
+import EditProfileModal from "../components/EditProfileModal";
 import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
 import Post from "../components/Post";
@@ -21,6 +23,8 @@ import AddPostModal from "../components/AddPostModal";
 import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
 
+import { addPost } from "../reducers/post";
+import * as ImagePicker from 'expo-image-picker';
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -31,10 +35,7 @@ const mediaData = [
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts"); // Onglet actif
   const [activeUser, setActiveUser] = useState([]); // Utilisateur actif
-  const user = useSelector((state) => state.user.value); // Données du reducer utilisateur
-  const concerts = useSelector((state) => state.concerts.value); // Données du reducer concerts
   const [reload, setReload] = useState(false); // Pour recharger les données
-  const posts = useSelector((state) => state.post.value) // Données du reducer posts
   const [isVisible, setIsVisible] = useState(false) // Pour afficher la modal d'ajout de post
   const token = user.token; // Token de l'utilisateur connecté
   const following = useSelector((state) => state.following.value); // Données du reducer following
@@ -44,6 +45,14 @@ export default function ProfileScreen({ navigation }) {
   const followersList = following.followers; // Liste des followers de l'utilisateur
 
   // Posts de l'utilisateur uniquement
+  const [postContent, setPostContent] = useState('')
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+
+  // Séléction des concerts et posts :
+  const concerts = useSelector((state) => state.concerts.value) || [];
+  const posts = useSelector((state) => state.post.value) || [];
+  const user = useSelector((state) => state.user.value);
+
   const filteredPosts = posts.filter((post) => post.author.token === token)
 
   const reloadFunction = () => {
@@ -51,6 +60,31 @@ export default function ProfileScreen({ navigation }) {
   }
 
   const dispatch = useDispatch()
+
+  const reloadFunction2 = async () => {
+    try {
+      const response = await fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/user/${user.token}`, {
+        method: 'PUT',
+      });
+      const data = await response.json();
+      console.log(data)
+      if (data.success) {
+        setActiveUser(data.user); // Met à jour l'utilisateur actif avec les nouvelles données
+      }
+    } catch (error) {
+      console.error('Erreur lors du rechargement du profil:', error);
+    }
+  };
+
+  const handleTabPress = (tabName) => {
+    setActiveTab(tabName);
+  };
+
+  // bouton déconnexion
+  const handleLogoutPress = () => {
+    dispatch(logout())
+    navigation.navigate('Login')
+  }
 
 
   useEffect(() => {
@@ -81,15 +115,6 @@ export default function ProfileScreen({ navigation }) {
       })
   }, [reload]);
 
-  const handleTabPress = (tabName) => {
-    setActiveTab(tabName);
-  };
-
-  const handleLogoutPress = () => {
-    dispatch(logout())
-    navigation.navigate('Login')
-  }
-
   // Liste des concerts de l'utilisateur
   const userConcerts = concerts.map((data, i) => {
     return (
@@ -115,7 +140,7 @@ export default function ProfileScreen({ navigation }) {
         key={i}
         username={data.author.username}
         text={data.text}
-        date={data.date}
+        date={moment(data.date).fromNow()}
         nbLikes={data.likes.length}
         isLiked={isLiked}
         reloadFunction={reloadFunction}
@@ -143,7 +168,7 @@ export default function ProfileScreen({ navigation }) {
     return (
       <View
       key={i}
-      style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
+      style={styles.modalItem}
       >
         <Text>{user.username}</Text>
         <Text>{user.avatar}</Text>
@@ -163,28 +188,21 @@ export default function ProfileScreen({ navigation }) {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.3)",
         }}
       >
         <Pressable
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: "100%",
-            height: "100%",
-          }}
+          style={styles.modalBackground}
           onPress={() => setFollowingModal(false)}
         />
-        <View style={styles.modalContainer}>{followingDisplay}</View>
-        <TouchableOpacity
-          onPress={() => setFollowingModal(false)}
-          style={styles.button}
-        >
-          <Text>Fermer</Text>
-        </TouchableOpacity>
+        <View style={styles.modalContainer}>
+          <ScrollView style={styles.modalList}>{followingDisplay}</ScrollView>
+          <TouchableOpacity
+            onPress={() => setFollowingModal(false)}
+            style={styles.modalCloseButton}
+          >
+            <Text style={styles.modalCloseText}>Fermer</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
@@ -194,7 +212,7 @@ export default function ProfileScreen({ navigation }) {
     return (
       <View
       key={i}
-      style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
+      style={styles.modalItem}
       >
         <Text>{user.username}</Text>
         <Text>{user.avatar}</Text>
@@ -214,28 +232,21 @@ export default function ProfileScreen({ navigation }) {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.3)",
         }}
       >
         <Pressable
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: "100%",
-            height: "100%",
-          }}
+          style={styles.modalBackground}
           onPress={() => setFollowersModal(false)}
         />
-        <View style={styles.modalContainer}>{followersDisplay}</View>
-        <TouchableOpacity
-          onPress={() => setFollowersModal(false)}
-          style={styles.button}
-        >
-          <Text>Fermer</Text>
-        </TouchableOpacity>
+        <View style={styles.modalContainer}>
+          <ScrollView style={styles.modalList}>{followersDisplay}</ScrollView>
+          <TouchableOpacity
+            onPress={() => setFollowersModal(false)}
+            style={styles.modalCloseButton}
+          >
+            <Text style={styles.modalCloseText}>Fermer</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
@@ -244,13 +255,20 @@ export default function ProfileScreen({ navigation }) {
     <ImageBackground
       source={require('../assets/IMG_background.png')}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover">
+      resizeMode="cover"
+    >
       <View style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
           <View style={styles.profilePic}>
-            <FontAwesome name="user-circle" size={80} color="#000000" />
-            <Text>placeholder</Text>
+            {activeUser.avatar ? (
+                <Image
+                    source={{ uri: activeUser.avatar }}
+                    style={styles.userAvatar}
+                />
+            ) : (
+                <FontAwesome name="user-circle" size={80} color="#000000" />
+            )}
           </View>
           <View style={styles.profileText}>
             <Text style={styles.userName}>{activeUser.username}</Text>
@@ -274,8 +292,35 @@ export default function ProfileScreen({ navigation }) {
                 <Text style={{ color: '#565656' }}>Me déconnecter</Text>
               </TouchableOpacity>
             </LinearGradient>
+            <TouchableOpacity style={styles.button} onPress={() => setIsEditModalVisible(true)}>
+              <Text>Modifier mon profil</Text>
+            </TouchableOpacity>
+
+            <EditProfileModal
+                isVisible={isEditModalVisible}
+                setIsVisible={setIsEditModalVisible}
+                user={activeUser}
+                reloadFunction={reloadFunction2}
+            />
+            <TouchableOpacity onPress={() => handleLogoutPress()} style={styles.button}>
+              <Text>Me déconnecter</Text>
+            </TouchableOpacity>
           </View>
         </View>
+          <View style={styles.followContent}>
+            <TouchableOpacity
+              onPress={() => setFollowingModal(true)}
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={styles.followText}>{followingList.length} abonnements</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setFollowersModal(true)}
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={styles.followText}>{followersList.length} abonnés</Text>
+            </TouchableOpacity>
+            {followingModalContent}
+            {followersModalContent}
+          </View>
         {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
         <LinearGradient
           colors={['#A5ECC0', '#E2A5EC']}
@@ -338,7 +383,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 20, 
+    paddingVertical: 20,
   },
   aboutUser: {
     width: '100%',
@@ -347,15 +392,22 @@ const styles = StyleSheet.create({
   },
   profilePic: {
     width: '40%',
-    height: 200,
+    height: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  userAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
+  },
   profileText: {
     width: '60%',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: 8,
   },
   userName: {
     fontSize: 36,
@@ -435,18 +487,58 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-    modalContainer: {
-    backgroundColor: 'white',
+  followContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: '90%',
-    height: 200,
+    width: '100%',
+    paddingVertical: 10,
+    height: 50,
   },
-    modalContainer: {
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '90%',
-    height: 200,
+  followText: {
+    textAlign: 'center',
+    fontSize: 16,
   },
+modalBackground: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0,0,0,0.3)',
+  zIndex: 1,
+},
+modalContainer: {
+  backgroundColor: 'white',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  width: '85%',
+  maxHeight: 350,
+  borderRadius: 16,
+  padding: 20,
+  zIndex: 2,
+},
+modalList: {
+  width: '100%',
+  marginBottom: 16,
+},
+modalItem: {
+  width: '100%',
+  paddingVertical: 10,
+  borderBottomWidth: 1,
+  borderColor: '#D7D7D7',
+  alignItems: 'center',
+},
+modalCloseButton: {
+  marginTop: 10,
+  backgroundColor: '#A5ECC0',
+  borderRadius: 8,
+  paddingVertical: 8,
+  paddingHorizontal: 24,
+},
+modalCloseText: {
+  color: '#565656',
+  fontWeight: 'bold',
+  fontSize: 16,
+},
 });

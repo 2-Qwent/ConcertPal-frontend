@@ -215,28 +215,23 @@ export default function UserProfileScreen({ route, navigation }) {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.3)",
         }}
       >
         <Pressable
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: "100%",
-            height: "100%",
-          }}
+          style={styles.modalBackground}
           onPress={() => setFollowersModal(false)}
         />
-        <View style={styles.modalContainer}>{followersDispay}</View>
-        <TouchableOpacity
-          onPress={() => setFollowersModal(false)}
-          style={styles.button}
-        >
-          <Text>Fermer</Text>
-        </TouchableOpacity>
+        <View style={styles.modalContainer}>
+          <ScrollView style={styles.modalList}>
+            {followersDispay}
+          </ScrollView>
+          <TouchableOpacity
+            onPress={() => setFollowersModal(false)}
+            style={styles.modalCloseButton}
+          >
+            <Text style={styles.modalCloseText}>Fermer</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
@@ -266,37 +261,33 @@ export default function UserProfileScreen({ route, navigation }) {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.3)",
         }}
       >
         <Pressable
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: "100%",
-            height: "100%",
-          }}
+          style={styles.modalBackground}
           onPress={() => setFollowingModal(false)}
         />
-        <View style={styles.modalContainer}>{followingDispay}</View>
-        <TouchableOpacity
-          onPress={() => setFollowingModal(false)}
-          style={styles.button}
-        >
-          <Text>Fermer</Text>
-        </TouchableOpacity>
+        <View style={styles.modalContainer}>
+          <ScrollView style={styles.modalList}>
+            {followingDispay}
+          </ScrollView>
+          <TouchableOpacity
+            onPress={() => setFollowingModal(false)}
+            style={styles.modalCloseButton}
+          >
+            <Text style={styles.modalCloseText}>Fermer</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
 
   return (
     <ImageBackground
-      source={require('../assets/IMG_background.png')}
+      source={require("../assets/IMG_background.png")}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover">
+      resizeMode="cover"
+    >
       <View style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
@@ -307,68 +298,86 @@ export default function UserProfileScreen({ route, navigation }) {
           <View style={styles.profileText}>
             <Text style={styles.userName}>{username}</Text>
             <LinearGradient
-              colors={['#A5ECC0', '#E2A5EC']}
+              colors={["#A5ECC0", "#E2A5EC"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}>
+              style={[styles.gradient, { width: 200, height: 30 }]}
+            >
               {followButton}
             </LinearGradient>
             {unfollowModalContent}
             <LinearGradient
-              colors={['#A5ECC0', '#E2A5EC']}
+              colors={["#A5ECC0", "#E2A5EC"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}>
-              <TouchableOpacity style={styles.button} onPress={() => setFollowersModal(true)}>
-              <Text>Followers: {followersList.length}</Text>
-            </TouchableOpacity>
-            {followersModalContent}
-            <TouchableOpacity style={styles.button} onPress={() => setFollowingModal(true)}>
-              <Text>Following: {followingList.length}</Text>
-            </TouchableOpacity>
-            {followingModalContent}
-            <TouchableOpacity
+              style={[styles.gradient, { width: 200, height: 30 }]}
+            >
+              <TouchableOpacity
                 onPress={() => {
                   goToChat(userToken);
                 }}
-                style={styles.button}>
+                style={styles.button}
+              >
                 <Text>Envoyer un message</Text>
               </TouchableOpacity>
             </LinearGradient>
           </View>
+        </View>
+        <View style={styles.followContent}>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            onPress={() => setFollowingModal(true)}
+            >
+            <Text style={styles.followText}>{followingList.length} abonnements</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            onPress={() => setFollowersModal(true)}
+          >
+            <Text style={styles.followText}>{followersList.length} abonnés</Text>
+          </TouchableOpacity>
+            {followersModalContent}
+            {followingModalContent}
         </View>
         {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
         <View style={styles.contentContainer}>
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
             <TouchableOpacity
-              onPress={() => handleTabPress('concerts')}
-              style={styles.tab}>
+              onPress={() => handleTabPress("concerts")}
+              style={styles.tab}
+            >
               <Text>Concerts</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleTabPress('posts')}
-              style={styles.tab}>
+              onPress={() => handleTabPress("posts")}
+              style={styles.tab}
+            >
               <Text>Posts</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleTabPress('media')}
-              style={styles.tab}>
+              onPress={() => handleTabPress("media")}
+              style={styles.tab}
+            >
               <Text>Media</Text>
             </TouchableOpacity>
           </View>
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
-            {activeTab === 'concerts' && (
-              <ScrollView style={{
-              maxHeight: '92%',
-              width: '100%',
-              borderRadius: 12,
-            }}>{userConcerts}</ScrollView>
+            {activeTab === "concerts" && (
+              <ScrollView
+                style={{
+                  maxHeight: "92%",
+                  width: "100%",
+                  borderRadius: 12,
+                }}
+              >
+                {userConcerts}
+              </ScrollView>
             )}
-            {activeTab === 'posts' && <ScrollView>{userPosts}</ScrollView>}
+            {activeTab === "posts" && <ScrollView>{userPosts}</ScrollView>}
             <View style={styles.mediaContainer}>
-              {activeTab === 'media' && media}
+              {activeTab === "media" && media}
             </View>
           </View>
         </View>
@@ -391,15 +400,15 @@ const styles = StyleSheet.create({
   },
   profilePic: {
     width: '40%',
-    height: 200,
+    height: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileText: {
     width: '60%',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: 8,
   },
   userName: {
     fontSize: 36,
@@ -471,11 +480,58 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  modalContainer: {
-    backgroundColor: 'white',
+    followContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: '90%',
-    height: 200,
+    width: '100%',
+    paddingVertical: 10,
+    height: 50,
   },
+  followText: {
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  modalBackground: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0,0,0,0.3)',
+  zIndex: 1,
+},
+modalContainer: {
+  backgroundColor: 'white',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  width: '85%',
+  maxHeight: 350,
+  borderRadius: 16,
+  padding: 20,
+  zIndex: 2,
+},
+modalList: {
+  width: '100%',
+  marginBottom: 16,
+},
+modalItem: {
+  width: '100%',
+  paddingVertical: 10,
+  borderBottomWidth: 1,
+  borderColor: '#D7D7D7',
+  alignItems: 'center',
+},
+modalCloseButton: {
+  marginTop: 10,
+  backgroundColor: '#A5ECC0',
+  borderRadius: 8,
+  paddingVertical: 8,
+  paddingHorizontal: 24,
+},
+modalCloseText: {
+  color: '#565656',
+  fontWeight: 'bold',
+  fontSize: 16,
+},
 });
