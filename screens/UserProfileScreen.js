@@ -5,6 +5,7 @@ import Concert from "../components/Concert";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { newFollow, unfollow, setFollowers, setFollowing } from "../reducers/following";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -305,9 +306,20 @@ export default function UserProfileScreen({ route, navigation }) {
           </View>
           <View style={styles.profileText}>
             <Text style={styles.userName}>{username}</Text>
-            {followButton}
+            <LinearGradient
+              colors={['#A5ECC0', '#E2A5EC']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.gradient, { width: 200, height: 30 }]}>
+              {followButton}
+            </LinearGradient>
             {unfollowModalContent}
-            <TouchableOpacity style={styles.button} onPress={() => setFollowersModal(true)}>
+            <LinearGradient
+              colors={['#A5ECC0', '#E2A5EC']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.gradient, { width: 200, height: 30 }]}>
+              <TouchableOpacity style={styles.button} onPress={() => setFollowersModal(true)}>
               <Text>Followers: {followersList.length}</Text>
             </TouchableOpacity>
             {followersModalContent}
@@ -315,9 +327,14 @@ export default function UserProfileScreen({ route, navigation }) {
               <Text>Following: {followingList.length}</Text>
             </TouchableOpacity>
             {followingModalContent}
-            <TouchableOpacity onPress={()=>{goToChat(userToken)}} style={styles.button}>
-              <Text>Envoyer un message</Text>
-            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                  goToChat(userToken);
+                }}
+                style={styles.button}>
+                <Text>Envoyer un message</Text>
+              </TouchableOpacity>
+            </LinearGradient>
           </View>
         </View>
         {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
@@ -343,13 +360,13 @@ export default function UserProfileScreen({ route, navigation }) {
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
             {activeTab === 'concerts' && (
-              <ScrollView>{userConcerts}</ScrollView>
+              <ScrollView style={{
+              maxHeight: '92%',
+              width: '100%',
+              borderRadius: 12,
+            }}>{userConcerts}</ScrollView>
             )}
-            {activeTab === 'posts' && (
-              <ScrollView>
-                {userPosts}
-              </ScrollView>
-            )}
+            {activeTab === 'posts' && <ScrollView>{userPosts}</ScrollView>}
             <View style={styles.mediaContainer}>
               {activeTab === 'media' && media}
             </View>
@@ -387,21 +404,24 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 36,
   },
+    gradient: {
+    padding: 2,
+    borderRadius: 12,
+    justifyContent: 'center',
+    margin: 10,
+  },
   button: {
-    width: 200,
-    height: 30,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
-    backgroundColor: '#E8EAED',
-    borderWidth: 2,
-    borderColor: '#A5ECC0',
+    backgroundColor: 'rgb(245, 245, 245)',
     borderRadius: 12,
   },
   contentContainer: {
-    backgroundColor: '#E8EAED',
+    backgroundColor: 'rgb(245, 245, 245)',
     width: '95%',
-    height: '500',
+    height: '75%',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#D7D7D7',
@@ -418,7 +438,7 @@ const styles = StyleSheet.create({
   tab: {
     width: 80,
     height: 50,
-    color: '#E8EAED',
+    color: 'rgb(245, 245, 245)',
     backgroundColor: '#A5A7EC',
     justifyContent: 'center',
     alignItems: 'center',

@@ -18,6 +18,7 @@ import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
 import Post from "../components/Post";
 import AddPostModal from "../components/AddPostModal";
+import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
 
 
@@ -241,10 +242,9 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require("../assets/IMG_background.png")}
+      source={require('../assets/IMG_background.png')}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover"
-    >
+      resizeMode="cover">
       <View style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
@@ -254,35 +254,40 @@ export default function ProfileScreen({ navigation }) {
           </View>
           <View style={styles.profileText}>
             <Text style={styles.userName}>{activeUser.username}</Text>
-            <TouchableOpacity style={styles.button}>
-              <Text>Modifier mon profil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setFollowersModal(true)}
-            >
-              <Text>Followers: {followersList.length}</Text>
-            </TouchableOpacity>
-            {followersModalContent}
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setFollowingModal(true)}
-            >
-              <Text>Following: {followingList.length}</Text>
-            </TouchableOpacity>
-            {followingModalContent}
-            <TouchableOpacity
-              onPress={() => handleLogoutPress()}
-              style={styles.button}
-            >
-              <Text>Me déconnecter</Text>
-            </TouchableOpacity>
+            <LinearGradient
+              colors={['#A5ECC0', '#E2A5EC']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.gradient, { width: 200, height: 30 }]}>
+              <TouchableOpacity style={styles.button}>
+                <Text style={{ color: '#565656' }}>Modifier mon profil</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+            <LinearGradient
+              colors={['#A5ECC0', '#E2A5EC']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.gradient, { width: 200, height: 30 }]}>
+              <TouchableOpacity
+                onPress={() => handleLogoutPress()}
+                style={styles.button}>
+                <Text style={{ color: '#565656' }}>Me déconnecter</Text>
+              </TouchableOpacity>
+            </LinearGradient>
           </View>
         </View>
         {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
-        <TouchableOpacity onPress={() => handleAddPostModal()}>
-          <Text>Add post</Text>
-        </TouchableOpacity>
+        <LinearGradient
+          colors={['#A5ECC0', '#E2A5EC']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={[styles.gradient, { width: 340, height: 40 }]}>
+          <TouchableOpacity
+            style={styles.buttonAdd}
+            onPress={() => handleAddPostModal()}>
+            <Text style={{ color: '#565656' }}>Type...</Text>
+          </TouchableOpacity>
+        </LinearGradient>
         <AddPostModal
           isVisible={isVisible}
           setIsVisible={setIsVisible}
@@ -293,32 +298,33 @@ export default function ProfileScreen({ navigation }) {
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
             <TouchableOpacity
-              onPress={() => handleTabPress("concerts")}
-              style={styles.tab}
-            >
+              onPress={() => handleTabPress('concerts')}
+              style={styles.tab}>
               <Text>Concerts</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleTabPress("posts")}
-              style={styles.tab}
-            >
+              onPress={() => handleTabPress('posts')}
+              style={styles.tab}>
               <Text>Posts</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleTabPress("media")}
-              style={styles.tab}
-            >
+              onPress={() => handleTabPress('media')}
+              style={styles.tab}>
               <Text>Media</Text>
             </TouchableOpacity>
           </View>
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
-            {activeTab === "concerts" && (
-              <ScrollView>{userConcerts}</ScrollView>
+            {activeTab === 'concerts' && (
+              <ScrollView style={{
+              maxHeight: '90%',
+              width: '100%',
+              borderRadius: 12,
+            }}>{userConcerts}</ScrollView>
             )}
-            {activeTab === "posts" && <ScrollView>{userPosts}</ScrollView>}
+            {activeTab === 'posts' && <ScrollView>{userPosts}</ScrollView>}
             <View style={styles.mediaContainer}>
-              {activeTab === "media" && media}
+              {activeTab === 'media' && media}
             </View>
           </View>
         </View>
@@ -330,82 +336,93 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 20, 
   },
   aboutUser: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   profilePic: {
-    width: "40%",
+    width: '40%',
     height: 200,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   profileText: {
-    width: "60%",
-    justifyContent: "space-around",
-    alignItems: "center",
+    width: '60%',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     paddingTop: 20,
   },
   userName: {
     fontSize: 36,
   },
-  button: {
-    width: 200,
-    height: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 30,
-    backgroundColor: "#E8EAED",
-    borderWidth: 2,
-    borderColor: "#A5ECC0",
+  gradient: {
+    padding: 2,
     borderRadius: 12,
+    justifyContent: 'center',
+    margin: 10,
+  },
+  button: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgb(245, 245, 245)',
+    borderRadius: 11,
+  },
+  buttonAdd: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    paddingLeft: 10,
+    backgroundColor: 'rgb(250, 250, 250)',
+    borderRadius: 11,
   },
   contentContainer: {
-    backgroundColor: "#E8EAED",
-    width: "95%",
-    height: "500",
+    backgroundColor: 'rgb(245, 245, 245)',
+    width: '95%',
+    height: '65%',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#D7D7D7",
+    borderColor: '#D7D7D7',
   },
   tabContainer: {
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     marginTop: 15,
     paddingBottom: 15,
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     borderBottomWidth: 1,
-    borderColor: "#D7D7D7",
+    borderColor: '#D7D7D7',
   },
   tab: {
     width: 80,
     height: 50,
-    color: "#E8EAED",
-    backgroundColor: "#A5A7EC",
-    justifyContent: "center",
-    alignItems: "center",
+    color: 'rgb(245, 245, 245)',
+    backgroundColor: '#A5A7EC',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 12,
   },
   concert: {
-    width: "100%",
+    width: '100%',
     borderBottomWidth: 1,
-    borderColor: "#D7D7D7",
-    justifyContent: "center",
-    alignItems: "center",
+    borderColor: '#D7D7D7',
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingBottom: 15,
   },
   concertContainerTop: {
-    width: "100%",
+    width: '100%',
     // backgroundColor: 'aqua',
     height: 50,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   image: {
     width: 140,
@@ -414,9 +431,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   mediaContainer: {
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "center",
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+    modalContainer: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '90%',
+    height: 200,
   },
     modalContainer: {
     backgroundColor: 'white',

@@ -59,7 +59,7 @@ const TabNavigator = () => {
           <View style={[styles.tab, { backgroundColor: focused ? '#E2A5EC' : '#A5ECC0' }]}>
               <FontAwesome
                 name={iconName}
-                size={24}
+                size={30}
                 color='#fff'
               />
             </View>
@@ -97,28 +97,29 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 20,
-    },
-    tab: {
-        height: 70,
-        width: 70,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 12,
-        margin: 20,
-    },
-    tabBarStyle: {
-        bottom: 50,
-        marginLeft: 60,
-        marginRight: 60,
-        backgroundColor: '#E8EAED',
-        borderRadius: 12,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: "22",
-    }
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+  },
+  tab: {
+    height: 70,
+    width: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+    margin: 20,
+  },
+  tabBarStyle: {
+    position: 'absolute',
+    bottom: 50,
+    marginLeft: 60,
+    marginRight: 60,
+    backgroundColor: 'rgb(245, 245, 245)',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: '22',
+  },
 });
