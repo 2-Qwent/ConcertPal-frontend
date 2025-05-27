@@ -143,7 +143,7 @@ export default function ProfileScreen({ navigation }) {
     return (
       <View
       key={i}
-      style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
+      style={styles.modalItem}
       >
         <Text>{user.username}</Text>
         <Text>{user.avatar}</Text>
@@ -163,28 +163,21 @@ export default function ProfileScreen({ navigation }) {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.3)",
         }}
       >
         <Pressable
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: "100%",
-            height: "100%",
-          }}
+          style={styles.modalBackground}
           onPress={() => setFollowingModal(false)}
         />
-        <View style={styles.modalContainer}>{followingDisplay}</View>
-        <TouchableOpacity
-          onPress={() => setFollowingModal(false)}
-          style={styles.button}
-        >
-          <Text>Fermer</Text>
-        </TouchableOpacity>
+        <View style={styles.modalContainer}>
+          <ScrollView style={styles.modalList}>{followingDisplay}</ScrollView>
+          <TouchableOpacity
+            onPress={() => setFollowingModal(false)}
+            style={styles.modalCloseButton}
+          >
+            <Text style={styles.modalCloseText}>Fermer</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
@@ -194,7 +187,7 @@ export default function ProfileScreen({ navigation }) {
     return (
       <View
       key={i}
-      style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
+      style={styles.modalItem}
       >
         <Text>{user.username}</Text>
         <Text>{user.avatar}</Text>
@@ -214,28 +207,21 @@ export default function ProfileScreen({ navigation }) {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.3)",
         }}
       >
         <Pressable
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: "100%",
-            height: "100%",
-          }}
+          style={styles.modalBackground}
           onPress={() => setFollowersModal(false)}
         />
-        <View style={styles.modalContainer}>{followersDisplay}</View>
-        <TouchableOpacity
-          onPress={() => setFollowersModal(false)}
-          style={styles.button}
-        >
-          <Text>Fermer</Text>
-        </TouchableOpacity>
+        <View style={styles.modalContainer}>
+          <ScrollView style={styles.modalList}>{followersDisplay}</ScrollView>
+          <TouchableOpacity
+            onPress={() => setFollowersModal(false)}
+            style={styles.modalCloseButton}
+          >
+            <Text style={styles.modalCloseText}>Fermer</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );
@@ -276,6 +262,20 @@ export default function ProfileScreen({ navigation }) {
             </LinearGradient>
           </View>
         </View>
+          <View style={styles.followContent}>
+            <TouchableOpacity
+              onPress={() => setFollowingModal(true)}
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={styles.followText}>{followingList.length} abonnements</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setFollowersModal(true)}
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={styles.followText}>{followersList.length} abonnés</Text>
+            </TouchableOpacity>
+            {followingModalContent}
+            {followersModalContent}
+          </View>
         {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
         <LinearGradient
           colors={['#A5ECC0', '#E2A5EC']}
@@ -347,15 +347,15 @@ const styles = StyleSheet.create({
   },
   profilePic: {
     width: '40%',
-    height: 200,
+    height: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileText: {
     width: '60%',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: 8,
   },
   userName: {
     fontSize: 36,
@@ -435,18 +435,58 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-    modalContainer: {
-    backgroundColor: 'white',
+  followContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: '90%',
-    height: 200,
+    width: '100%',
+    paddingVertical: 10,
+    height: 50,
   },
-    modalContainer: {
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '90%',
-    height: 200,
+  followText: {
+    textAlign: 'center',
+    fontSize: 16,
   },
+modalBackground: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0,0,0,0.3)',
+  zIndex: 1,
+},
+modalContainer: {
+  backgroundColor: 'white',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  width: '85%',
+  maxHeight: 350,
+  borderRadius: 16,
+  padding: 20,
+  zIndex: 2,
+},
+modalList: {
+  width: '100%',
+  marginBottom: 16,
+},
+modalItem: {
+  width: '100%',
+  paddingVertical: 10,
+  borderBottomWidth: 1,
+  borderColor: '#D7D7D7',
+  alignItems: 'center',
+},
+modalCloseButton: {
+  marginTop: 10,
+  backgroundColor: '#A5ECC0',
+  borderRadius: 8,
+  paddingVertical: 8,
+  paddingHorizontal: 24,
+},
+modalCloseText: {
+  color: '#565656',
+  fontWeight: 'bold',
+  fontSize: 16,
+},
 });

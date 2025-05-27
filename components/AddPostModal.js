@@ -10,6 +10,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { addPost } from "../reducers/post";
 import CameraModal from "./CameraModal";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function AddPostModal({
   isVisible,
@@ -40,14 +41,14 @@ export default function AddPostModal({
   //annuler la création du post
   const handleCancelPost = () => {
     setPostContent("");
-    setShowCamera(false)
+    setShowCamera(false);
     setIsVisible(false);
   };
 
   const handleCameraClose = () => {
-  setShowCamera(false);
-  setIsVisible(true);
-};
+    setShowCamera(false);
+    setIsVisible(true);
+  };
 
   return (
     <>
@@ -66,34 +67,43 @@ export default function AddPostModal({
             alignItems: "center",
           }}
         >
-          <View style={styles.modalContainer}>
-            <TextInput
-              placeholder="Ajouter un post"
-              value={postContent}
-              onChangeText={setPostContent}
-              style={styles.input}
-            />
-            <View style={styles.tabContainer}>
-              <TouchableOpacity style={styles.tab} onPress={newPost}>
-                <Text>Poster</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.tab}
-                onPress={() => {
-                  setIsVisible(false);
-                  setTimeout(() => setShowCamera(true), 500);
-                }}
-              >
-                <Text>Prendre une photo</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.tab}
-                onPress={() => handleCancelPost()}
-              >
-                <Text>Annuler</Text>
-              </TouchableOpacity>
+          <LinearGradient
+            colors={["#A5ECC0", "#E2A5EC"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.gradient, { width: "90%", height: 200 }]}
+          >
+            <View style={styles.modalContainer}>
+              <View style={{ height: "100%", justifyContent: 'flex-end' }}>
+              <TextInput
+                placeholder="Ajouter un post"
+                value={postContent}
+                onChangeText={setPostContent}
+                style={styles.input}
+              />
+                <View style={styles.tabContainer}>
+                  <TouchableOpacity style={styles.tab} onPress={newPost}>
+                    <Text>Poster</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.tab}
+                    onPress={() => {
+                      setIsVisible(false);
+                      setTimeout(() => setShowCamera(true), 500);
+                    }}
+                  >
+                    <Text>Prendre une photo</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.tab}
+                    onPress={() => handleCancelPost()}
+                  >
+                    <Text>Annuler</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-          </View>
+          </LinearGradient>
         </View>
       </Modal>
     </>
@@ -102,18 +112,16 @@ export default function AddPostModal({
 
 const styles = StyleSheet.create({
   modalContainer: {
-    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
-    width: "90%",
-    height: 150,
+    width: "100%",
+    height: "100%",
     backgroundColor: "rgb(245, 245, 245)",
-    borderWidth: 2,
     borderColor: "#A5ECC0",
-    borderRadius: 12,
+    borderRadius: 11,
   },
   input: {
-    width: "100%",
+    width: "90%",
     borderBottomColor: "#A5ECC0",
     borderBottomWidth: 1,
   },
@@ -133,5 +141,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
+  },
+  gradient: {
+    padding: 2,
+    borderRadius: 12,
+    justifyContent: "center",
+    margin: 10,
   },
 });

@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { deletePost, setPosts } from "../reducers/post";
 import moment from "moment";
 import { useNavigation } from '@react-navigation/native';
+import 'moment/locale/fr'; // Import French locale for moment.js
 
 export default function Post(props) {
   const user = useSelector((state) => state.user.value);
@@ -12,6 +13,7 @@ export default function Post(props) {
   const [trashIcon, setTrashIcon] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  moment.locale('fr'); // Heure en français
   const formattedDate = moment(props.date).fromNow();
 
   //affiche l'icone de suppression si le token de l'auteur correspond à celui de l'utilisateur
