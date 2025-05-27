@@ -7,7 +7,8 @@ import {
   Image,
   ScrollView,
   TextInput,
-  Modal
+  Modal,
+  Pressable,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
 import Post from "../components/Post";
 import AddPostModal from "../components/AddPostModal";
+import { setFollowing, setFollowers } from "../reducers/following";
 
 
 const mediaData = [
@@ -26,15 +28,21 @@ const mediaData = [
 ];
 
 export default function ProfileScreen({ navigation }) {
-  const [activeTab, setActiveTab] = useState("concerts");
-  const [activeUser, setActiveUser] = useState([]);
-  const user = useSelector((state) => state.user.value);
-  const concerts = useSelector((state) => state.concerts.value);
-  const [reload, setReload] = useState(false);
-  const posts = useSelector((state) => state.post.value)
-  const [isVisible, setIsVisible] = useState(false)
-  const token = user.token;
+  const [activeTab, setActiveTab] = useState("concerts"); // Onglet actif
+  const [activeUser, setActiveUser] = useState([]); // Utilisateur actif
+  const user = useSelector((state) => state.user.value); // Données du reducer utilisateur
+  const concerts = useSelector((state) => state.concerts.value); // Données du reducer concerts
+  const [reload, setReload] = useState(false); // Pour recharger les données
+  const posts = useSelector((state) => state.post.value) // Données du reducer posts
+  const [isVisible, setIsVisible] = useState(false) // Pour afficher la modal d'ajout de post
+  const token = user.token; // Token de l'utilisateur connecté
+  const following = useSelector((state) => state.following.value); // Données du reducer following
+  const followingList = following.following; // Liste des utilisateurs suivis
+  const [followingModal, setFollowingModal] = useState(false); // Pour afficher la modal des utilisateurs suivis
+  const [followersModal, setFollowersModal] = useState(false); // Pour afficher la modal des utilisateurs suivis
+  const followersList = following.followers; // Liste des followers de l'utilisateur
 
+  // Posts de l'utilisateur uniquement
   const filteredPosts = posts.filter((post) => post.author.token === token)
 
   const reloadFunction = () => {
@@ -45,12 +53,12 @@ export default function ProfileScreen({ navigation }) {
 
 
   useEffect(() => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`)
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`) // Récupération des données de l'utilisateur
       .then((response) => response.json())
       .then((data) => {
         setActiveUser(data.user);
       });
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`)
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`) // Récupération des concerts de l'utilisateur
       .then((response) => response.json())
       .then((data) => {
         // On mappe pour renommer _id en id
@@ -60,10 +68,19 @@ export default function ProfileScreen({ navigation }) {
         }));
         dispatch(setConcerts(concertsWithId));
       });
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/following/${token}`) // Récupération des utilisateurs suivis
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch(setFollowing(data.following));
+      })
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/followers/${token}`) // Récupérer la liste des followers
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch(setFollowers(data.followers));
+      })
   }, [reload]);
 
   const handleTabPress = (tabName) => {
-    // console.log('I was clicked UwU');
     setActiveTab(tabName);
   };
 
@@ -72,6 +89,7 @@ export default function ProfileScreen({ navigation }) {
     navigation.navigate('Login')
   }
 
+  // Liste des concerts de l'utilisateur
   const userConcerts = concerts.map((data, i) => {
     return (
       <Concert
@@ -88,7 +106,7 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
-  //liste des posts de l'utilisateur
+  //Liste des posts de l'utilisateur
   const userPosts = filteredPosts.map((data, i) => {
     const isLiked = data.likes.some((post) => post === token);
     return (
@@ -105,6 +123,7 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
+  // Liste des médias de l'utilisateur
   const media = mediaData.map((data, i) => {
     return (
       <View key={i}>
@@ -113,10 +132,112 @@ export default function ProfileScreen({ navigation }) {
     );
   });
 
-  //affichage modal pour ajouter un post
+  //Affichage de la modal pour ajouter un post
   const handleAddPostModal = () => {
     setIsVisible(true)
   }
+
+  // ───── ⋆ ───── Affichage des utilisateurs suivis par l'utilisateur ───── ⋆ ─────
+  const followingDisplay = followingList.map((user, i) => {
+    return (
+      <View
+      key={i}
+      style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
+      >
+        <Text>{user.username}</Text>
+        <Text>{user.avatar}</Text>
+      </View>
+    )
+  })
+
+  const followingModalContent = (
+    <Modal
+      visible={followingModal}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setFollowingModal(false)}
+    >
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.3)",
+        }}
+      >
+        <Pressable
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "100%",
+            height: "100%",
+          }}
+          onPress={() => setFollowingModal(false)}
+        />
+        <View style={styles.modalContainer}>{followingDisplay}</View>
+        <TouchableOpacity
+          onPress={() => setFollowingModal(false)}
+          style={styles.button}
+        >
+          <Text>Fermer</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
+
+  // ───── ⋆ ───── Affichage des followers de l'utilisateur ───── ⋆ ─────
+  const followersDisplay = followersList.map((user, i) => {
+    return (
+      <View
+      key={i}
+      style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
+      >
+        <Text>{user.username}</Text>
+        <Text>{user.avatar}</Text>
+      </View>
+    )
+  })
+
+  const followersModalContent = (
+    <Modal
+      visible={followersModal}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setFollowersModal(false)}
+    >
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.3)",
+        }}
+      >
+        <Pressable
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "100%",
+            height: "100%",
+          }}
+          onPress={() => setFollowersModal(false)}
+        />
+        <View style={styles.modalContainer}>{followersDisplay}</View>
+        <TouchableOpacity
+          onPress={() => setFollowersModal(false)}
+          style={styles.button}
+        >
+          <Text>Fermer</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
 
   return (
     <ImageBackground
@@ -136,7 +257,24 @@ export default function ProfileScreen({ navigation }) {
             <TouchableOpacity style={styles.button}>
               <Text>Modifier mon profil</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLogoutPress()} style={styles.button}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setFollowersModal(true)}
+            >
+              <Text>Followers: {followersList.length}</Text>
+            </TouchableOpacity>
+            {followersModalContent}
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setFollowingModal(true)}
+            >
+              <Text>Following: {followingList.length}</Text>
+            </TouchableOpacity>
+            {followingModalContent}
+            <TouchableOpacity
+              onPress={() => handleLogoutPress()}
+              style={styles.button}
+            >
               <Text>Me déconnecter</Text>
             </TouchableOpacity>
           </View>
@@ -178,9 +316,7 @@ export default function ProfileScreen({ navigation }) {
             {activeTab === "concerts" && (
               <ScrollView>{userConcerts}</ScrollView>
             )}
-            {activeTab === "posts" && (
-              <ScrollView>{userPosts}</ScrollView>
-            )}
+            {activeTab === "posts" && <ScrollView>{userPosts}</ScrollView>}
             <View style={styles.mediaContainer}>
               {activeTab === "media" && media}
             </View>
@@ -281,5 +417,12 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "center",
+  },
+    modalContainer: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '90%',
+    height: 200,
   },
 });

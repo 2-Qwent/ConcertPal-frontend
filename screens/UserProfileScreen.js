@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ScrollView, Modal } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ScrollView, Modal, Pressable } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
 import Concert from "../components/Concert";
@@ -13,39 +13,52 @@ const mediaData = [
 ];
 
 export default function UserProfileScreen({ route, navigation }) {
-  const { username, userToken } = route.params;
-  const [activeTab, setActiveTab] = useState('concerts');
-  const [concerts, setConcerts] = useState([])
-  const [posts, setPosts] = useState([])
-  const user = useSelector((state) => state.user.value);
+  const { username, userToken } = route.params; // données de l'utilisateur visité
+  const [activeTab, setActiveTab] = useState('concerts'); // onglet actif
+  const [concerts, setConcerts] = useState([]) // liste des concerts de l'utilisateur
+  const [posts, setPosts] = useState([]) // liste des posts de l'utilisateur
+  const user = useSelector((state) => state.user.value); // données du reducer utilisateur
   const token = user.token; // token de l'utilisateur connecté
-  const [reload, setReload] = useState(false);
+  const [reload, setReload] = useState(false); // pour recharger les données
   const dispatch = useDispatch();
-  const [modalVisible, setModalVisible] = useState(false); //modal pour confirmation de désabonnement
-  const [followingList, setFollowingList] = useState([]); // liste des utilisateurs suivis
-  const following = useSelector((state) => state.following.value.following) || [];
-  const followers = useSelector((state) => state.following.value.followers) || []
+  const [unfollowModalVisible, setUnfollowModalVisible] = useState(false); //modal pour confirmation de désabonnement
+  const [followersList, setFollowersList] = useState([]); // liste des followers la personne visitée
+  const following = useSelector((state) => state.following.value); // données du reducer following
+  const myFollowing = following.following; // liste des utilisateurs suivis par l'utilisateur connecté
+  const [followersModal, setFollowersModal] = useState(false); // modal pour afficher les followers de la personne visitée
+  const [followingList, setFollowingList] = useState([]); // liste des utilisateurs suivis par la personne visitée
+  const [followingModal, setFollowingModal] = useState(false); // modal pour afficher les utilisateurs suivis par la personne visitée
+
+
+  const reloadFunction = () => {
+    setReload(!reload)
+  }
+
 
   useEffect(() => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${userToken}`)
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${userToken}`) // Récupération des concerts de l'utilisateur visité
       .then((response) => response.json())
       .then((data) => {
         setConcerts(data.list);
       });
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${userToken}`)
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${userToken}`) // Récupération des posts de l'utiilsateur visité
       .then((response) => response.json())
       .then((data) => {
         setPosts(data.posts);
       });
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/following/${token}`) //récupérer la liste des utilisateurs suivis
-      .then(response => response.json())
-      .then(data => {
-        dispatch(setFollowing(data.following));
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/followers/${userToken}`) // Récupération des followers de l'utilisateur visité
+      .then((response) => response.json())
+      .then((data) => {
+        setFollowersList(data.followers)
       })
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/following/${userToken}`) // Récupération des utilisateurs suivis par l'utilisateur visité
+    .then((response) => response.json())
+    .then((data) => {
+      setFollowingList(data.following);
+    })
   }, [reload]);
 
   const handleTabPress = (tabName) => {
-    // console.log('I was clicked UwU');
     setActiveTab(tabName);
   };
 
@@ -83,6 +96,7 @@ export default function UserProfileScreen({ route, navigation }) {
       );
     });
 
+  // ───── ⋆ ───── Liste des médias de l'utilisateur ───── ⋆ ─────
   const media = mediaData.map((data, i) => {
     return (
       <View key={i}>
@@ -92,13 +106,13 @@ export default function UserProfileScreen({ route, navigation }) {
   });
 
   const goToChat = () => {
-    console.log('navigate to chat with : ', username);
     navigation.navigate('ChatScreen', {
       sender: username,
       token: userToken,
     });
   };
 
+  // ───── ⋆ ───── Suivre l'utilisateur visité ───── ⋆ ─────
   const followUser = () => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/follow/${token}`, {
       method: "POST",
@@ -114,9 +128,11 @@ export default function UserProfileScreen({ route, navigation }) {
             avatar: data.friend.avatar,
           }));
         }
+        reloadFunction();
       });
   };
 
+  // ───── ⋆ ───── Se désabonner de l'utilisateur visité ───── ⋆ ─────
   const unfollowUser = () => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/unfollow/${token}`, {
       method: "DELETE",
@@ -126,35 +142,36 @@ export default function UserProfileScreen({ route, navigation }) {
       .then(data => {
         if (data.result) {
           dispatch(unfollow({token: data.friend.token}))
-          setModalVisible(false);
+          setUnfollowModalVisible(false);
         }
+        reloadFunction();
       })
   }
 
+  // ───── ⋆ ───── Bouton de suivi ───── ⋆ ─────
   let followButton = (
     <TouchableOpacity onPress={followUser} style={styles.button}>
       <Text>Suivre</Text>
     </TouchableOpacity>
   );
 
-  const isFollowing = following.some(e => e.token === userToken);
+  const isFollowing = myFollowing.some(e => e.token === userToken);
 
   if (isFollowing) {
     followButton = (
-      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
+      <TouchableOpacity onPress={() => setUnfollowModalVisible(true)} style={styles.button}>
         <Text>Abonné</Text>
       </TouchableOpacity>
     )
   }
 
-  const nbFollowing = following.length;
-
+  // ───── ⋆ ───── Modal de confirmation de désabonnement ───── ⋆ ─────
   const unfollowModalContent = (
     <Modal
-      visible={modalVisible}
+      visible={unfollowModalVisible}
       transparent
       animationType="slide"
-      onRequestClose={() => setModalVisible(false)}
+      onRequestClose={() => setUnfollowModalVisible(false)}
     >
       <View style={{
       flex: 1,
@@ -167,10 +184,109 @@ export default function UserProfileScreen({ route, navigation }) {
           <TouchableOpacity onPress={unfollowUser}>
             <Text>Oui</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setModalVisible(false)}>
+          <TouchableOpacity onPress={() => setUnfollowModalVisible(false)}>
             <Text>Annuler</Text>
           </TouchableOpacity>
         </View>
+      </View>
+    </Modal>
+  );
+
+  // ───── ⋆ ───── Affichage des followers de l'utilisateur visité ───── ⋆ ─────
+  const followersDispay = followersList.map((follower, i) => {
+    return (
+      <View key={i} style={{ padding: 10, borderBottomWidth: 1, borderColor: '#D7D7D7' }}>
+        <Text>{follower.username}</Text>
+        <Text>{follower.avatar}</Text>
+      </View>
+    )
+  })
+
+  const followersModalContent = (
+    <Modal
+      visible={followersModal}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setFollowersModal(false)}
+    >
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.3)",
+        }}
+      >
+        <Pressable
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "100%",
+            height: "100%",
+          }}
+          onPress={() => setFollowersModal(false)}
+        />
+        <View style={styles.modalContainer}>{followersDispay}</View>
+        <TouchableOpacity
+          onPress={() => setFollowersModal(false)}
+          style={styles.button}
+        >
+          <Text>Fermer</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
+
+  // ───── ⋆ ───── Affichage des utilisateurs suivis par l'utilisateur visité ───── ⋆ ─────
+  const followingDispay = followingList.map((follower, i) => {
+    return (
+      <View
+        key={i}
+        style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
+      >
+        <Text>{follower.username}</Text>
+        <Text>{follower.avatar}</Text>
+      </View>
+    );
+  });
+
+  const followingModalContent = (
+    <Modal
+      visible={followingModal}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setFollowingModal(false)}
+    >
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.3)",
+        }}
+      >
+        <Pressable
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "100%",
+            height: "100%",
+          }}
+          onPress={() => setFollowingModal(false)}
+        />
+        <View style={styles.modalContainer}>{followingDispay}</View>
+        <TouchableOpacity
+          onPress={() => setFollowingModal(false)}
+          style={styles.button}
+        >
+          <Text>Fermer</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
@@ -191,7 +307,14 @@ export default function UserProfileScreen({ route, navigation }) {
             <Text style={styles.userName}>{username}</Text>
             {followButton}
             {unfollowModalContent}
-            <Text>{nbFollowing}</Text>
+            <TouchableOpacity style={styles.button} onPress={() => setFollowersModal(true)}>
+              <Text>Followers: {followersList.length}</Text>
+            </TouchableOpacity>
+            {followersModalContent}
+            <TouchableOpacity style={styles.button} onPress={() => setFollowingModal(true)}>
+              <Text>Following: {followingList.length}</Text>
+            </TouchableOpacity>
+            {followingModalContent}
             <TouchableOpacity onPress={()=>{goToChat(userToken)}} style={styles.button}>
               <Text>Envoyer un message</Text>
             </TouchableOpacity>
