@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from "react";
-import Pusher from 'pusher-js/react-native'; 
+import Pusher from 'pusher-js/react-native';
 import { useSelector } from "react-redux";
 
 export default function ChatScreen({ route }) {
@@ -10,11 +10,11 @@ export default function ChatScreen({ route }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
-    const myToken = user.token;
-    const otherToken = token;
-    const channelName = [myToken, otherToken].sort().join('-');
+  const myToken = user.token;
+  const otherToken = token;
+  const channelName = [myToken, otherToken].sort().join('-');
 
-  useEffect(() => {   
+  useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/messages/chat-${channelName}`)
       .then(res => res.json())
       .then(data => {
@@ -26,7 +26,7 @@ export default function ChatScreen({ route }) {
     });
 
     const channel = pusher.subscribe(`chat-${channelName}`);
-    channel.bind('new-message', function(data) {
+    channel.bind('new-message', function (data) {
       setMessages(prev => [...prev, data]);
     });
 
@@ -40,7 +40,7 @@ export default function ChatScreen({ route }) {
 
   const handleSend = () => {
     if (!input.trim()) return;
-    
+
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/messages/send`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },

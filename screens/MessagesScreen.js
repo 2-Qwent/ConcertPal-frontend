@@ -1,37 +1,56 @@
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 // ───── ⋆ ───── A remplacer par de vrais messages ───── ⋆ ─────
-const messagesData = [
-  {
-    sender: "John Doe",
-    date: "20/05/2025",
-    messageBody: "It was so nice meeting you!",
-  },
-  {
-    sender: "Jane Doe",
-    date: "20/05/2025",
-    messageBody: "Should we go to the next tour together?",
-  },
-  {
-    sender: "Lauren",
-    date: "20/05/2025",
-    messageBody: "I found your keys! We should meet so I can give them back",
-  },
-];
+// const messagesData = [
+//   {
+//     sender: "John Doe",
+//     date: "20/05/2025",
+//     messageBody: "It was so nice meeting you!",
+//   },
+//   {
+//     sender: "Jane Doe",
+//     date: "20/05/2025",
+//     messageBody: "Should we go to the next tour together?",
+//   },
+//   {
+//     sender: "Lauren",
+//     date: "20/05/2025",
+//     messageBody: "I found your keys! We should meet so I can give them back",
+//   },
+// ];
 
 export default function MessagesScreen({ navigation }) {
+  const user = useSelector((state) => state.user.value);
+  const [messagesData, setMessagesData] = useState([]);
+  useEffect(() => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/messages/last/${user.token}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          setMessagesData(data.messages)
+        } else {
+          console.error('Failed to fetch messages:', data.error);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching messages:', error);
+      });
+  }, [user.token]);
+
   const handlePress = (sender) => {
-    console.log('clicked message is from : ', sender);
     navigation.navigate('ChatScreen', {
-      sender,
+      sender: sender.destinataire.username,
+      token: sender.destinataire.token,
     });
   };
 
   const messages = messagesData.map((data, i) => {
     return (
       <TouchableOpacity
-        onPress={() => handlePress(data.sender)}
+        onPress={() => handlePress(data)}
         style={styles.postWrapper}
         key={i}>
         <View style={styles.profilePic}>
@@ -48,10 +67,10 @@ export default function MessagesScreen({ navigation }) {
               width: 250,
               padding: 10,
             }}>
-            <Text>{data.sender}</Text>
+            <Text>{data.destinataire.username}</Text>
             <Text>{data.date}</Text>
           </View>
-          <Text style={styles.messageBody}>{data.messageBody}</Text>
+          <Text style={styles.messageBody}>{data.message}</Text>
         </View>
       </TouchableOpacity>
     );

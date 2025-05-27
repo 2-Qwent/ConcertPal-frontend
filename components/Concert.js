@@ -78,7 +78,6 @@ export default function Concert(props) {
       .then((data) => {
         if (data.result) {
           alert("Concert supprimé de mes concerts");
-          console.log(props);
           dispatch(removeConcert(props.id));
         } else {
           alert("Erreur lors de la suppression du concert");
