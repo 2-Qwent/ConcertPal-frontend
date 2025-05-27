@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Concert from "../components/Concert";
 import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
-import { newFollow, unfollow } from "../reducers/following";
+import { newFollow, unfollow, setFollowers, setFollowing } from "../reducers/following";
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -21,8 +21,10 @@ export default function UserProfileScreen({ route, navigation }) {
   const token = user.token; // token de l'utilisateur connecté
   const [reload, setReload] = useState(false);
   const dispatch = useDispatch();
-  const following = useSelector((state) => state.following.value) || [];
   const [modalVisible, setModalVisible] = useState(false); //modal pour confirmation de désabonnement
+  const [followingList, setFollowingList] = useState([]); // liste des utilisateurs suivis
+  const following = useSelector((state) => state.following.value.following) || [];
+  const followers = useSelector((state) => state.following.value.followers) || []
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${userToken}`)
@@ -35,6 +37,11 @@ export default function UserProfileScreen({ route, navigation }) {
       .then((data) => {
         setPosts(data.posts);
       });
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/following/${token}`) //récupérer la liste des utilisateurs suivis
+      .then(response => response.json())
+      .then(data => {
+        dispatch(setFollowing(data.following));
+      })
   }, [reload]);
 
   const handleTabPress = (tabName) => {
@@ -101,7 +108,11 @@ export default function UserProfileScreen({ route, navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          dispatch(newFollow(userToken));
+          dispatch(newFollow({
+            token: data.friend.token,
+            username: data.friend.username,
+            avatar: data.friend.avatar,
+          }));
         }
       });
   };
@@ -114,7 +125,7 @@ export default function UserProfileScreen({ route, navigation }) {
     }).then((response) => response.json())
       .then(data => {
         if (data.result) {
-          dispatch(unfollow(userToken))
+          dispatch(unfollow({token: data.friend.token}))
           setModalVisible(false);
         }
       })
@@ -126,13 +137,17 @@ export default function UserProfileScreen({ route, navigation }) {
     </TouchableOpacity>
   );
 
-  if (following.includes(userToken)) {
+  const isFollowing = following.some(e => e.token === userToken);
+
+  if (isFollowing) {
     followButton = (
       <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.button}>
         <Text>Abonné</Text>
       </TouchableOpacity>
     )
   }
+
+  const nbFollowing = following.length;
 
   const unfollowModalContent = (
     <Modal
@@ -176,6 +191,7 @@ export default function UserProfileScreen({ route, navigation }) {
             <Text style={styles.userName}>{username}</Text>
             {followButton}
             {unfollowModalContent}
+            <Text>{nbFollowing}</Text>
             <TouchableOpacity onPress={()=>{goToChat(userToken)}} style={styles.button}>
               <Text>Envoyer un message</Text>
             </TouchableOpacity>
