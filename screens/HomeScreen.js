@@ -21,6 +21,7 @@ import { setPosts } from "../reducers/post";
 import { setConcerts } from "../reducers/concerts";
 import { persistor } from "../App"
 import AddPostModal from "../components/AddPostModal";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function HomeScreen() {
 
@@ -134,16 +135,22 @@ export default function HomeScreen() {
       style={StyleSheet.absoluteFill}
       resizeMode="cover">
       <View style={styles.container}>
-        <TouchableOpacity
-          style={[styles.button, { width: 350, height: 50 }]}
-          onPress={() => setModalVisible(true)}>
-          <Text>Rechercher un concert</Text>
-        </TouchableOpacity>
+        <LinearGradient
+          colors={['#A5ECC0', '#E2A5EC']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={[styles.gradient, {width: 350, height: 50}]}>
+          <TouchableOpacity
+            style={[styles.button, { width: '100%', height: '100%' }]}
+            onPress={() => setModalVisible(true)}>
+            <Text>Rechercher un concert</Text>
+          </TouchableOpacity>
+        </LinearGradient>
         {/* <Text>Feed</Text> */}
         <View style={styles.timelineContainer}>
           <ScrollView
             style={{
-              maxHeight: 400,
+              maxHeight: 550,
               width: '100%',
               margin: 10,
               borderRadius: 12,
@@ -151,11 +158,17 @@ export default function HomeScreen() {
             {timeline}
           </ScrollView>
           {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
-          <TouchableOpacity
-            style={styles.buttonAdd}
-            onPress={() => handleAddPostModal()}>
-            <Text style={{ color: '#565656' }}>Type...</Text>
-          </TouchableOpacity>
+          <LinearGradient
+            colors={['#A5ECC0', '#E2A5EC']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.gradient, { width: 340, height: 40 }]}>
+            <TouchableOpacity
+              style={styles.buttonAdd}
+              onPress={() => handleAddPostModal()}>
+              <Text style={{ color: '#565656' }}>Type...</Text>
+            </TouchableOpacity>
+          </LinearGradient>
           <AddPostModal
             isVisible={isVisible}
             setIsVisible={setIsVisible}
@@ -274,12 +287,13 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    top: '-50',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     padding: 20,
   },
   modalContainer: {
@@ -320,31 +334,32 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
-    backgroundColor: '#E8EAED',
-    borderWidth: 2,
-    borderColor: '#A5ECC0',
+    backgroundColor: 'rgb(245, 245, 245)',
+    borderRadius: 11,
+  },
+  gradient: {
+    padding: 2,
     borderRadius: 12,
+    justifyContent: 'center',
+    margin: 10
   },
   buttonAdd: {
-    width: 360,
-    height: 40,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     paddingLeft: 10,
-    marginBottom: 20,
-    backgroundColor: '#E8EAED',
-    borderWidth: 2,
-    borderColor: '#A5ECC0',
-    borderRadius: 12,
+    backgroundColor: 'rgb(250, 250, 250)',
+    borderRadius: 11,
   },
   timelineContainer: {
     marginBottom: 10,
     marginLeft: 10,
     marginRight: 10,
-    backgroundColor: '#E8EAED',
+    backgroundColor: 'rgb(245, 245, 245)',
     borderColor: '#D7D7D7',
     borderRadius: 12,
     width: '95%',
+    height: 550,
     marginBottom: 5,
     justifyContent: 'center',
     alignItems: 'center',

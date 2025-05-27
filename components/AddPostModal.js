@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "90%",
     height: 150,
-    backgroundColor: "#E8EAED",
+    backgroundColor: "rgb(245, 245, 245)",
     borderWidth: 2,
     borderColor: "#A5ECC0",
     borderRadius: 12,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   tab: {
     width: 80,
     height: 50,
-    color: "#E8EAED",
+    color: "rgb(245, 245, 245)",
     backgroundColor: "#A5A7EC",
     justifyContent: "center",
     alignItems: "center",
