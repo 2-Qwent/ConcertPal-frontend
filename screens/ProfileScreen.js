@@ -11,9 +11,11 @@ import {
   Pressable,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Concert from "../components/Concert";
+import EditProfileModal from "../components/EditProfileModal";
 import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
 import Post from "../components/Post";
@@ -21,6 +23,8 @@ import AddPostModal from "../components/AddPostModal";
 import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
 
+import { addPost } from "../reducers/post";
+import * as ImagePicker from 'expo-image-picker';
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -31,10 +35,7 @@ const mediaData = [
 export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts"); // Onglet actif
   const [activeUser, setActiveUser] = useState([]); // Utilisateur actif
-  const user = useSelector((state) => state.user.value); // Données du reducer utilisateur
-  const concerts = useSelector((state) => state.concerts.value); // Données du reducer concerts
   const [reload, setReload] = useState(false); // Pour recharger les données
-  const posts = useSelector((state) => state.post.value) // Données du reducer posts
   const [isVisible, setIsVisible] = useState(false) // Pour afficher la modal d'ajout de post
   const token = user.token; // Token de l'utilisateur connecté
   const following = useSelector((state) => state.following.value); // Données du reducer following
@@ -44,6 +45,14 @@ export default function ProfileScreen({ navigation }) {
   const followersList = following.followers; // Liste des followers de l'utilisateur
 
   // Posts de l'utilisateur uniquement
+  const [postContent, setPostContent] = useState('')
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+
+  // Séléction des concerts et posts :
+  const concerts = useSelector((state) => state.concerts.value) || [];
+  const posts = useSelector((state) => state.post.value) || [];
+  const user = useSelector((state) => state.user.value);
+
   const filteredPosts = posts.filter((post) => post.author.token === token)
 
   const reloadFunction = () => {
@@ -51,6 +60,31 @@ export default function ProfileScreen({ navigation }) {
   }
 
   const dispatch = useDispatch()
+
+  const reloadFunction2 = async () => {
+    try {
+      const response = await fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/user/${user.token}`, {
+        method: 'PUT',
+      });
+      const data = await response.json();
+      console.log(data)
+      if (data.success) {
+        setActiveUser(data.user); // Met à jour l'utilisateur actif avec les nouvelles données
+      }
+    } catch (error) {
+      console.error('Erreur lors du rechargement du profil:', error);
+    }
+  };
+
+  const handleTabPress = (tabName) => {
+    setActiveTab(tabName);
+  };
+
+  // bouton déconnexion
+  const handleLogoutPress = () => {
+    dispatch(logout())
+    navigation.navigate('Login')
+  }
 
 
   useEffect(() => {
@@ -81,15 +115,6 @@ export default function ProfileScreen({ navigation }) {
       })
   }, [reload]);
 
-  const handleTabPress = (tabName) => {
-    setActiveTab(tabName);
-  };
-
-  const handleLogoutPress = () => {
-    dispatch(logout())
-    navigation.navigate('Login')
-  }
-
   // Liste des concerts de l'utilisateur
   const userConcerts = concerts.map((data, i) => {
     return (
@@ -115,7 +140,7 @@ export default function ProfileScreen({ navigation }) {
         key={i}
         username={data.author.username}
         text={data.text}
-        date={data.date}
+        date={moment(data.date).fromNow()}
         nbLikes={data.likes.length}
         isLiked={isLiked}
         reloadFunction={reloadFunction}
@@ -230,13 +255,20 @@ export default function ProfileScreen({ navigation }) {
     <ImageBackground
       source={require('../assets/IMG_background.png')}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover">
+      resizeMode="cover"
+    >
       <View style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
           <View style={styles.profilePic}>
-            <FontAwesome name="user-circle" size={80} color="#000000" />
-            <Text>placeholder</Text>
+            {activeUser.avatar ? (
+                <Image
+                    source={{ uri: activeUser.avatar }}
+                    style={styles.userAvatar}
+                />
+            ) : (
+                <FontAwesome name="user-circle" size={80} color="#000000" />
+            )}
           </View>
           <View style={styles.profileText}>
             <Text style={styles.userName}>{activeUser.username}</Text>
@@ -260,6 +292,19 @@ export default function ProfileScreen({ navigation }) {
                 <Text style={{ color: '#565656' }}>Me déconnecter</Text>
               </TouchableOpacity>
             </LinearGradient>
+            <TouchableOpacity style={styles.button} onPress={() => setIsEditModalVisible(true)}>
+              <Text>Modifier mon profil</Text>
+            </TouchableOpacity>
+
+            <EditProfileModal
+                isVisible={isEditModalVisible}
+                setIsVisible={setIsEditModalVisible}
+                user={activeUser}
+                reloadFunction={reloadFunction2}
+            />
+            <TouchableOpacity onPress={() => handleLogoutPress()} style={styles.button}>
+              <Text>Me déconnecter</Text>
+            </TouchableOpacity>
           </View>
         </View>
           <View style={styles.followContent}>
@@ -338,7 +383,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 20, 
+    paddingVertical: 20,
   },
   aboutUser: {
     width: '100%',
@@ -350,6 +395,13 @@ const styles = StyleSheet.create({
     height: 130,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  userAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
   },
   profileText: {
     width: '60%',
