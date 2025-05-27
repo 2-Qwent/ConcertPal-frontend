@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  ImageBackground,
   Pressable,
 } from "react-native";
 import { Button } from "@ant-design/react-native";
@@ -112,7 +113,7 @@ export default function HomeScreen() {
   });
 
   const timeline = posts.map((data, i) => {
-    const isLiked = data.likes?.some((post) => post === token) || false
+    const isLiked = data.likes?.some((post) => post === token) || false;
     return (
       <Post
         key={i}
@@ -128,133 +129,153 @@ export default function HomeScreen() {
   });
 
   return (
-    <View style={styles.container}>
-      <Button onPress={() => setModalVisible(true)}>
-        Rechercher un concert
-      </Button>
-      <TouchableOpacity onPress={() => { persistor.purge() }}>
-        <Text>purge</Text>
-      </TouchableOpacity>
-      <Text>Feed</Text>
-      <ScrollView
-        style={{
-          maxHeight: 400,
-          width: "100%",
-          marginBottom: 10,
-          marginLeft: 70,
-        }}
-      >
-        {timeline}
-      </ScrollView>
-      {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
-      <TouchableOpacity onPress={() => handleAddPostModal()}>
-        <Text>Add post</Text>
-      </TouchableOpacity>
-      <AddPostModal
-        isVisible={isVisible}
-        setIsVisible={setIsVisible}
-        reloadFunction={reloadFunction}
-      />
-      {/* ───── ⋆ ───── searchModal ───── ⋆ ───── */}
-      <Modal
-        visible={modalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <Pressable
-            style={styles.modalBackground}
-            onPress={() => setModalVisible(false)}
+    <ImageBackground
+      source={require('../assets/IMG_background.png')}
+      style={StyleSheet.absoluteFill}
+      resizeMode="cover">
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={[styles.button, { width: 350, height: 50 }]}
+          onPress={() => setModalVisible(true)}>
+          <Text>Rechercher un concert</Text>
+        </TouchableOpacity>
+        {/* <Text>Feed</Text> */}
+        <View style={styles.timelineContainer}>
+          <ScrollView
+            style={{
+              maxHeight: 400,
+              width: '100%',
+              margin: 10,
+              borderRadius: 12,
+            }}>
+            {timeline}
+          </ScrollView>
+          {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
+          <TouchableOpacity
+            style={styles.buttonAdd}
+            onPress={() => handleAddPostModal()}>
+            <Text style={{ color: '#565656' }}>Type...</Text>
+          </TouchableOpacity>
+          <AddPostModal
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
+            reloadFunction={reloadFunction}
           />
-          <View style={styles.modalContainer}>
-            {concerts.length === 0 ? (
-              <>
-                <Text style={styles.title}>Rechercher un concert</Text>
-                {searchError ? (
-                  <Text style={styles.errorText}>{searchError}</Text>
-                ) : null}
-                <TextInput
-                  placeholder="Artiste"
-                  style={styles.input}
-                  value={artist}
-                  onChangeText={setArtist}
-                />
-                <TextInput
-                  placeholder="Lieu"
-                  style={styles.input}
-                  value={venue}
-                  onChangeText={setVenue}
-                />
-
-                <TouchableOpacity
-                  style={styles.datePicker}
-                  onPress={() => setShowPicker(true)}
-                >
-                  <Icon name="calendar" size={20} color="#333" />
-                  <Text style={styles.dateText}>
-                    {date ? date.toISOString().split("T")[0] : "Date"}
-                  </Text>
-                </TouchableOpacity>
-
-                {showPicker && (
-                  <DateTimePicker
-                    value={date || new Date()}
-                    mode="date"
-                    display="default"
-                    onChange={handleDateChange}
-                  />
-                )}
-
-                {date && (
-                  <Button
-                    onPress={() => setDate(null)}
-                    style={{ marginBottom: 10 }}
-                  >
-                    Effacer la date
-                  </Button>
-                )}
-
-                <View style={styles.buttons}>
-                  <Button type="primary" onPress={handleSearch}>
-                    Rechercher
-                  </Button>
-                  <Button
-                    onPress={() => setModalVisible(false)}
-                    style={{ marginTop: 10 }}
-                  >
-                    Annuler
-                  </Button>
-                </View>
-              </>
-            ) : (
-              <>
-                <Text style={styles.title}>Résultats</Text>
-                <ScrollView style={{ maxHeight: 400, marginBottom: 10 }}>
-                  {concertsList}
-                </ScrollView>
-                <Button
-                  onPress={() => {
-                    setConcerts([]);
-                    setModalVisible(false);
-                  }}
-                >
-                  Fermer
-                </Button>
-              </>
-            )}
-          </View>
         </View>
-      </Modal>
-    </View>
+        {/* ───── ⋆ ───── Purge store ───── ⋆ ───── */}
+        <TouchableOpacity
+          style={[
+            styles.button,
+            {
+              borderColor: 'red',
+              width: 90,
+              height: 20,
+              backgroundColor: 'white',
+              borderWidth: 1,
+            },
+          ]}
+          onPress={() => {
+            persistor.purge();
+          }}>
+          <Text style={{ color: 'red', fontSize: 10 }}>X purge store</Text>
+        </TouchableOpacity>
+
+        {/* ───── ⋆ ───── searchModal ───── ⋆ ───── */}
+        <Modal
+          visible={modalVisible}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <Pressable
+              style={styles.modalBackground}
+              onPress={() => setModalVisible(false)}
+            />
+            <View style={styles.modalContainer}>
+              {concerts.length === 0 ? (
+                <>
+                  <Text style={styles.title}>Rechercher un concert</Text>
+                  {searchError ? (
+                    <Text style={styles.errorText}>{searchError}</Text>
+                  ) : null}
+                  <TextInput
+                    placeholder="Artiste"
+                    style={styles.input}
+                    value={artist}
+                    onChangeText={setArtist}
+                  />
+                  <TextInput
+                    placeholder="Lieu"
+                    style={styles.input}
+                    value={venue}
+                    onChangeText={setVenue}
+                  />
+
+                  <TouchableOpacity
+                    style={styles.datePicker}
+                    onPress={() => setShowPicker(true)}>
+                    <Icon name="calendar" size={20} color="#333" />
+                    <Text style={styles.dateText}>
+                      {date ? date.toISOString().split('T')[0] : 'Date'}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {showPicker && (
+                    <DateTimePicker
+                      value={date || new Date()}
+                      mode="date"
+                      display="default"
+                      onChange={handleDateChange}
+                    />
+                  )}
+
+                  {date && (
+                    <Button
+                      onPress={() => setDate(null)}
+                      style={{ marginBottom: 10 }}>
+                      Effacer la date
+                    </Button>
+                  )}
+
+                  <View style={styles.buttons}>
+                    <Button type="primary" onPress={handleSearch}>
+                      Rechercher
+                    </Button>
+                    <Button
+                      onPress={() => setModalVisible(false)}
+                      style={{ marginTop: 10 }}>
+                      Annuler
+                    </Button>
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.title}>Résultats</Text>
+                  <ScrollView style={{ maxHeight: 400, marginBottom: 10 }}>
+                    {concertsList}
+                  </ScrollView>
+                  <Button
+                    onPress={() => {
+                      setConcerts([]);
+                      setModalVisible(false);
+                    }}>
+                    Fermer
+                  </Button>
+                </>
+              )}
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalOverlay: {
     flex: 1,
@@ -262,24 +283,24 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
   },
   title: {
     fontSize: 18,
     marginBottom: 10,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   input: {
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: '#ccc',
     marginBottom: 15,
     paddingVertical: 5,
   },
   datePicker: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 15,
   },
   dateText: {
@@ -293,6 +314,40 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
     textAlign: 'center',
+  },
+  button: {
+    width: 200,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
+    backgroundColor: '#E8EAED',
+    borderWidth: 2,
+    borderColor: '#A5ECC0',
+    borderRadius: 12,
+  },
+  buttonAdd: {
+    width: 360,
+    height: 40,
+    justifyContent: 'center',
+    paddingLeft: 10,
+    marginBottom: 20,
+    backgroundColor: '#E8EAED',
+    borderWidth: 2,
+    borderColor: '#A5ECC0',
+    borderRadius: 12,
+  },
+  timelineContainer: {
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    backgroundColor: '#E8EAED',
+    borderColor: '#D7D7D7',
+    borderRadius: 12,
+    width: '95%',
+    marginBottom: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalBackground: {
     position: 'absolute',

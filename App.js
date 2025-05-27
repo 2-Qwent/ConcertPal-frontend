@@ -120,6 +120,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: "22",
-        boxShadow: "0px 0px 10px 10px rgba(0,0,0,0.10)"
     }
 });
