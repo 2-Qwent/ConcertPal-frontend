@@ -22,6 +22,7 @@ import Post from "../components/Post";
 import AddPostModal from "../components/AddPostModal";
 import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
@@ -32,7 +33,7 @@ const mediaData = [
   require("../assets/placeholderConcertPics/20230826_224537.jpg"),
 ];
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileScreen({ navigation, toggleTabBar }) {
   const [activeTab, setActiveTab] = useState("concerts"); // Onglet actif
   const [activeUser, setActiveUser] = useState([]); // Utilisateur actif
   const [reload, setReload] = useState(false); // Pour recharger les données
@@ -366,6 +367,12 @@ export default function ProfileScreen({ navigation }) {
             </View>
           </View>
         </View>
+              <TouchableOpacity
+                style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+                onPress={toggleTabBar}
+              >
+                <Icon name="chevron-down" size={30} color="black" />
+              </TouchableOpacity>
       </View>
     </ImageBackground>
   );

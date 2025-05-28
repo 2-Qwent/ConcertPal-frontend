@@ -5,56 +5,61 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from '@react-navigation/native';
 import moment from "moment";
 import 'moment/locale/fr'; // Import French locale for moment.js
+import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function MessagesScreen({ navigation }) {
+export default function MessagesScreen({ navigation, toggleTabBar }) {
   const isFocused = useIsFocused();
   const user = useSelector((state) => state.user.value);
   const [messagesData, setMessagesData] = useState([]);
   useEffect(() => {
     if (!isFocused) return;
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/messages/last/${user.token}`)
+    fetch(
+      `http://${process.env.EXPO_PUBLIC_IP}:3000/messages/last/${user.token}`
+    )
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          setMessagesData(data.messages)
+          setMessagesData(data.messages);
         } else {
-          console.error('Failed to fetch messages:', data.error);
+          console.error("Failed to fetch messages:", data.error);
         }
       })
       .catch((error) => {
-        console.error('Error fetching messages:', error);
+        console.error("Error fetching messages:", error);
       });
   }, [user.token, isFocused]);
 
   const handlePress = (sender) => {
-    navigation.navigate('ChatScreen', {
+    navigation.navigate("ChatScreen", {
       sender: sender.destinataire.username,
       token: sender.destinataire.token,
     });
   };
 
   const messages = messagesData.map((data, i) => {
-    moment.locale('fr'); // Heure en français
+    moment.locale("fr"); // Heure en français
     const formattedDate = moment(data.date).fromNow();
     return (
       <TouchableOpacity
         onPress={() => handlePress(data)}
         style={styles.postWrapper}
-        key={i}>
+        key={i}
+      >
         <View style={styles.profilePic}>
           <FontAwesome name="user-circle" size={45} color="#000000" />
-          <Text style={{ fontSize: 7, color: 'rgba(0,0,0,0.5)' }}>
+          <Text style={{ fontSize: 7, color: "rgba(0,0,0,0.5)" }}>
             placeholder profile pic
           </Text>
         </View>
         <View>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
+              flexDirection: "row",
+              justifyContent: "space-between",
               width: 250,
               padding: 10,
-            }}>
+            }}
+          >
             <Text>{data.destinataire.username}</Text>
             <Text>{formattedDate}</Text>
           </View>
@@ -70,6 +75,12 @@ export default function MessagesScreen({ navigation }) {
       <View style={styles.messagerieWrapper}>
         <View style={styles.wrapper}>{messages}</View>
       </View>
+      <TouchableOpacity
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        onPress={toggleTabBar}
+      >
+        <Icon name="chevron-down" size={30} color="black" />
+      </TouchableOpacity>
     </View>
   );
 }

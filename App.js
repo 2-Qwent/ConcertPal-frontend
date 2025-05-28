@@ -42,13 +42,13 @@ const persistor = persistStore(store);
 export {persistor}
 
 const TabNavigator = () => {
-  const [isTabVisible, setIsTabVisible] = useState(true);
-  const [isReallyVisible, setIsReallyVisible] = useState(true);
+  const [isTabVisible, setIsTabVisible] = useState(true); //Etat pour le déclenchement de l'animation
+  const [isReallyVisible, setIsReallyVisible] = useState(true); //Etat pour l'affichage de la tab bar
   const tabBarTranslateY = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     if (isTabVisible) {
-      setIsReallyVisible(true); //garde la tab bar affichée
+      setIsReallyVisible(true); //Garde la tab bar affichée
       Animated.timing(tabBarTranslateY, {
         toValue: isTabVisible ? 0 : 100,
         duration: 300,
@@ -59,7 +59,7 @@ const TabNavigator = () => {
         toValue: isTabVisible ? 0 : 100,
         duration: 300,
         useNativeDriver: true,
-      }).start(() => setIsReallyVisible(false)); //cache la tab bar au lancement de l'animation
+      }).start(() => setIsReallyVisible(false)); //Cache la tab bar au lancement de l'animation
     }
   }, [isTabVisible]);
 
@@ -106,11 +106,24 @@ const TabNavigator = () => {
       <Tab.Screen name="Home" >
         {(props) => {
           return (
-          <HomeScreen {...props} toggleTabBar={() => setIsTabVisible(prev => !prev)} />)
+          <HomeScreen {...props} toggleTabBar={() => setIsTabVisible(prev => !prev)} />
+        )
         }}
       </Tab.Screen>
-      <Tab.Screen name="Messages" component={MessagesScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Messages" >
+        {(props) => {
+          return (
+            <MessagesScreen {...props} toggleTabBar={() => setIsTabVisible(prev => !prev)}/>
+          )
+        }}
+      </Tab.Screen>
+      <Tab.Screen name="Profile" >
+        {(props) => {
+          return (
+            <ProfileScreen {...props} toggleTabBar={() => setIsTabVisible(prev => !prev)}/>
+          )
+        }}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };

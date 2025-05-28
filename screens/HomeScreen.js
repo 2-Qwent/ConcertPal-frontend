@@ -297,7 +297,7 @@ export default function HomeScreen({ toggleTabBar }) {
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           onPress={toggleTabBar}
         >
-          <Icon name="chevronDown" size={20} color="#fff" />
+          <Icon name="chevron-down" size={30} color="#fff" />
         </TouchableOpacity>
       </View>
     </ImageBackground>
