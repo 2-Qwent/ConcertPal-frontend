@@ -69,6 +69,9 @@ export default function HomeScreen() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setDate(null); // Réinitialiser la date après la recherche
+        setArtist(""); // Réinitialiser l'artiste après la recherche
+        setVenue(""); // Réinitialiser le lieu après la recherche
         const showData = data.concerts.map((show) => ({
           artist: show.name,
           venue: show._embedded?.venues?.[0]?.name || "Lieu inconnu",
@@ -115,16 +118,16 @@ export default function HomeScreen() {
   const timeline = posts.map((data, i) => {
     const isLiked = data.likes?.some((post) => post === token) || false;
     return (
-        <Post
-            key={i}
-            username={data.author?.username}
-            text={data.text}
-            date={moment(data.date).fromNow()}
-            nbLikes={data.likes.length}
-            isLiked={isLiked}
-            reloadFunction={reloadFunction}
-            {...data}
-        />
+      <Post
+        key={i}
+        username={data.author?.username}
+        text={data.text}
+        date={moment(data.date).fromNow()}
+        nbLikes={data.likes.length}
+        isLiked={isLiked}
+        reloadFunction={reloadFunction}
+        {...data}
+      />
     );
   });
 
@@ -138,7 +141,7 @@ export default function HomeScreen() {
           colors={['#A5ECC0', '#E2A5EC']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[styles.gradient, {width: 350, height: 50}]}>
+          style={[styles.gradient, { width: 350, height: 50 }]}>
           <TouchableOpacity
             style={[styles.button, { width: '100%', height: '100%' }]}
             onPress={() => setModalVisible(true)}>
