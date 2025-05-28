@@ -7,7 +7,7 @@ import moment from "moment";
 import 'moment/locale/fr'; // Import French locale for moment.js
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function MessagesScreen({ navigation, toggleTabBar }) {
+export default function MessagesScreen({ navigation }) {
   const isFocused = useIsFocused();
   const user = useSelector((state) => state.user.value);
   const [messagesData, setMessagesData] = useState([]);
