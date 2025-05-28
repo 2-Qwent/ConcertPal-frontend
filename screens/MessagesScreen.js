@@ -2,30 +2,16 @@ import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
-// ───── ⋆ ───── A remplacer par de vrais messages ───── ⋆ ─────
-// const messagesData = [
-//   {
-//     sender: "John Doe",
-//     date: "20/05/2025",
-//     messageBody: "It was so nice meeting you!",
-//   },
-//   {
-//     sender: "Jane Doe",
-//     date: "20/05/2025",
-//     messageBody: "Should we go to the next tour together?",
-//   },
-//   {
-//     sender: "Lauren",
-//     date: "20/05/2025",
-//     messageBody: "I found your keys! We should meet so I can give them back",
-//   },
-// ];
+import { useIsFocused } from '@react-navigation/native';
+import moment from "moment";
+import 'moment/locale/fr'; // Import French locale for moment.js
 
 export default function MessagesScreen({ navigation }) {
+  const isFocused = useIsFocused();
   const user = useSelector((state) => state.user.value);
   const [messagesData, setMessagesData] = useState([]);
   useEffect(() => {
+    if (!isFocused) return;
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/messages/last/${user.token}`)
       .then((response) => response.json())
       .then((data) => {
@@ -38,7 +24,7 @@ export default function MessagesScreen({ navigation }) {
       .catch((error) => {
         console.error('Error fetching messages:', error);
       });
-  }, [user.token]);
+  }, [user.token, isFocused]);
 
   const handlePress = (sender) => {
     navigation.navigate('ChatScreen', {
@@ -48,6 +34,8 @@ export default function MessagesScreen({ navigation }) {
   };
 
   const messages = messagesData.map((data, i) => {
+    moment.locale('fr'); // Heure en français
+    const formattedDate = moment(data.date).fromNow();
     return (
       <TouchableOpacity
         onPress={() => handlePress(data)}
@@ -68,7 +56,7 @@ export default function MessagesScreen({ navigation }) {
               padding: 10,
             }}>
             <Text>{data.destinataire.username}</Text>
-            <Text>{data.date}</Text>
+            <Text>{formattedDate}</Text>
           </View>
           <Text style={styles.messageBody}>{data.message}</Text>
         </View>

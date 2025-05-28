@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, Animated } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -23,6 +23,7 @@ import user from "./reducers/user";
 import concerts from "./reducers/concerts";
 import post from "./reducers/post";
 import following from "./reducers/following";
+import { useState, useEffect, useRef } from 'react';
 
 const reducers = combineReducers({ user, concerts, post, following });
 
@@ -41,6 +42,27 @@ const persistor = persistStore(store);
 export {persistor}
 
 const TabNavigator = () => {
+  const [isTabVisible, setIsTabVisible] = useState(true);
+  const [isReallyVisible, setIsReallyVisible] = useState(true);
+  const tabBarTranslateY = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    if (isTabVisible) {
+      setIsReallyVisible(true); //garde la tab bar affichée
+      Animated.timing(tabBarTranslateY, {
+        toValue: isTabVisible ? 0 : 100,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(tabBarTranslateY, {
+        toValue: isTabVisible ? 0 : 100,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => setIsReallyVisible(false)); //cache la tab bar au lancement de l'animation
+    }
+  }, [isTabVisible]);
+
   return (
     <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -62,14 +84,31 @@ const TabNavigator = () => {
                 size={30}
                 color='#fff'
               />
-            </View>
+              </View>
           );
         },
         tabBarShowLabel: false,
-        tabBarStyle: styles.tabBarStyle,
         headerShown: false,
-      })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
+        tabBarStyle: styles.tabBarStyle,
+      })}
+      tabBar={props => isReallyVisible && (
+        <Animated.View
+        style={[styles.tabBarStyle,
+          {
+            transform: [{ translateY: tabBarTranslateY}],
+          }
+        ]}
+        >
+          <BottomTabBar {...props} />
+        </Animated.View>
+      )}
+      >
+      <Tab.Screen name="Home" >
+        {(props) => {
+          return (
+          <HomeScreen {...props} toggleTabBar={() => setIsTabVisible(prev => !prev)} />)
+        }}
+      </Tab.Screen>
       <Tab.Screen name="Messages" component={MessagesScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
@@ -113,13 +152,12 @@ const styles = StyleSheet.create({
   },
   tabBarStyle: {
     position: 'absolute',
-    bottom: 50,
-    marginLeft: 60,
-    marginRight: 60,
+    bottom: 30,
+    left: 60,
+    right: 60,
     backgroundColor: 'rgb(245, 245, 245)',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: '22',
   },
 });
