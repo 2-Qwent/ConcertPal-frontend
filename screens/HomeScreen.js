@@ -23,7 +23,7 @@ import { persistor } from "../App"
 import AddPostModal from "../components/AddPostModal";
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function HomeScreen() {
+export default function HomeScreen({ toggleTabBar }) {
 
   const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
   const [showPicker, setShowPicker] = useState(false); // Menu choix date
@@ -133,18 +133,21 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={require('../assets/IMG_background.png')}
+      source={require("../assets/IMG_background.png")}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover">
+      resizeMode="cover"
+    >
       <View style={styles.container}>
         <LinearGradient
-          colors={['#A5ECC0', '#E2A5EC']}
+          colors={["#A5ECC0", "#E2A5EC"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[styles.gradient, { width: 350, height: 50 }]}>
+          style={[styles.gradient, { width: 350, height: 50 }]}
+        >
           <TouchableOpacity
-            style={[styles.button, { width: '100%', height: '100%' }]}
-            onPress={() => setModalVisible(true)}>
+            style={[styles.button, { width: "100%", height: "100%" }]}
+            onPress={() => setModalVisible(true)}
+          >
             <Text>Rechercher un concert</Text>
           </TouchableOpacity>
         </LinearGradient>
@@ -153,22 +156,25 @@ export default function HomeScreen() {
           <ScrollView
             style={{
               maxHeight: 550,
-              width: '100%',
+              width: "100%",
               margin: 10,
               borderRadius: 12,
-            }}>
+            }}
+          >
             {timeline}
           </ScrollView>
           {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
           <LinearGradient
-            colors={['#A5ECC0', '#E2A5EC']}
+            colors={["#A5ECC0", "#E2A5EC"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.gradient, { width: 340, height: 40 }]}>
+            style={[styles.gradient, { width: 340, height: 40 }]}
+          >
             <TouchableOpacity
               style={styles.buttonAdd}
-              onPress={() => handleAddPostModal()}>
-              <Text style={{ color: '#565656' }}>Type...</Text>
+              onPress={() => handleAddPostModal()}
+            >
+              <Text style={{ color: "#565656" }}>Type...</Text>
             </TouchableOpacity>
           </LinearGradient>
           <AddPostModal
@@ -182,17 +188,18 @@ export default function HomeScreen() {
           style={[
             styles.button,
             {
-              borderColor: 'red',
+              borderColor: "red",
               width: 90,
               height: 20,
-              backgroundColor: 'white',
+              backgroundColor: "white",
               borderWidth: 1,
             },
           ]}
           onPress={() => {
             persistor.purge();
-          }}>
-          <Text style={{ color: 'red', fontSize: 10 }}>X purge store</Text>
+          }}
+        >
+          <Text style={{ color: "red", fontSize: 10 }}>X purge store</Text>
         </TouchableOpacity>
 
         {/* ───── ⋆ ───── searchModal ───── ⋆ ───── */}
@@ -200,7 +207,8 @@ export default function HomeScreen() {
           visible={modalVisible}
           transparent
           animationType="slide"
-          onRequestClose={() => setModalVisible(false)}>
+          onRequestClose={() => setModalVisible(false)}
+        >
           <View style={styles.modalOverlay}>
             <Pressable
               style={styles.modalBackground}
@@ -228,10 +236,11 @@ export default function HomeScreen() {
 
                   <TouchableOpacity
                     style={styles.datePicker}
-                    onPress={() => setShowPicker(true)}>
+                    onPress={() => setShowPicker(true)}
+                  >
                     <Icon name="calendar" size={20} color="#333" />
                     <Text style={styles.dateText}>
-                      {date ? date.toISOString().split('T')[0] : 'Date'}
+                      {date ? date.toISOString().split("T")[0] : "Date"}
                     </Text>
                   </TouchableOpacity>
 
@@ -247,7 +256,8 @@ export default function HomeScreen() {
                   {date && (
                     <Button
                       onPress={() => setDate(null)}
-                      style={{ marginBottom: 10 }}>
+                      style={{ marginBottom: 10 }}
+                    >
                       Effacer la date
                     </Button>
                   )}
@@ -258,7 +268,8 @@ export default function HomeScreen() {
                     </Button>
                     <Button
                       onPress={() => setModalVisible(false)}
-                      style={{ marginTop: 10 }}>
+                      style={{ marginTop: 10 }}
+                    >
                       Annuler
                     </Button>
                   </View>
@@ -273,7 +284,8 @@ export default function HomeScreen() {
                     onPress={() => {
                       setConcerts([]);
                       setModalVisible(false);
-                    }}>
+                    }}
+                  >
                     Fermer
                   </Button>
                 </>
@@ -281,6 +293,12 @@ export default function HomeScreen() {
             </View>
           </View>
         </Modal>
+        <TouchableOpacity
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          onPress={toggleTabBar}
+        >
+          <Icon name="chevronDown" size={20} color="#fff" />
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
