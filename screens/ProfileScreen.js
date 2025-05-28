@@ -34,7 +34,7 @@ const mediaData = [
   require("../assets/placeholderConcertPics/20230826_224537.jpg"),
 ];
 
-export default function ProfileScreen({ navigation, toggleTabBar }) {
+export default function ProfileScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("concerts"); // Onglet actif
   const [activeUser, setActiveUser] = useState([]); // Utilisateur actif
   const [reload, setReload] = useState(false); // Pour recharger les données
@@ -256,7 +256,7 @@ export default function ProfileScreen({ navigation, toggleTabBar }) {
 
   return (
     <ImageBackground
-      source={require('../assets/IMG_background.png')}
+      source={require("../assets/IMG_background.png")}
       style={StyleSheet.absoluteFill}
       resizeMode="cover"
     >
@@ -276,23 +276,31 @@ export default function ProfileScreen({ navigation, toggleTabBar }) {
           <View style={styles.profileText}>
             <Text style={styles.userName}>{activeUser.username}</Text>
             <LinearGradient
-              colors={['#A5ECC0', '#E2A5EC']}
+              colors={["#A5ECC0", "#E2A5EC"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}>
-              <TouchableOpacity style={styles.button} >
-                <Text style={{ color: '#565656' }} onPress={() => setIsEditModalVisible(true)}>Modifier mon profil</Text>
+              style={[styles.gradient, { width: 200, height: 30 }]}
+            >
+              <TouchableOpacity style={styles.button}>
+                <Text
+                  style={{ color: "#565656" }}
+                  onPress={() => setIsEditModalVisible(true)}
+                >
+                  Modifier mon profil
+                </Text>
               </TouchableOpacity>
             </LinearGradient>
             <LinearGradient
-              colors={['#A5ECC0', '#E2A5EC']}
+              colors={["#A5ECC0", "#E2A5EC"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}>
+              style={[styles.gradient, { width: 200, height: 30 }]}
+            >
               <TouchableOpacity
                 onPress={() => handleLogoutPress()}
-                style={styles.button}>
-                <Text style={{ color: '#565656' }}>Me déconnecter</Text>
+                style={styles.button}
+              >
+                <Text style={{ color: "#565656" }}>Me déconnecter</Text>
               </TouchableOpacity>
             </LinearGradient>
 
@@ -307,27 +315,35 @@ export default function ProfileScreen({ navigation, toggleTabBar }) {
         <View style={styles.followContent}>
           <TouchableOpacity
             onPress={() => setFollowingModal(true)}
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={styles.followText}>{followingList.length} abonnements</Text>
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Text style={styles.followText}>
+              {followingList.length} abonnements
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setFollowersModal(true)}
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={styles.followText}>{followersList.length} abonnés</Text>
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Text style={styles.followText}>
+              {followersList.length} abonnés
+            </Text>
           </TouchableOpacity>
           {followingModalContent}
           {followersModalContent}
         </View>
         {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
         <LinearGradient
-          colors={['#A5ECC0', '#E2A5EC']}
+          colors={["#A5ECC0", "#E2A5EC"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[styles.gradient, { width: 340, height: 40 }]}>
+          style={[styles.gradient, { width: 340, height: 40 }]}
+        >
           <TouchableOpacity
             style={styles.buttonAdd}
-            onPress={() => handleAddPostModal()}>
-            <Text style={{ color: '#565656' }}>Type...</Text>
+            onPress={() => handleAddPostModal()}
+          >
+            <Text style={{ color: "#565656" }}>Type...</Text>
           </TouchableOpacity>
         </LinearGradient>
         <AddPostModal
@@ -340,42 +356,43 @@ export default function ProfileScreen({ navigation, toggleTabBar }) {
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
             <TouchableOpacity
-              onPress={() => handleTabPress('concerts')}
-              style={styles.tab}>
+              onPress={() => handleTabPress("concerts")}
+              style={styles.tab}
+            >
               <Text>Concerts</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleTabPress('posts')}
-              style={styles.tab}>
+              onPress={() => handleTabPress("posts")}
+              style={styles.tab}
+            >
               <Text>Posts</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleTabPress('media')}
-              style={styles.tab}>
+              onPress={() => handleTabPress("media")}
+              style={styles.tab}
+            >
               <Text>Media</Text>
             </TouchableOpacity>
           </View>
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
-            {activeTab === 'concerts' && (
-              <ScrollView style={{
-                maxHeight: '90%',
-                width: '100%',
-                borderRadius: 12,
-              }}>{userConcerts}</ScrollView>
+            {activeTab === "concerts" && (
+              <ScrollView
+                style={{
+                  maxHeight: "90%",
+                  width: "100%",
+                  borderRadius: 12,
+                }}
+              >
+                {userConcerts}
+              </ScrollView>
             )}
-            {activeTab === 'posts' && <ScrollView>{userPosts}</ScrollView>}
+            {activeTab === "posts" && <ScrollView>{userPosts}</ScrollView>}
             <View style={styles.mediaContainer}>
-              {activeTab === 'media' && media}
+              {activeTab === "media" && media}
             </View>
           </View>
         </View>
-              <TouchableOpacity
-                style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-                onPress={toggleTabBar}
-              >
-                <Icon name="chevron-down" size={30} color="black" />
-              </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -544,4 +561,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  tabContent: {
+    height: '94%'
+  },
+  chevron: {
+    height: 30,
+    bottom: 20
+  }
 });

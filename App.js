@@ -42,89 +42,121 @@ const persistor = persistStore(store);
 export {persistor}
 
 const TabNavigator = () => {
-  const [isTabVisible, setIsTabVisible] = useState(true); //Etat pour le déclenchement de l'animation
+  const [animationStart, setAnimationStart] = useState(false); //Etat pour le déclenchement de l'animation
   const [isReallyVisible, setIsReallyVisible] = useState(true); //Etat pour l'affichage de la tab bar
   const tabBarTranslateY = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
-    if (isTabVisible) {
-      setIsReallyVisible(true); //Garde la tab bar affichée
+    if (animationStart) {
+      //Masque la tab bar
       Animated.timing(tabBarTranslateY, {
-        toValue: isTabVisible ? 0 : 100,
+        toValue: 100,
         duration: 300,
         useNativeDriver: true,
-      }).start();
+      }).start(() => setIsReallyVisible(false));
     } else {
+      //Affiche la tab bar
+      setIsReallyVisible(true);
       Animated.timing(tabBarTranslateY, {
-        toValue: isTabVisible ? 0 : 100,
+        toValue: 0,
         duration: 300,
         useNativeDriver: true,
-      }).start(() => setIsReallyVisible(false)); //Cache la tab bar au lancement de l'animation
+      }).start(); 
     }
-  }, [isTabVisible]);
+  }, [animationStart]);
 
   return (
-    <Tab.Navigator
-    screenOptions={({ route }) => ({
-      tabBarIcon: ({ color, size, focused }) => {
-        let iconName = '';
-        
-        if (route.name === 'Profile') {
-          iconName = 'user-circle';
-        } else if (route.name === 'Messages') {
-          iconName = 'envelope';
-        } else if (route.name === 'Home') {
-          iconName = 'home';
-        }
-        
-        return (
-          <View style={[styles.tab, { backgroundColor: focused ? '#E2A5EC' : '#A5ECC0' }]}>
-              <FontAwesome
-                name={iconName}
-                size={30}
-                color='#fff'
-              />
+    <View style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size, focused }) => {
+            let iconName = "";
+
+            if (route.name === "Profile") {
+              iconName = "user-circle";
+            } else if (route.name === "Messages") {
+              iconName = "envelope";
+            } else if (route.name === "Home") {
+              iconName = "home";
+            }
+
+            return (
+              <View
+                style={[
+                  styles.tab,
+                  { backgroundColor: focused ? "#E2A5EC" : "#A5ECC0" },
+                ]}
+              >
+                <FontAwesome name={iconName} size={30} color="#fff" />
               </View>
-          );
-        },
-        tabBarShowLabel: false,
-        headerShown: false,
-        tabBarStyle: styles.tabBarStyle,
-      })}
-      tabBar={props => isReallyVisible && (
-        <Animated.View
-        style={[styles.tabBarStyle,
-          {
-            transform: [{ translateY: tabBarTranslateY}],
-          }
-        ]}
-        >
-          <BottomTabBar {...props} />
-        </Animated.View>
-      )}
+            );
+          },
+          tabBarShowLabel: false,
+          headerShown: false,
+          tabBarStyle: styles.tabBarStyle,
+        })}
+        tabBar={(props) =>
+          isReallyVisible && (
+            <Animated.View
+              style={[
+                styles.tabBarStyle,
+                {
+                  transform: [{ translateY: tabBarTranslateY }],
+                },
+              ]}
+            >
+              <BottomTabBar {...props} />
+            </Animated.View>
+          )
+        }
       >
-      <Tab.Screen name="Home" >
-        {(props) => {
-          return (
-          <HomeScreen {...props} toggleTabBar={() => setIsTabVisible(prev => !prev)} />
-        )
+        <Tab.Screen name="Home">
+          {(props) => {
+            return (
+              <HomeScreen
+                {...props}
+                toggleTabBar={() => setAnimationStart((prev) => !prev)}
+              />
+            );
+          }}
+        </Tab.Screen>
+        <Tab.Screen name="Messages">
+          {(props) => {
+            return (
+              <MessagesScreen
+                {...props}
+                toggleTabBar={() => setAnimationStart((prev) => !prev)}
+              />
+            );
+          }}
+        </Tab.Screen>
+        <Tab.Screen name="Profile">
+          {(props) => {
+            return (
+              <ProfileScreen
+                {...props}
+                toggleTabBar={() => setAnimationStart((prev) => !prev)}
+              />
+            );
+          }}
+        </Tab.Screen>
+      </Tab.Navigator>
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          bottom: isReallyVisible ? 100 : 0, // pour laisser de l’espace quand tab bar visible
+          padding: 10,
+          borderRadius: 30,
+          bottom: 35,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
         }}
-      </Tab.Screen>
-      <Tab.Screen name="Messages" >
-        {(props) => {
-          return (
-            <MessagesScreen {...props} toggleTabBar={() => setIsTabVisible(prev => !prev)}/>
-          )
-        }}
-      </Tab.Screen>
-      <Tab.Screen name="Profile" >
-        {(props) => {
-          return (
-            <ProfileScreen {...props} toggleTabBar={() => setIsTabVisible(prev => !prev)}/>
-          )
-        }}
-      </Tab.Screen>
-    </Tab.Navigator>
+        onPress={() => setAnimationStart((prev) => !prev)}
+      >
+        <FontAwesome name={isReallyVisible ? 'chevron-down' : 'chevron-up'} size={25} color="#a5ecc0" />
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -165,7 +197,7 @@ const styles = StyleSheet.create({
   },
   tabBarStyle: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 35,
     left: 60,
     right: 60,
     backgroundColor: 'rgb(245, 245, 245)',
