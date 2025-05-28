@@ -53,10 +53,10 @@ export default function UserProfileScreen({ route, navigation }) {
         setFollowersList(data.followers)
       })
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/following/${userToken}`) // Récupération des utilisateurs suivis par l'utilisateur visité
-    .then((response) => response.json())
-    .then((data) => {
-      setFollowingList(data.following);
-    })
+      .then((response) => response.json())
+      .then((data) => {
+        setFollowingList(data.following);
+      })
   }, [reload]);
 
   const handleTabPress = (tabName) => {
@@ -65,37 +65,37 @@ export default function UserProfileScreen({ route, navigation }) {
 
   // ───── ⋆ ───── Liste des concerts de l'utilisateur ───── ⋆ ─────
   const userConcerts = concerts.map((data, i) => {
-      return (
-        <Concert
-          key={i}
-          pic={data.pic}
-          city={data.city}
-          venue={data.venue}
-          artist={data.artist}
-          date={data.date}
-          seatmap={data.seatmap}
-          id={data.id}
-          screen="UserProfile"
-        />
-      );
-    });
+    return (
+      <Concert
+        key={i}
+        pic={data.pic}
+        city={data.city}
+        venue={data.venue}
+        artist={data.artist}
+        date={data.date}
+        seatmap={data.seatmap}
+        id={data.id}
+        screen="UserProfile"
+      />
+    );
+  });
 
   // ───── ⋆ ───── Liste des posts de l'utilisateur ───── ⋆ ─────
   const userPosts = posts.map((data, i) => {
-      // const isLiked = data.likes.some((data) => data === myToken);
-      return (
-        <Post
-          key={i}
-          username={data.author.username}
-          text={data.text}
-          date={data.date}
-          nbLikes={data.likes.length}
-          // isLiked={isLiked}
-          // reloadFunction={reloadFunction}
-          {...data}
-        />
-      );
-    });
+    // const isLiked = data.likes.some((data) => data === myToken);
+    return (
+      <Post
+        key={i}
+        username={data.author.username}
+        text={data.text}
+        date={data.date}
+        nbLikes={data.likes.length}
+        // isLiked={isLiked}
+        // reloadFunction={reloadFunction}
+        {...data}
+      />
+    );
+  });
 
   // ───── ⋆ ───── Liste des médias de l'utilisateur ───── ⋆ ─────
   const media = mediaData.map((data, i) => {
@@ -142,7 +142,7 @@ export default function UserProfileScreen({ route, navigation }) {
     }).then((response) => response.json())
       .then(data => {
         if (data.result) {
-          dispatch(unfollow({token: data.friend.token}))
+          dispatch(unfollow({ token: data.friend.token }))
           setUnfollowModalVisible(false);
         }
         reloadFunction();
@@ -175,11 +175,11 @@ export default function UserProfileScreen({ route, navigation }) {
       onRequestClose={() => setUnfollowModalVisible(false)}
     >
       <View style={{
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0,0,0,0.3)',
-    }}>
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.3)',
+      }}>
         <View style={styles.modalContainer}>
           <Text>Etes vous sûr de vouloir vous désabonner de {username} ?</Text>
           <TouchableOpacity onPress={unfollowUser}>
@@ -291,6 +291,9 @@ export default function UserProfileScreen({ route, navigation }) {
       <View style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10 }}>
+            <FontAwesome name="chevron-left" size={24} color="#565656" />
+          </TouchableOpacity>
           <View style={styles.profilePic}>
             <FontAwesome name="user-circle" size={80} color="#000000" />
             <Text>placeholder</Text>
@@ -325,19 +328,19 @@ export default function UserProfileScreen({ route, navigation }) {
         </View>
         <View style={styles.followContent}>
           <TouchableOpacity
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
             onPress={() => setFollowingModal(true)}
-            >
+          >
             <Text style={styles.followText}>{followingList.length} abonnements</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
             onPress={() => setFollowersModal(true)}
           >
             <Text style={styles.followText}>{followersList.length} abonnés</Text>
           </TouchableOpacity>
-            {followersModalContent}
-            {followingModalContent}
+          {followersModalContent}
+          {followingModalContent}
         </View>
         {/* ───── ⋆ ───── Content ───── ⋆ ───── */}
         <View style={styles.contentContainer}>
@@ -397,6 +400,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   profilePic: {
     width: '40%',
@@ -413,7 +417,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 36,
   },
-    gradient: {
+  gradient: {
     padding: 2,
     borderRadius: 12,
     justifyContent: 'center',
@@ -480,7 +484,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-    followContent: {
+  followContent: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -493,45 +497,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   modalBackground: {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0,0,0,0.3)',
-  zIndex: 1,
-},
-modalContainer: {
-  backgroundColor: 'white',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  width: '85%',
-  maxHeight: 350,
-  borderRadius: 16,
-  padding: 20,
-  zIndex: 2,
-},
-modalList: {
-  width: '100%',
-  marginBottom: 16,
-},
-modalItem: {
-  width: '100%',
-  paddingVertical: 10,
-  borderBottomWidth: 1,
-  borderColor: '#D7D7D7',
-  alignItems: 'center',
-},
-modalCloseButton: {
-  marginTop: 10,
-  backgroundColor: '#A5ECC0',
-  borderRadius: 8,
-  paddingVertical: 8,
-  paddingHorizontal: 24,
-},
-modalCloseText: {
-  color: '#565656',
-  fontWeight: 'bold',
-  fontSize: 16,
-},
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    zIndex: 1,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '85%',
+    maxHeight: 350,
+    borderRadius: 16,
+    padding: 20,
+    zIndex: 2,
+  },
+  modalList: {
+    width: '100%',
+    marginBottom: 16,
+  },
+  modalItem: {
+    width: '100%',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: '#D7D7D7',
+    alignItems: 'center',
+  },
+  modalCloseButton: {
+    marginTop: 10,
+    backgroundColor: '#A5ECC0',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 24,
+  },
+  modalCloseText: {
+    color: '#565656',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });

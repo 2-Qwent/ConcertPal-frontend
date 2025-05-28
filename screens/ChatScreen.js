@@ -3,8 +3,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from "react";
 import Pusher from 'pusher-js/react-native';
 import { useSelector } from "react-redux";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ChatScreen({ route }) {
+  const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   const { sender, token } = route.params;
   const [messages, setMessages] = useState([]);
@@ -65,7 +68,12 @@ export default function ChatScreen({ route }) {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <SafeAreaView style={styles.container}>
-        <Text style={styles.head}>Messages with {sender}</Text>
+        <View style={styles.headContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10 }}>
+            <FontAwesome name="chevron-left" size={24} color="#565656" />
+          </TouchableOpacity>
+          <Text style={styles.head}>Messages with {sender}</Text>
+        </View>
         <FlatList
           data={messages}
           renderItem={renderItem}
@@ -95,6 +103,14 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  headContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    width: '95%',
+    marginTop: 40,
+    marginBottom: 20,
   },
   head: {
     fontSize: 18,
