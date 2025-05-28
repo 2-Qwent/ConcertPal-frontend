@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { deletePost, setPosts } from "../reducers/post";
 import moment from "moment";
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import 'moment/locale/fr'; // Import French locale for moment.js
 
 export default function Post(props) {
@@ -18,6 +19,7 @@ export default function Post(props) {
 
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [commentText, setCommentText] = useState('');
+  const [ comments, setComments ] = useState([])
 
   //affiche l'icone de suppression si le token de l'auteur correspond à celui de l'utilisateur
   useEffect(() => {
@@ -68,9 +70,9 @@ export default function Post(props) {
     });
   };
 
-  // ───── ⋆ ───── Poster un commenter ───── ⋆ ─────
+  // ───── ⋆ ───── Poster un commentaire ───── ⋆ ─────
   const handleSubmitComment = () => {
-    if (!commentText) return;
+    if (!commentText) return
 
     fetch(
       `http://${process.env.EXPO_PUBLIC_IP}:3000/comments/${token}/${props._id}`,
@@ -85,18 +87,89 @@ export default function Post(props) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          console.log('commenté :', data.comment);
-          setCommentText('');
-          setShowCommentInput(false);
-          props.reloadFunction();
+          console.log('commenté :', data.comment)
+          setCommentText('')
+          fetchComments()
+          props.reloadFunction()
         } else {
-          console.error("Erreur lors de l'envoi :", data.error);
+          console.error("Erreur lors de l'envoi :", data.error)
         }
       })
       .catch((err) => {
-        console.error('Erreur :', err);
+        console.error('Erreur :', err)
       });
   };
+
+  // ───── ⋆ ───── Fetch les commentaires ───── ⋆ ─────
+  const fetchComments = () => [
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/post/${props._id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          setComments(data.comments)
+        } else {
+          console.error("Erreur lors de la récupération des commentaires :", data.error)
+        }
+      })
+      .catch((err) => {
+        console.error('Erreur :', err)
+      }),
+  ]
+
+  useEffect(() => {
+    if (showCommentInput) {
+      fetchComments()
+    }
+  }, [showCommentInput])
+
+  const commentsList = comments.map((comment, i) => {
+    const formattedDate = moment(comment.date).fromNow()
+    return (
+      <View key={i} style={styles.commentContainer}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={styles.username}>{comment.author.username}</Text>
+          <Text style={styles.date}>{formattedDate}</Text>
+        </View>
+        <Text style={styles.postText}>{comment.text}</Text>
+        <View style={styles.icons}>
+          <TouchableOpacity>
+            <View style={{ flexDirection: 'row' }}>
+              <FontAwesome
+                style={{ marginHorizontal: 20 }}
+                name= 'reply'
+                size={18}
+              />
+              <Text>0</Text>
+            </View>
+          </TouchableOpacity>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity>
+              <FontAwesome
+                style={{
+                  color: '#1D0322',
+                  marginHorizontal: 20,
+                }}
+                name="heart"
+                size={18}
+              />
+            </TouchableOpacity>
+            <Text>0 like. Zero.</Text>
+          </View>
+          {trashIcon && (
+            <TouchableOpacity
+              style={{ paddingHorizontal: 10 }}
+              onPress={() => handleDeletePost()}>
+              <FontAwesome
+                style={{ marginHorizontal: 20, color: '#565656' }}
+                name="trash"
+                size={18}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+    );
+  })
 
   return (
     <View style={styles.container}>
@@ -131,12 +204,23 @@ export default function Post(props) {
         {/*───── ⋆ ───── Icons ───── ⋆ ─────*/}
         <View style={styles.icons}>
           <TouchableOpacity
-            onPress={() => setShowCommentInput(!showCommentInput)}>
-            <FontAwesome
-              style={{ marginHorizontal: 20 }}
-              name="reply"
-              size={18}
-            />
+            onPress={() => {
+              setShowCommentInput((showComments) => {
+                const newDisplay = !showComments;
+                if (!newDisplay) {
+                  setComments([]);
+                }
+                return newDisplay;
+              });
+            }}>
+            <View style={{ flexDirection: 'row' }}>
+              <FontAwesome
+                style={{ marginHorizontal: 20 }}
+                name={comments.length > 0 ? 'close' : 'reply'}
+                size={18}
+              />
+              <Text>{props.nbComs}</Text>
+            </View>
           </TouchableOpacity>
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity onPress={() => handleLikePost()}>
@@ -164,18 +248,25 @@ export default function Post(props) {
           )}
         </View>
 
+        {/*───── ⋆ ───── Comments ───── ⋆ ─────*/}
         {showCommentInput && (
-          <View>
+          <View style={{marginVertical: 10}}>
             <TextInput
+              style={styles.input}
               placeholder="Ajouter un commentaire..."
               value={commentText}
               onChangeText={setCommentText}
             />
-            <TouchableOpacity onPress={handleSubmitComment}>
-              <Text>Envoyer</Text>
+            <TouchableOpacity
+              onPress={handleSubmitComment}
+              style={styles.button}>
+              <Text style={{ color: '#ffffff' }}>Envoyer</Text>
             </TouchableOpacity>
           </View>
         )}
+        {comments.length > 0 && <LinearGradient
+                  colors={['rgba(165,236,192,0.2)', 'rgb(245, 245, 245)']}
+                  style={styles.gradient}>{commentsList}</LinearGradient>}
       </View>
     </View>
   );
@@ -207,16 +298,44 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 4,
   },
+  username: {
+    fontWeight: '500',
+    fontSize: 15,
+  },
   date: {
     color: '#565656',
     fontSize: 12,
   },
   postText: {
     marginBottom: 5,
-    fontSize: 14,
+    fontSize: 13,
+    color: '#464646',
+    left: 10,
   },
   icons: {
     flexDirection: 'row',
     margin: 5,
   },
+  button: {
+    width: 100,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#A5ECC0',
+    borderRadius: 15,
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#A5ECC0',
+    marginBottom: 15,
+    paddingVertical: 5,
+  },
+  commentContainer: {
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderBottomColor: '#A5ECC0',
+    borderBottomWidth: 1,
+    marginLeft: 5,
+    marginRight: 5,
+  }
 });

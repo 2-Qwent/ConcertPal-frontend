@@ -56,7 +56,7 @@ export default function ChatScreen({ route }) {
   const renderItem = ({ item }) => (
     <View style={[
       styles.messageBubble,
-      item.sender === "IfAA0dFdGHEZRjDJyc1rTnFwEj74XHox" ? styles.myMessage : styles.otherMessage
+      item.sender === myToken ? styles.myMessage : styles.otherMessage
     ]}>
       <Text style={styles.messageText}>{item.message}</Text>
     </View>
