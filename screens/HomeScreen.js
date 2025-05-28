@@ -124,6 +124,7 @@ export default function HomeScreen({ toggleTabBar }) {
         text={data.text}
         date={moment(data.date).fromNow()}
         nbLikes={data.likes.length}
+        nbComs={data.comments.length}
         isLiked={isLiked}
         reloadFunction={reloadFunction}
         {...data}
