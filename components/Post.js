@@ -255,6 +255,7 @@ export default function Post(props) {
               style={styles.input}
               placeholder="Ajouter un commentaire..."
               value={commentText}
+              multiline
               onChangeText={setCommentText}
             />
             <TouchableOpacity

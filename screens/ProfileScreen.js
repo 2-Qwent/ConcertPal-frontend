@@ -23,6 +23,7 @@ import AddPostModal from "../components/AddPostModal";
 import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useIsFocused } from '@react-navigation/native';
 
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
@@ -43,6 +44,7 @@ export default function ProfileScreen({ navigation, toggleTabBar }) {
   const [followingModal, setFollowingModal] = useState(false); // Pour afficher la modal des utilisateurs suivis
   const [followersModal, setFollowersModal] = useState(false); // Pour afficher la modal des utilisateurs suivis
   const followersList = following.followers; // Liste des followers de l'utilisateur
+  const isFocused = useIsFocused();
 
   // Posts de l'utilisateur uniquement
   const [postContent, setPostContent] = useState('')
@@ -88,6 +90,7 @@ export default function ProfileScreen({ navigation, toggleTabBar }) {
 
 
   useEffect(() => {
+    if (!isFocused) return;
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`) // Récupération des données de l'utilisateur
       .then((response) => response.json())
       .then((data) => {
@@ -113,7 +116,7 @@ export default function ProfileScreen({ navigation, toggleTabBar }) {
       .then((data) => {
         dispatch(setFollowers(data.followers));
       })
-  }, [reload]);
+  }, [reload, isFocused]);
 
   // Liste des concerts de l'utilisateur
   const userConcerts = concerts.map((data, i) => {

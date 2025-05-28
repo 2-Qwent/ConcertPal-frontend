@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   Text,
+  Pressable,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { addPost } from "../reducers/post";
@@ -57,50 +58,43 @@ export default function AddPostModal({
         visible={isVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setIsVisible(false)}
-      >
+        onRequestClose={() => setIsVisible(false)}>
         <View
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.3)",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Pressable
+            style={styles.modalBackground}
+            onPress={() => setIsVisible(false)}
+          />
           <LinearGradient
-            colors={["#A5ECC0", "#E2A5EC"]}
+            colors={['#A5ECC0', '#E2A5EC']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.gradient, { width: "90%", height: 200 }]}
-          >
+            style={[styles.gradient, { width: '90%', height: 200 }]}>
             <View style={styles.modalContainer}>
-              <View style={{ height: "100%", justifyContent: 'flex-end' }}>
               <TextInput
                 placeholder="Ajouter un post"
                 value={postContent}
                 onChangeText={setPostContent}
+                multiline
                 style={styles.input}
               />
-                <View style={styles.tabContainer}>
-                  <TouchableOpacity style={styles.tab} onPress={newPost}>
-                    <Text>Poster</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.tab}
-                    onPress={() => {
-                      setIsVisible(false);
-                      setTimeout(() => setShowCamera(true), 500);
-                    }}
-                  >
-                    <Text>Prendre une photo</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.tab}
-                    onPress={() => handleCancelPost()}
-                  >
-                    <Text>Annuler</Text>
-                  </TouchableOpacity>
-                </View>
+              <View style={styles.tabContainer}>
+                <TouchableOpacity style={styles.tab} onPress={newPost}>
+                  <Text style={{ color: 'white' }}>Poster</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.tab}
+                  onPress={() => {
+                    setIsVisible(false);
+                    setTimeout(() => setShowCamera(true), 500);
+                  }}>
+                  <Text style={{ color: 'white' }}>Photo</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.tab}
+                  onPress={() => handleCancelPost()}>
+                  <Text style={{ color: 'white' }}>Annuler</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </LinearGradient>
@@ -113,7 +107,7 @@ export default function AddPostModal({
 const styles = StyleSheet.create({
   modalContainer: {
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     width: "100%",
     height: "100%",
     backgroundColor: "rgb(245, 245, 245)",
@@ -122,6 +116,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "90%",
+    maxHeight: 120,
     borderBottomColor: "#A5ECC0",
     borderBottomWidth: 1,
   },
@@ -147,5 +142,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: "center",
     margin: 10,
+  },
+  modalBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(29, 3, 0, 0.6)',
   },
 });

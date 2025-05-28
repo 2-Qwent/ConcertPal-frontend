@@ -22,6 +22,7 @@ import { setConcerts } from "../reducers/concerts";
 import { persistor } from "../App"
 import AddPostModal from "../components/AddPostModal";
 import { LinearGradient } from 'expo-linear-gradient';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function HomeScreen({ toggleTabBar }) {
 
@@ -34,6 +35,7 @@ export default function HomeScreen({ toggleTabBar }) {
   const [concerts, setConcerts] = useState([]); // États pour la liste des concerts
   const [date, setDate] = useState(null); // Date
   const [isVisible, setIsVisible] = useState(false); // Modal pour ajouter un post
+  const isFocused = useIsFocused();
 
   const posts = useSelector((state) => state.post.value) // Appel des posts
   const user = useSelector((state) => state.user.value);
@@ -49,12 +51,13 @@ export default function HomeScreen({ toggleTabBar }) {
   }
 
   useEffect(() => {
+    if (!isFocused) return;
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
       .then((response) => response.json())
       .then((data) => {
         dispatch(setPosts(data.posts));
       });
-  }, [reload]);
+  }, [reload, isFocused]);
 
   const handleSearch = () => {
     const searchParams = { artist, venue };
@@ -178,6 +181,7 @@ export default function HomeScreen({ toggleTabBar }) {
               <Text style={{ color: "#565656" }}>Type...</Text>
             </TouchableOpacity>
           </LinearGradient>
+          {/* ───── ⋆ ───── Post modal ───── ⋆ ───── */}
           <AddPostModal
             isVisible={isVisible}
             setIsVisible={setIsVisible}
