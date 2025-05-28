@@ -181,6 +181,7 @@ export default function HomeScreen({ toggleTabBar }) {
               <Text style={{ color: "#565656" }}>Type...</Text>
             </TouchableOpacity>
           </LinearGradient>
+          {/* ───── ⋆ ───── Post modal ───── ⋆ ───── */}
           <AddPostModal
             isVisible={isVisible}
             setIsVisible={setIsVisible}
