@@ -75,12 +75,6 @@ export default function MessagesScreen({ navigation, toggleTabBar }) {
       <View style={styles.messagerieWrapper}>
         <View style={styles.wrapper}>{messages}</View>
       </View>
-      <TouchableOpacity
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        onPress={toggleTabBar}
-      >
-        <Icon name="chevron-down" size={30} color="black" />
-      </TouchableOpacity>
     </View>
   );
 }
