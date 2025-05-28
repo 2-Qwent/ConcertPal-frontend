@@ -42,17 +42,15 @@ export default function ProfileScreen({ navigation }) {
   const [followingModal, setFollowingModal] = useState(false); // Pour afficher la modal des utilisateurs suivis
   const [followersModal, setFollowersModal] = useState(false); // Pour afficher la modal des utilisateurs suivis
   const followersList = following.followers; // Liste des followers de l'utilisateur
-  
+
   // Posts de l'utilisateur uniquement
   const [postContent, setPostContent] = useState('')
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  
+
   // Séléction des concerts et posts :
   const concerts = useSelector((state) => state.concerts.value) || [];
   const posts = useSelector((state) => state.post.value) || [];
   const user = useSelector((state) => state.user.value);
-  const token = user.token; // Token de l'utilisateur connecté
-
   const token = user.token; // Token de l'utilisateur connecté
 
   const filteredPosts = posts.filter((post) => post.author.token === token)
@@ -69,7 +67,6 @@ export default function ProfileScreen({ navigation }) {
         method: 'PUT',
       });
       const data = await response.json();
-      console.log(data)
       if (data.success) {
         setActiveUser(data.user); // Met à jour l'utilisateur actif avec les nouvelles données
       }
