@@ -110,36 +110,9 @@ const TabNavigator = () => {
           )
         }
       >
-        <Tab.Screen name="Home">
-          {(props) => {
-            return (
-              <HomeScreen
-                {...props}
-                toggleTabBar={() => setAnimationStart((prev) => !prev)}
-              />
-            );
-          }}
-        </Tab.Screen>
-        <Tab.Screen name="Messages">
-          {(props) => {
-            return (
-              <MessagesScreen
-                {...props}
-                toggleTabBar={() => setAnimationStart((prev) => !prev)}
-              />
-            );
-          }}
-        </Tab.Screen>
-        <Tab.Screen name="Profile">
-          {(props) => {
-            return (
-              <ProfileScreen
-                {...props}
-                toggleTabBar={() => setAnimationStart((prev) => !prev)}
-              />
-            );
-          }}
-        </Tab.Screen>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Messages" component={MessagesScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen}/>
       </Tab.Navigator>
       <TouchableOpacity
         style={{
@@ -147,7 +120,7 @@ const TabNavigator = () => {
           bottom: isReallyVisible ? 100 : 0, // pour laisser de l’espace quand tab bar visible
           padding: 10,
           borderRadius: 30,
-          bottom: 35,
+          bottom: 40,
           left: 0,
           right: 0,
           alignItems: 'center',
@@ -197,7 +170,7 @@ const styles = StyleSheet.create({
   },
   tabBarStyle: {
     position: 'absolute',
-    bottom: 35,
+    bottom: 40,
     left: 60,
     right: 60,
     backgroundColor: 'rgb(245, 245, 245)',

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, Alert, Modal } from "react-native";
+import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, Alert, Modal, Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction }) => {
@@ -65,51 +65,55 @@ const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction }) => 
   };
 
   return (
-      <Modal
-          visible={isVisible}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setIsVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
-              <Image
-                  source={{ uri: avatar ? avatar.uri : user.avatar }}
-                  style={styles.avatarPreview}
-              />
-              <Text style={styles.changeAvatarText}>Changer l'avatar</Text>
+    <Modal
+      visible={isVisible}
+      transparent
+      animationType="slide"
+      onRequestClose={() => setIsVisible(false)}
+    >
+      <View style={styles.modalContainer}>
+        <Pressable
+          style={styles.modalBackground}
+          onPress={() => setIsVisible(false)}
+        />
+        <View style={styles.modalContent}>
+          <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
+            <Image
+              source={{ uri: avatar ? avatar.uri : user.avatar }}
+              style={styles.avatarPreview}
+            />
+            <Text style={styles.changeAvatarText}>Changer l'avatar</Text>
+          </TouchableOpacity>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Nom d'utilisateur"
+            value={username}
+            onChangeText={setUsername}
+            placeholderTextColor="#666"
+          />
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, styles.submitButton]}
+              onPress={handleSubmit}
+              disabled={isLoading}
+            >
+              <Text style={styles.buttonText}>
+                {isLoading ? "Mise à jour..." : "Valider"}
+              </Text>
             </TouchableOpacity>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Nom d'utilisateur"
-                value={username}
-                onChangeText={setUsername}
-                placeholderTextColor="#666"
-            />
-
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                  style={[styles.button, styles.submitButton]}
-                  onPress={handleSubmit}
-                  disabled={isLoading}
-              >
-                <Text style={styles.buttonText}>
-                  {isLoading ? "Mise à jour..." : "Valider"}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                  style={[styles.button, styles.cancelButton]}
-                  onPress={() => setIsVisible(false)}
-              >
-                <Text style={styles.buttonText}>Annuler</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={() => setIsVisible(false)}
+            >
+              <Text style={styles.buttonText}>Annuler</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </View>
+    </Modal>
   );
 };
 
@@ -120,6 +124,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
     padding: '5%',
+  },
+  modalBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(29, 3, 0, 0.6)',
   },
   modalContent: {
     width: '90%',

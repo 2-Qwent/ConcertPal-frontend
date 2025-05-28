@@ -127,9 +127,14 @@ export default function ConcertScreen({ route }) {
       style={StyleSheet.absoluteFill}
       resizeMode="cover">
       <View style={styles.container}>
-        <Text style={styles.head}>
-          {artist} - {venue} - {formattedDate}
-        </Text>
+        <View style={styles.headContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10 }}>
+            <FontAwesome name="chevron-left" size={24} color="#565656" />
+          </TouchableOpacity>
+          <Text style={styles.head}>
+            {artist} - {venue} - {formattedDate}
+          </Text>
+        </View>
 
         {/* ───── ⋆ ───── Afficher ou non la seatmap ───── ⋆ ───── */}
         {seatmap !== 'Pas de plan pour ce spectacle' ? (
@@ -157,7 +162,7 @@ export default function ConcertScreen({ route }) {
             </TouchableOpacity>
           </View>
         )}
-          // Affiche l'input et le bouton d'ajout tant que la zone n'est pas renseignée
+        {/* Affiche l'input et le bouton d'ajout tant que la zone n'est pas renseignée */}
         <Modal
           visible={modalVisible}
           transparent={true}
@@ -236,6 +241,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: '100%',
+  },
+  headContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    width: '95%',
+    marginTop: 40,
+    marginBottom: 20,
   },
   image: {
     width: '95%',
@@ -246,9 +260,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   head: {
-    marginTop: 40,
-    marginBottom: 20,
-    width: '95%',
     textAlign: 'center',
     textAlignVertical: 'center',
     padding: 10,

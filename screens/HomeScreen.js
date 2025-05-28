@@ -24,7 +24,7 @@ import AddPostModal from "../components/AddPostModal";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from '@react-navigation/native';
 
-export default function HomeScreen({ toggleTabBar }) {
+export default function HomeScreen() {
 
   const [modalVisible, setModalVisible] = useState(false); // Modal visible oui / non
   const [showPicker, setShowPicker] = useState(false); // Menu choix date
