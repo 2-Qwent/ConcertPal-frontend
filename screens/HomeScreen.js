@@ -113,7 +113,9 @@ export default function HomeScreen() {
   });
 
   const timeline = posts.map((data, i) => {
-    const isLiked = data.likes?.some((post) => post === token) || false;
+    if (!data) return null
+
+    const isLiked = data.likes?.some((post) => post === token);
     return (
         <Post
             key={i}
@@ -126,7 +128,7 @@ export default function HomeScreen() {
             {...data}
         />
     );
-  });
+  }).filter(Boolean);
 
   return (
     <ImageBackground

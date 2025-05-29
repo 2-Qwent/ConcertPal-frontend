@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, Alert, Modal } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
-const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction }) => {
+const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction2 }) => {
   const [username, setUsername] = useState(user.username);
   const [avatar, setAvatar] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +50,7 @@ const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction }) => 
       const data = await response.json();
       console.log(data)
       if (data.success) {
-        reloadFunction();
+        reloadFunction2();
         setIsVisible(false);
         Alert.alert("Succès", "Profil mis à jour avec succès");
       } else {
@@ -59,6 +59,7 @@ const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction }) => 
       }
     } catch (error) {
       Alert.alert("Erreur", "Impossible de mettre à jour le profil");
+      console.error("Erreur lors de la mise à jour du profil :", error);
     } finally {
       setIsLoading(false);
     }

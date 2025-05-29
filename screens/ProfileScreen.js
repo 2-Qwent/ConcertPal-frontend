@@ -15,13 +15,13 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Concert from "../components/Concert";
+import Post from "../components/Post";
 import EditProfileModal from "../components/EditProfileModal";
+import AddPostModal from "../components/AddPostModal";
 import { logout } from "../reducers/user";
 import { setConcerts } from "../reducers/concerts";
-import Post from "../components/Post";
-import AddPostModal from "../components/AddPostModal";
-import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
@@ -63,13 +63,11 @@ export default function ProfileScreen({ navigation }) {
 
   const reloadFunction2 = async () => {
     try {
-      const response = await fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/user/${user.token}`, {
-        method: 'PUT',
-      });
+      const response = await fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/user/${user.token}`);
       const data = await response.json();
-      console.log(data)
       if (data.success) {
-        setActiveUser(data.user); // Met à jour l'utilisateur actif avec les nouvelles données
+        setActiveUser(data.user);
+        setReload(!reload); // Force le rechargement des données
       }
     } catch (error) {
       console.error('Erreur lors du rechargement du profil:', error);
@@ -164,17 +162,14 @@ export default function ProfileScreen({ navigation }) {
   }
 
   // ───── ⋆ ───── Affichage des utilisateurs suivis par l'utilisateur ───── ⋆ ─────
-  const followingDisplay = followingList.map((user, i) => {
+  const followingDisplay = followingList?.map((user, i) => {
     return (
-      <View
-      key={i}
-      style={styles.modalItem}
-      >
-        <Text>{user.username}</Text>
-        <Text>{user.avatar}</Text>
-      </View>
-    )
-  })
+        <View key={i} style={styles.modalItem}>
+          {user?.username && <Text>{user.username}</Text>}
+          {user?.avatar && <Text>{user.avatar}</Text>}
+        </View>
+    );
+  }) || null;
 
   const followingModalContent = (
     <Modal
@@ -208,17 +203,14 @@ export default function ProfileScreen({ navigation }) {
   );
 
   // ───── ⋆ ───── Affichage des followers de l'utilisateur ───── ⋆ ─────
-  const followersDisplay = followersList.map((user, i) => {
+  const followersDisplay = followersList?.map((user, i) => {
     return (
-      <View
-      key={i}
-      style={styles.modalItem}
-      >
-        <Text>{user.username}</Text>
-        <Text>{user.avatar}</Text>
-      </View>
-    )
-  })
+        <View key={i} style={styles.modalItem}>
+          {user?.username && <Text>{user.username}</Text>}
+          {user?.avatar && <Text>{user.avatar}</Text>}
+        </View>
+    );
+  }) || null;
 
   const followersModalContent = (
     <Modal
@@ -277,8 +269,8 @@ export default function ProfileScreen({ navigation }) {
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.gradient, { width: 200, height: 30 }]}>
-              <TouchableOpacity style={styles.button} >
-                <Text style={{ color: '#565656' }} onPress={() => setIsEditModalVisible(true)}>Modifier mon profil</Text>
+              <TouchableOpacity style={styles.button} onPress={() => setIsEditModalVisible(true)}>
+                <Text style={{ color: '#565656' }} >Modifier mon profil</Text>
               </TouchableOpacity>
             </LinearGradient>
             <LinearGradient
@@ -301,20 +293,20 @@ export default function ProfileScreen({ navigation }) {
             />
           </View>
         </View>
-          <View style={styles.followContent}>
-            <TouchableOpacity
+        <View style={styles.followContent}>
+          <TouchableOpacity
               onPress={() => setFollowingModal(true)}
-              style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={styles.followText}>{followingList.length} abonnements</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={styles.followText}>{followingList?.length || 0} abonnements</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
               onPress={() => setFollowersModal(true)}
-              style={{flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={styles.followText}>{followersList.length} abonnés</Text>
-            </TouchableOpacity>
-            {followingModalContent}
-            {followersModalContent}
-          </View>
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={styles.followText}>{followersList?.length || 0} abonnés</Text>
+          </TouchableOpacity>
+          {followingModalContent}
+          {followersModalContent}
+        </View>
         {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
         <LinearGradient
           colors={['#A5ECC0', '#E2A5EC']}
@@ -386,7 +378,7 @@ const styles = StyleSheet.create({
   },
   profilePic: {
     width: '40%',
-    height: 130,
+    height: 160,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -401,7 +393,7 @@ const styles = StyleSheet.create({
     width: '60%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 8,
+    paddingTop: 20,
   },
   userName: {
     fontSize: 36,
