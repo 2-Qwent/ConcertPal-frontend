@@ -63,6 +63,14 @@ export default function UserProfileScreen({ route, navigation }) {
     setActiveTab(tabName);
   };
 
+  const handleNavigate = (user) => {
+    navigation.navigate('UserProfileScreen', {
+      username: user.username,
+      userToken: user.token,
+      userAvatar: user.avatar,
+    });
+  };
+
   // ───── ⋆ ───── Liste des concerts de l'utilisateur ───── ⋆ ─────
   const userConcerts = concerts.map((data, i) => {
     return (
@@ -74,7 +82,7 @@ export default function UserProfileScreen({ route, navigation }) {
         artist={data.artist}
         date={data.date}
         seatmap={data.seatmap}
-        id={data.id}
+        id={data._id}
         screen="UserProfile"
       />
     );
@@ -195,11 +203,22 @@ export default function UserProfileScreen({ route, navigation }) {
   );
 
   // ───── ⋆ ───── Affichage des followers de l'utilisateur visité ───── ⋆ ─────
-  const followersDispay = followersList.map((follower, i) => {
+  const followersDispay = followersList.map((user, i) => {
     return (
       <View key={i} style={{ padding: 10, borderBottomWidth: 1, borderColor: '#D7D7D7' }}>
-        <Text>{follower.username}</Text>
-        <Text>{follower.avatar}</Text>
+        <TouchableOpacity onPress={() => handleNavigate(user)}>
+          <Image
+            source={
+              !user.avatar || user.avatar === "default_avatar"
+                ? require('../assets/default_avatar.png')
+                : { uri: user.avatar }
+            }
+            style={styles.userFollowAvatar}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate(user)}>
+          <Text style={{ fontWeight: "bold" }}>{user.username}</Text>
+        </TouchableOpacity>
       </View>
     )
   })
@@ -238,14 +257,25 @@ export default function UserProfileScreen({ route, navigation }) {
   );
 
   // ───── ⋆ ───── Affichage des utilisateurs suivis par l'utilisateur visité ───── ⋆ ─────
-  const followingDispay = followingList.map((follower, i) => {
+  const followingDispay = followingList.map((user, i) => {
     return (
       <View
         key={i}
         style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
       >
-        <Text>{follower.username}</Text>
-        <Text>{follower.avatar}</Text>
+        <TouchableOpacity onPress={() => handleNavigate(user)}>
+          <Image
+            source={
+              !user.avatar || user.avatar === "default_avatar"
+                ? require('../assets/default_avatar.png')
+                : { uri: user.avatar }
+            }
+            style={styles.userFollowAvatar}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate(user)}>
+          <Text style={{ fontWeight: "bold" }}>{user.username}</Text>
+        </TouchableOpacity>
       </View>
     );
   });
