@@ -5,6 +5,7 @@ import Pusher from 'pusher-js/react-native';
 import { useSelector } from "react-redux";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ChatScreen({ route }) {
   const navigation = useNavigation();
@@ -57,37 +58,54 @@ export default function ChatScreen({ route }) {
   };
 
   const renderItem = ({ item }) => (
-    <View style={[
-      styles.messageBubble,
-      item.sender === myToken ? styles.myMessage : styles.otherMessage
-    ]}>
-      <Text style={styles.messageText}>{item.message}</Text>
+    <View
+      style={[
+        styles.messageBubble,
+        item.sender === myToken ? styles.myMessage : styles.otherMessage,
+      ]}>
+      <Text style={[item.sender === myToken ? styles.myMessageText : styles.messageText,]}>
+        {item.message}
+      </Text>
     </View>
   );
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 60}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
         <View style={styles.headContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10 }}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 10 }}>
             <FontAwesome name="chevron-left" size={24} color="#565656" />
           </TouchableOpacity>
-          <Text style={styles.head}>Messages with {sender}</Text>
+          <Text style={styles.head}>Messages avec {sender}</Text>
         </View>
-        <FlatList
-          data={messages}
-          renderItem={renderItem}
-          keyExtractor={(_, i) => i.toString()}
-          style={{ flex: 1, width: '100%' }}
-          contentContainerStyle={{ padding: 10 }}
-        />
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={input}
-            onChangeText={setInput}
-            placeholder="Écrire un message..."
+        <View style={styles.messagerieWrapper}>
+          <FlatList
+            data={messages}
+            renderItem={renderItem}
+            keyExtractor={(_, i) => i.toString()}
+            style={{ flex: 1, width: '100%' }}
+            contentContainerStyle={{ padding: 10 }}
           />
+        </View>
+        <View style={styles.inputContainer}>
+          <LinearGradient
+            colors={['#E2A5EC', '#A5A7EC']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.gradient, { width: '75%', height: 50 }]}>
+            <TextInput
+              style={styles.input}
+              value={input}
+              multiline
+              onChangeText={setInput}
+              placeholder="Écrire un message..."
+            />
+          </LinearGradient>
           <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
             <Text style={{ color: 'white', fontWeight: 'bold' }}>Envoyer</Text>
           </TouchableOpacity>
@@ -98,10 +116,8 @@ export default function ChatScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    paddingTop: 40,
-    alignItems: 'center',
     backgroundColor: '#fff',
   },
   headContainer: {
@@ -109,13 +125,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     width: '95%',
-    marginTop: 40,
     marginBottom: 20,
   },
   head: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    width: '90%',
+    height: 50,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    padding: 10,
+    backgroundColor: 'rgb(245, 245, 245)',
+    borderWidth: 2,
+    borderColor: '#A5ECC0',
+    borderRadius: 12,
+  },
+  messagerieWrapper: {
     marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    backgroundColor: 'rgb(245, 245, 245)',
+    borderColor: '#D7D7D7',
+    borderRadius: 12,
+    flex: 1,
+    alignItems: 'center',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -125,16 +156,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafa',
     alignItems: 'center',
   },
-  input: {
-    flex: 1,
-    backgroundColor: '#eee',
+  button: {
+    width: 200,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgb(245, 245, 245)',
+    borderRadius: 11,
+  },
+  gradient: {
+    padding: 2,
     borderRadius: 20,
+    justifyContent: 'center',
+    margin: 10
+  },
+  input: {
+    backgroundColor: '#eee',
     paddingHorizontal: 15,
     paddingVertical: 8,
-    marginRight: 10,
+    width: '100%',
+    height: '100%',
+    borderRadius: 18,
+    padding: 10,
   },
   sendButton: {
-    backgroundColor: '#A5ECC0',
+    backgroundColor: '#A5A7EC',
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 8,
@@ -143,17 +189,28 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     maxWidth: '70%',
     padding: 10,
-    borderRadius: 15,
   },
   myMessage: {
     backgroundColor: '#A5ECC0',
     alignSelf: 'flex-end',
+    color: '#565656',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderBottomLeftRadius: 12,
   },
   otherMessage: {
-    backgroundColor: '#E2A5EC',
+    backgroundColor: '#565656',
     alignSelf: 'flex-start',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
   },
   messageText: {
     fontSize: 16,
+    color: 'rgb(245, 245, 245)',
+  },
+  myMessageText: {
+    fontSize: 16,
+    color: '#565656',
   },
 });

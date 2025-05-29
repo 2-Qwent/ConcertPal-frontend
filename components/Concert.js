@@ -104,7 +104,7 @@ export default function Concert(props) {
         <ImageBackground
           source={{ uri: props.pic }}
           style={styles.image}
-          imageStyle={{ borderRadius: 12 }}>
+          imageStyle={{ borderRadius: 10 }}>
           <View style={styles.overlay}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 5, }}>
               <FontAwesome style={{ marginRight: 10 }} name="star-o" size={25} color="#565656" />
@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
   overlay: {
     backgroundColor: 'rgba(255, 255, 255, 0.86)',
     padding: 10,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   title: {
     fontWeight: 'bold',

@@ -9,6 +9,7 @@ import {
   TextInput,
   Modal,
   Pressable,
+  SafeAreaView
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
@@ -256,11 +257,10 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require("../assets/IMG_background.png")}
+      source={require('../assets/IMG_background.png')}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover"
-    >
-      <View style={styles.container}>
+      resizeMode="cover">
+      <SafeAreaView style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
           <View style={styles.profilePic}>
@@ -276,31 +276,27 @@ export default function ProfileScreen({ navigation }) {
           <View style={styles.profileText}>
             <Text style={styles.userName}>{activeUser.username}</Text>
             <LinearGradient
-              colors={["#A5ECC0", "#E2A5EC"]}
+              colors={['#A5ECC0', '#E2A5EC']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}
-            >
+              style={[styles.gradient, { width: 200, height: 30 }]}>
               <TouchableOpacity style={styles.button}>
                 <Text
-                  style={{ color: "#565656" }}
-                  onPress={() => setIsEditModalVisible(true)}
-                >
+                  style={{ color: '#565656' }}
+                  onPress={() => setIsEditModalVisible(true)}>
                   Modifier mon profil
                 </Text>
               </TouchableOpacity>
             </LinearGradient>
             <LinearGradient
-              colors={["#A5ECC0", "#E2A5EC"]}
+              colors={['#A5ECC0', '#E2A5EC']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}
-            >
+              style={[styles.gradient, { width: 200, height: 30 }]}>
               <TouchableOpacity
                 onPress={() => handleLogoutPress()}
-                style={styles.button}
-              >
-                <Text style={{ color: "#565656" }}>Me déconnecter</Text>
+                style={styles.button}>
+                <Text style={{ color: '#565656' }}>Me déconnecter</Text>
               </TouchableOpacity>
             </LinearGradient>
 
@@ -315,16 +311,14 @@ export default function ProfileScreen({ navigation }) {
         <View style={styles.followContent}>
           <TouchableOpacity
             onPress={() => setFollowingModal(true)}
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-          >
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.followText}>
               {followingList.length} abonnements
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setFollowersModal(true)}
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-          >
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={styles.followText}>
               {followersList.length} abonnés
             </Text>
@@ -334,16 +328,14 @@ export default function ProfileScreen({ navigation }) {
         </View>
         {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
         <LinearGradient
-          colors={["#A5ECC0", "#E2A5EC"]}
+          colors={['#A5ECC0', '#E2A5EC']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[styles.gradient, { width: 340, height: 40 }]}
-        >
+          style={[styles.gradient, { width: 340, height: 40 }]}>
           <TouchableOpacity
             style={styles.buttonAdd}
-            onPress={() => handleAddPostModal()}
-          >
-            <Text style={{ color: "#565656" }}>Type...</Text>
+            onPress={() => handleAddPostModal()}>
+            <Text style={{ color: '#565656' }}>Type...</Text>
           </TouchableOpacity>
         </LinearGradient>
         <AddPostModal
@@ -355,45 +347,61 @@ export default function ProfileScreen({ navigation }) {
         <View style={styles.contentContainer}>
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
-            <TouchableOpacity
-              onPress={() => handleTabPress("concerts")}
-              style={styles.tab}
-            >
-              <Text>Concerts</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleTabPress("posts")}
-              style={styles.tab}
-            >
-              <Text>Posts</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleTabPress("media")}
-              style={styles.tab}
-            >
-              <Text>Media</Text>
-            </TouchableOpacity>
+            {['concerts', 'posts', 'media'].map((tab, i) => (
+              <TouchableOpacity key={i} onPress={() => handleTabPress(tab)}>
+                {activeTab === tab ? (
+                  <LinearGradient
+                    colors={['rgb(165, 167, 236)', 'rgb(245, 245, 245)']}
+                    style={styles.tab}>
+                      <Text style={{ color: '#565656'}}>
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      </Text>
+                    </LinearGradient>
+                ) : (
+                  <View style={styles.tab}>
+                    <Text style={{ color: 'rgb(120, 122, 197)'}}>
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            ))}
           </View>
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
-            {activeTab === "concerts" && (
+            {activeTab === 'concerts' && (
               <ScrollView
                 style={{
-                  maxHeight: "90%",
-                  width: "100%",
+                  maxHeight: '88%',
+                  width: '100%',
                   borderRadius: 12,
-                }}
-              >
+                }}>
                 {userConcerts}
               </ScrollView>
             )}
-            {activeTab === "posts" && <ScrollView>{userPosts}</ScrollView>}
-            <View style={styles.mediaContainer}>
-              {activeTab === "media" && media}
-            </View>
+            {activeTab === 'posts' && (
+              <ScrollView
+                style={{
+                  maxHeight: '88%',
+                  width: '100%',
+                  borderRadius: 12,
+                }}>
+                {userPosts}
+              </ScrollView>
+            )}
+            <ScrollView
+              style={{
+                maxHeight: '88%',
+                width: '100%',
+                borderRadius: 12,
+              }}>
+              <View style={styles.mediaContainer}>
+                {activeTab === 'media' && media}
+              </View>
+            </ScrollView>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
@@ -401,14 +409,16 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 30,
+    paddingBottom: 75,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 20,
   },
   aboutUser: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   profilePic: {
     width: '40%',
@@ -421,7 +431,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "#A5ECC0",
+    borderColor: '#A5ECC0',
   },
   profileText: {
     width: '60%',
@@ -472,13 +482,13 @@ const styles = StyleSheet.create({
     borderColor: '#D7D7D7',
   },
   tab: {
-    width: 80,
+    width: 100,
     height: 50,
     color: 'rgb(245, 245, 245)',
-    backgroundColor: '#A5A7EC',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 12,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   concert: {
     width: '100%',
@@ -490,7 +500,6 @@ const styles = StyleSheet.create({
   },
   concertContainerTop: {
     width: '100%',
-    // backgroundColor: 'aqua',
     height: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -513,9 +522,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingVertical: 10,
-    height: 50,
+    height: 40,
   },
   followText: {
+    color: 'rgb(120, 122, 197)',
     textAlign: 'center',
     fontSize: 16,
   },
@@ -562,10 +572,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   tabContent: {
-    height: '94%'
+    paddingBottom: 5,
+    height: '94%',
   },
   chevron: {
     height: 30,
-    bottom: 20
-  }
+    bottom: 20,
+  },
 });
