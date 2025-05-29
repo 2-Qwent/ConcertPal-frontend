@@ -37,7 +37,10 @@ export default function LoginScreen({ navigation }) {
       .then((data) => {
         console.log(data);
         dispatch(login(data.token));
-        navigation.navigate("TabNavigator");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "TabNavigator" }],
+        });
         setPasswordUp("");
         setUsernameUp("");
         setEmailUp("");
@@ -55,7 +58,10 @@ export default function LoginScreen({ navigation }) {
       .then((data) => {
         // console.log(data);
         dispatch(login(data.token));
-        navigation.navigate("TabNavigator");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "TabNavigator" }],
+        });
         setPasswordIn("");
         setUsernameIn("");
         setSigninOpen(false);

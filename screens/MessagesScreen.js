@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableOpacity, ImageBackground } from 'react-native';
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -70,12 +70,17 @@ export default function MessagesScreen({ navigation }) {
   });
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.head}>Messagerie</Text>
-      <View style={styles.messagerieWrapper}>
-        <View style={styles.wrapper}>{messages}</View>
+    <ImageBackground
+      source={require('../assets/IMG_background.png')}
+      style={StyleSheet.absoluteFill}
+      resizeMode="cover">
+      <View style={styles.container}>
+        <Text style={styles.head}>Messagerie</Text>
+        <View style={styles.messagerieWrapper}>
+          <View style={styles.wrapper}>{messages}</View>
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 

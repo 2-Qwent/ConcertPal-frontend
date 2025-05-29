@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, TextInput } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, TextInput, Image } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useSelector, useDispatch } from "react-redux";
 import { deletePost, setPosts } from "../reducers/post";
@@ -20,7 +20,7 @@ export default function Post(props) {
 
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [commentText, setCommentText] = useState('');
-  const [ comments, setComments ] = useState([])
+  const [comments, setComments] = useState([])
 
   const fullConcertName = `${props.concert?.artist} - ${props.concert?.city}`
   const concertName = 
@@ -71,11 +71,11 @@ export default function Post(props) {
   };
 
   // ───── ⋆ ───── Naviguer vers le profile d'un autre user ───── ⋆ ─────
-  const viewProfile = () => {
-    console.log(`clicked to visit ${props.username}'s profile`);
+  const viewProfile = (author) => {
     navigation.navigate('UserProfileScreen', {
-      username: props.author.username,
-      userToken: props.author.token,
+      username: author.username,
+      userToken: author.token,
+      userAvatar: author.avatar,
     });
   };
 
@@ -169,7 +169,21 @@ export default function Post(props) {
     return (
       <View key={i} style={styles.commentContainer}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.username}>{comment.author.username}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
+            <TouchableOpacity onPress={() => viewProfile(comment.author)}>
+              <Image
+                source={
+                  !comment.author.avatar || comment.author.avatar === "default_avatar"
+                    ? require('../assets/default_avatar.png')
+                    : { uri: comment.author.avatar }
+                }
+                style={styles.userCommentAvatar}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => viewProfile(comment.author)}>
+              <Text style={styles.username}>{comment.author.username}</Text>
+            </TouchableOpacity>
+          </View>
           <Text style={styles.date}>{formattedDate}</Text>
         </View>
         <Text style={styles.postText}>{comment.text}</Text>
@@ -202,7 +216,7 @@ export default function Post(props) {
             </TouchableOpacity>
           )}
         </View>
-      </View>
+      </View >
     );
   })
 
@@ -210,10 +224,16 @@ export default function Post(props) {
     <View style={styles.container}>
       {/*───── ⋆ ───── Profile Picture ───── ⋆ ─────*/}
       <View style={styles.profilePic}>
-        <FontAwesome name="user-circle" size={45} color="#000000" />
-        <Text style={styles.profilePlaceholderPicText}>
-          placeholder profile pic
-        </Text>
+        <TouchableOpacity onPress={() => viewProfile(props.author)}>
+          <Image
+            source={
+              !props.author.avatar || props.author.avatar === "default_avatar"
+                ? require('../assets/default_avatar.png')
+                : { uri: props.author.avatar }
+            }
+            style={styles.userAvatar}
+          />
+        </TouchableOpacity>
       </View>
 
       {/*───── ⋆ ───── Post Content ───── ⋆ ─────*/}
@@ -225,7 +245,7 @@ export default function Post(props) {
         )}
         {/* ───── ⋆ ───── Username + Date ───── ⋆ ─────*/}
         <View style={styles.info}>
-          <TouchableOpacity onPress={() => viewProfile()}>
+          <TouchableOpacity onPress={() => viewProfile(props.author)}>
             <Text style={styles.username}>{props.username}</Text>
           </TouchableOpacity>
           <View
@@ -290,7 +310,7 @@ export default function Post(props) {
 
         {/*───── ⋆ ───── Comments ───── ⋆ ─────*/}
         {showCommentInput && (
-          <View style={{marginVertical: 10}}>
+          <View style={{ marginVertical: 10 }}>
             <TextInput
               style={styles.input}
               placeholder="Ajouter un commentaire..."
@@ -306,8 +326,8 @@ export default function Post(props) {
           </View>
         )}
         {comments.length > 0 && <LinearGradient
-                  colors={['rgba(165,236,192,0.2)', 'rgb(245, 245, 245)']}
-                  style={styles.gradient}>{commentsList}</LinearGradient>}
+          colors={['rgba(165,236,192,0.2)', 'rgb(245, 245, 245)']}
+          style={styles.gradient}>{commentsList}</LinearGradient>}
       </View>
     </View>
   );
@@ -386,5 +406,20 @@ const styles = StyleSheet.create({
   concertNameContainer: {
     marginBottom: 3,
     left: 10
-  }
+  },
+  userAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
+  },
+  userCommentAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
+    marginRight: 10,
+  },
 });

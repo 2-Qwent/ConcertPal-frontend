@@ -114,6 +114,19 @@ export default function ConcertScreen({ route }) {
       });
   };
 
+  const handleConcertUsers = () => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/concertUsers/${concertId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.result) {
+          setZoneUsers(data.users);
+          setUsersModalVisible(true);
+        } else {
+          alert("Erreur lors de la récupération des utilisateurs du concert");
+        }
+      });
+  };
+
   const viewProfile = (user) => {
     navigation.navigate('UserProfileScreen', {
       username: user.username,
@@ -153,6 +166,12 @@ export default function ConcertScreen({ route }) {
             <Text style={styles.noSeatmapText}>
               Pas de plan pour ce spectacle 😔
             </Text>
+            <TouchableOpacity
+              style={{ marginTop: 10, backgroundColor: '#A5ECC0', padding: 10, borderRadius: 8 }}
+              onPress={handleConcertUsers}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Voir les utilisateurs de ce concert</Text>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -230,12 +249,8 @@ export default function ConcertScreen({ route }) {
               onPress={() => setUsersModalVisible(false)}
             />
             <View style={styles.modalContent}>
-              <Text
-                style={{ fontWeight: "bold", fontSize: 18, marginBottom: 10 }}
-              >
-                Utilisateurs dans la zone {myZone}
-              </Text>
-              {zoneUsers.length === 0 ? (
+              <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Utilisateurs dans la zone {myZone}</Text>
+              {zoneUsers.length === 1 ? (
                 <Text>Aucun autre utilisateur dans cette zone.</Text>
               ) : (
                 zoneUsers

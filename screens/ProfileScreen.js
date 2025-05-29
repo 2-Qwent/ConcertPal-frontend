@@ -86,7 +86,10 @@ export default function ProfileScreen({ navigation }) {
   const handleLogoutPress = () => {
     dispatch(logout())
     persistor.purge();
-    navigation.navigate('Login')
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   }
 
 
@@ -266,14 +269,14 @@ export default function ProfileScreen({ navigation }) {
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
           <View style={styles.profilePic}>
-            {activeUser.avatar ? (
-              <Image
-                source={{ uri: activeUser.avatar }}
-                style={styles.userAvatar}
-              />
-            ) : (
-              <FontAwesome name="user-circle" size={80} color="#000000" />
-            )}
+            <Image
+              source={
+                !activeUser.avatar || activeUser.avatar === "default_avatar"
+                  ? require('../assets/default_avatar.png')
+                  : { uri: activeUser.avatar }
+              }
+              style={styles.userAvatar}
+            />
           </View>
           <View style={styles.profileText}>
             <Text style={styles.userName}>{activeUser.username}</Text>
