@@ -218,7 +218,7 @@ export default function HomeScreen() {
         <Modal
           visible={modalVisible}
           transparent
-          animationType="slide"
+          animationType="fade"
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalOverlay}>
