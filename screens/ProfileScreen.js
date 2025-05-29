@@ -86,6 +86,7 @@ export default function ProfileScreen({ navigation }) {
   // bouton déconnexion
   const handleLogoutPress = () => {
     dispatch(logout())
+    persistor.purge();
     navigation.reset({
       index: 0,
       routes: [{ name: 'Login' }],
@@ -157,6 +158,7 @@ export default function ProfileScreen({ navigation }) {
         text={data.text}
         date={moment(data.date).fromNow()}
         nbLikes={data.likes.length}
+        nbComs={data.comments.length}
         isLiked={isLiked}
         reloadFunction={reloadFunction}
         {...data}

@@ -206,6 +206,16 @@ export default function HomeScreen() {
               <Text style={{ color: "#565656" }}>Type...</Text>
             </TouchableOpacity>
           </LinearGradient>
+          <ScrollView
+            style={{
+              maxHeight: 550,
+              width: "100%",
+              margin: 10,
+              borderRadius: 12,
+            }}
+          >
+            {timeline}
+          </ScrollView>
           {/* ───── ⋆ ───── Post modal ───── ⋆ ───── */}
           <AddPostModal
             isVisible={isVisible}
