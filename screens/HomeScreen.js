@@ -157,16 +157,6 @@ export default function HomeScreen() {
         </LinearGradient>
         {/* <Text>Feed</Text> */}
         <View style={styles.timelineContainer}>
-          <ScrollView
-            style={{
-              maxHeight: 550,
-              width: "100%",
-              margin: 10,
-              borderRadius: 12,
-            }}
-          >
-            {timeline}
-          </ScrollView>
           {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
           <LinearGradient
             colors={["#A5ECC0", "#E2A5EC"]}
@@ -181,6 +171,16 @@ export default function HomeScreen() {
               <Text style={{ color: "#565656" }}>Type...</Text>
             </TouchableOpacity>
           </LinearGradient>
+          <ScrollView
+            style={{
+              maxHeight: 550,
+              width: "100%",
+              margin: 10,
+              borderRadius: 12,
+            }}
+          >
+            {timeline}
+          </ScrollView>
           {/* ───── ⋆ ───── Post modal ───── ⋆ ───── */}
           <AddPostModal
             isVisible={isVisible}
@@ -211,7 +211,7 @@ export default function HomeScreen() {
         <Modal
           visible={modalVisible}
           transparent
-          animationType="slide"
+          animationType="fade"
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalOverlay}>

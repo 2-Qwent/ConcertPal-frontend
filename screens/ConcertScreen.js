@@ -1,27 +1,13 @@
-import { StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity, Modal, Pressable, TextInput } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity, Modal, Pressable, TextInput } from 'react-native';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 import { useNavigation } from '@react-navigation/native';
+import Post from '../components/Post';
+import AddPostModal from '../components/AddPostModal';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const postsData = [
-  {
-    author: "John Doe",
-    date: "20/05/2025",
-    postBody: "Good concert",
-  },
-  {
-    author: "Jane Doe",
-    date: "20/05/2025",
-    postBody: "Cannot wait to meet again",
-  },
-  {
-    author: "Lauren",
-    date: "20/05/2025",
-    postBody: "I loved the show!",
-  },
-];
 
 export default function ConcertScreen({ route }) {
   const user = useSelector((state) => state.user.value);
@@ -33,6 +19,19 @@ export default function ConcertScreen({ route }) {
   const [myZone, setMyZone] = useState(null);
   const [zoneUsers, setZoneUsers] = useState([]);
   const navigation = useNavigation();
+  const [concertPosts, setConcertPosts] = useState([])
+  const [reload, setReload] = useState(false); // Reload
+  const [isVisible, setIsVisible] = useState(false); // Modal pour ajouter un post
+
+  console.log("concertpost", concertPosts)
+
+    const handleAddPostModal = () => {
+    setIsVisible(true);
+  };
+
+    const reloadFunction = () => {
+      setReload(!reload);
+    };
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getUserZone/${concertId}/${user.token}`)
@@ -44,30 +43,31 @@ export default function ConcertScreen({ route }) {
           setMyZone(null);
         }
       });
-  }, [concertId]);
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getPosts/${concertId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.result) {
+          setConcertPosts(data.concertPosts)
+        }
+      })
+  }, [concertId, reload]);
 
-  const userPosts = postsData.map((data, i) => {
+  const userPosts = concertPosts.map((data, i) => {
+    const isLiked = data.likes?.some((post) => post === user.token) || false;
     return (
-      <View style={styles.postWrapper} key={i}>
-        <View style={styles.profilePic}>
-          <FontAwesome name="user-circle" size={45} color="#000000" />
-          <Text style={{ fontSize: 7, color: 'rgba(0,0,0,0.5)' }}>
-            placeholder profile pic
-          </Text>
-        </View>
-        <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: '85%',
-            }}>
-            <Text>{data.author}</Text>
-            <Text>{data.date}</Text>
-          </View>
-          <Text>{data.postBody}</Text>
-        </View>
-      </View>
+      <Post
+        key={i}
+        username={data.author?.username}
+        text={data.text}
+        date={moment(data.date).fromNow()}
+        nbLikes={data.likes.length}
+        nbComs={data.comments.length}
+        isLiked={isLiked}
+        reloadFunction={reloadFunction}
+        artist={data.concert.artist}
+        city={data.concert.city}
+        {...data}
+      />
     );
   });
 
@@ -123,12 +123,16 @@ export default function ConcertScreen({ route }) {
 
   return (
     <ImageBackground
-      source={require('../assets/IMG_background.png')}
+      source={require("../assets/IMG_background.png")}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover">
+      resizeMode="cover"
+    >
       <View style={styles.container}>
         <View style={styles.headContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10 }}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 10 }}
+          >
             <FontAwesome name="chevron-left" size={24} color="#565656" />
           </TouchableOpacity>
           <Text style={styles.head}>
@@ -137,10 +141,11 @@ export default function ConcertScreen({ route }) {
         </View>
 
         {/* ───── ⋆ ───── Afficher ou non la seatmap ───── ⋆ ───── */}
-        {seatmap !== 'Pas de plan pour ce spectacle' ? (
+        {seatmap !== "Pas de plan pour ce spectacle" ? (
           <TouchableOpacity
             style={styles.image}
-            onPress={() => handlePressMap(seatmap)}>
+            onPress={() => handlePressMap(seatmap)}
+          >
             <Image style={styles.image} source={{ uri: seatmap }} />
           </TouchableOpacity>
         ) : (
@@ -152,13 +157,22 @@ export default function ConcertScreen({ route }) {
         )}
 
         {myZone && (
-          <View style={{ alignItems: 'center', marginVertical: 10 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Ma zone : {myZone}</Text>
+          <View style={{ alignItems: "center", marginVertical: 10 }}>
+            <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+              Ma zone : {myZone}
+            </Text>
             <TouchableOpacity
-              style={{ marginTop: 10, backgroundColor: '#A5ECC0', padding: 10, borderRadius: 8 }}
+              style={{
+                marginTop: 10,
+                backgroundColor: "#A5ECC0",
+                padding: 10,
+                borderRadius: 8,
+              }}
               onPress={handleShowZoneUsers}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>Voir les utilisateurs de ma zone</Text>
+              <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                Voir les utilisateurs de ma zone
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -166,7 +180,8 @@ export default function ConcertScreen({ route }) {
         <Modal
           visible={modalVisible}
           transparent={true}
-          onRequestClose={() => setModalVisible(false)}>
+          onRequestClose={() => setModalVisible(false)}
+        >
           <View style={styles.modalContainer}>
             <Pressable
               style={styles.modalBackground}
@@ -186,17 +201,23 @@ export default function ConcertScreen({ route }) {
                     onChangeText={setZone}
                   />
                   <TouchableOpacity
-                    style={{ marginTop: 10, padding: 10, borderRadius: 8, backgroundColor: '#A5ECC0' }}
+                    style={{
+                      marginTop: 10,
+                      padding: 10,
+                      borderRadius: 8,
+                      backgroundColor: "#A5ECC0",
+                    }}
                     onPress={handleAddZone}
                   >
-                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>Ajouter ma zone</Text>
+                    <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                      Ajouter ma zone
+                    </Text>
                   </TouchableOpacity>
                 </>
               )}
             </View>
           </View>
         </Modal>
-
 
         <Modal
           visible={usersModalVisible}
@@ -209,12 +230,16 @@ export default function ConcertScreen({ route }) {
               onPress={() => setUsersModalVisible(false)}
             />
             <View style={styles.modalContent}>
-              <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10 }}>Utilisateurs dans la zone {myZone}</Text>
+              <Text
+                style={{ fontWeight: "bold", fontSize: 18, marginBottom: 10 }}
+              >
+                Utilisateurs dans la zone {myZone}
+              </Text>
               {zoneUsers.length === 0 ? (
                 <Text>Aucun autre utilisateur dans cette zone.</Text>
               ) : (
                 zoneUsers
-                  .filter(u => u.token !== user.token)
+                  .filter((u) => u.token !== user.token)
                   .map((u, i) => (
                     <TouchableOpacity key={i} onPress={() => viewProfile(u)}>
                       <Text key={i}>{u.username}</Text>
@@ -225,12 +250,40 @@ export default function ConcertScreen({ route }) {
                 style={{ marginTop: 20, padding: 10, borderRadius: 8 }}
                 onPress={() => setUsersModalVisible(false)}
               >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Fermer</Text>
+                <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                  Fermer
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
-        <View style={styles.wrapper}>{userPosts}</View>
+        <LinearGradient
+          colors={["#A5ECC0", "#E2A5EC"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={[styles.gradient, { width: 340, height: 40 }]}
+        >
+          <TouchableOpacity
+            style={styles.buttonAdd}
+            onPress={() => handleAddPostModal()}
+          >
+            <Text style={{ color: "#565656" }}>Type...</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+        <AddPostModal
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}
+          reloadFunction={reloadFunction}
+        />
+        <ScrollView style={styles.wrapper}>
+          {userPosts.length === 0 ? (
+            <Text style={styles.noPost}>
+              Pas encore de posts à propos de ce concert. Soyez le premier !
+            </Text>
+          ) : (
+            userPosts
+          )}
+        </ScrollView>
       </View>
     </ImageBackground>
   );
@@ -239,98 +292,121 @@ export default function ConcertScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
   },
   headContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    width: '95%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    width: "95%",
     marginTop: 40,
     marginBottom: 20,
   },
   image: {
-    width: '95%',
+    width: "95%",
     height: 150,
     borderRadius: 12,
     marginBottom: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   head: {
-    textAlign: 'center',
-    textAlignVertical: 'center',
+    textAlign: "center",
+    textAlignVertical: "center",
     padding: 10,
-    backgroundColor: 'rgb(245, 245, 245)',
+    backgroundColor: "rgb(245, 245, 245)",
     borderWidth: 2,
-    borderColor: '#A5ECC0',
+    borderColor: "#A5ECC0",
     borderRadius: 12,
   },
   wrapper: {
-    width: '90%',
-    height: '60%',
-    backgroundColor: 'rgb(245, 245, 245)',
+    width: "90%",
+    height: "60%",
+    backgroundColor: "rgb(245, 245, 245)",
     borderRadius: 12,
     borderwidth: 2,
-    borderColor: '#A5ECC0',
+    borderColor: "#A5ECC0",
     marginBottom: 40,
   },
   postWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 20,
-    borderBottomColor: '#A5ECC0',
+    borderBottomColor: "#A5ECC0",
     borderBottomWidth: 1,
   },
   profilePic: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     margin: 10,
   },
   noSeatmapText: {
     fontSize: 16,
-    color: '#565656',
-    textAlign: 'center',
+    color: "#565656",
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalBackground: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(29, 3, 0, 0.6)',
+    backgroundColor: "rgba(29, 3, 0, 0.6)",
   },
   modalContent: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 5,
     elevation: 5,
-    width: '95%',
-    height: '90%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "95%",
+    height: "90%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   fullscreenSeatmap: {
-    width: '100%',
-    height: '90%',
+    width: "100%",
+    height: "90%",
     borderRadius: 8,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   input: {
     width: 300,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    textAlign: 'center',
+    textAlign: "center",
     backgroundColor: "rgb(245, 245, 245)",
     borderWidth: 2,
     borderColor: "#A5ECC0",
     borderRadius: 12,
+  },
+  noPost: {
+    fontSize: 20,
+    color: "#565656",
+    textAlign: "center",
+    fontWeight: "bold",
+    marginTop: "30%",
+    marginHorizontal: 20,
+    padding: 16,
+  },
+  gradient: {
+    padding: 2,
+    borderRadius: 12,
+    justifyContent: "center",
+    margin: 10,
+  },
+  buttonAdd: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    paddingLeft: 10,
+    backgroundColor: "rgb(250, 250, 250)",
+    borderRadius: 11,
   },
 });
