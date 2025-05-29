@@ -131,6 +131,7 @@ export default function ConcertScreen({ route }) {
     navigation.navigate('UserProfileScreen', {
       username: user.username,
       userToken: user.token,
+      userAvatar: user.avatar,
     });
   };
 
@@ -256,9 +257,21 @@ export default function ConcertScreen({ route }) {
                 zoneUsers
                   .filter((u) => u.token !== user.token)
                   .map((u, i) => (
-                    <TouchableOpacity key={i} onPress={() => viewProfile(u)}>
-                      <Text key={i}>{u.username}</Text>
-                    </TouchableOpacity>
+                    <View key={i} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <TouchableOpacity onPress={() => viewProfile(u)}>
+                        <Image
+                          source={
+                            !u.avatar || u.avatar === "default_avatar"
+                              ? require('../assets/default_avatar.png')
+                              : { uri: u.avatar }
+                          }
+                          style={styles.userAvatar}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => viewProfile(u)}>
+                        <Text key={i} style={{ fontWeight: "bold" }}>{u.username}</Text>
+                      </TouchableOpacity>
+                    </View>
                   ))
               )}
               <TouchableOpacity
@@ -423,5 +436,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     backgroundColor: "rgb(250, 250, 250)",
     borderRadius: 11,
+  },
+  userAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
+    marginRight: 10,
   },
 });

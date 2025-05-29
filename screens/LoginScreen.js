@@ -8,9 +8,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   Modal,
+  ImageBackground,
+  Pressable
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../reducers/user";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -80,221 +83,286 @@ export default function LoginScreen({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.btnContainer}>
-        <Text style={styles.title}>See what's happening</Text>
-        <Text style={styles.join}>Join ConcertPal today.</Text>
+    <ImageBackground
+      source={require('../assets/IMG_background.png')}
+      style={StyleSheet.absoluteFill}
+      resizeMode="cover">
+      <View style={styles.container}>
+        <View style={styles.wrapper}>
+          <Text style={styles.title}>Bienvenue sur ConcertPal</Text>
+          <Text style={styles.paragraph}>Vous n'avez pas de compte?</Text>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setSignupOpen(true)}
-        >
-          <Text style={styles.buttonText}>Créer un compte</Text>
-        </TouchableOpacity>
+          {/* ───── ⋆ ───── Bouton Sign Up ───── ⋆ ───── */}
+          <LinearGradient
+            colors={['#A5ECC0', '#E2A5EC']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.gradient, { width: '75%', height: 50 }]}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setSignupOpen(true)}>
+              <Text style={styles.buttonText}>Créer un compte</Text>
+            </TouchableOpacity>
+          </LinearGradient>
 
+          <Text style={styles.paragraph}>Vous possédez déja un compte ?</Text>
+
+          {/* ───── ⋆ ───── Bouton Sign In ───── ⋆ ───── */}
+          <LinearGradient
+            colors={['#E2A5EC', '#A5A7EC']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.gradient, { width: '75%', height: 50 }]}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setSigninOpen(true)}>
+              <Text style={styles.buttonText}>Connexion</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
+
+        {/* ───── ⋆ ───── Modal Sign Up ───── ⋆ ───── */}
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={signupOpen}
-          onRequestClose={handleCancel}
-        >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.modalContainer}
-          >
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                Créer ton compte ConcertPal
-              </Text>
+          onRequestClose={handleCancel}>
+          <View style={styles.modalOverlay}>
+            <Pressable style={styles.modalBackground} onPress={handleCancel} />
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>
+                  Crée ton compte ConcertPal
+                </Text>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={emailUp}
-                onChangeText={setEmailUp}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="nom d'utilisateur"
-                value={usernameUp}
-                onChangeText={setUsernameUp}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Mot de passe"
-                secureTextEntry
-                value={passwordUp}
-                onChangeText={setPasswordUp}
-              />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  value={emailUp}
+                  onChangeText={setEmailUp}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Nom d'utilisateur"
+                  value={usernameUp}
+                  onChangeText={setUsernameUp}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Mot de passe"
+                  secureTextEntry
+                  value={passwordUp}
+                  onChangeText={setPasswordUp}
+                />
 
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleSignup}
-              >
-                <Text style={styles.buttonText}>Créer un compte</Text>
-              </TouchableOpacity>
+                <LinearGradient
+                  colors={['#E2A5EC', '#A5A7EC']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.gradient, { width: '75%', height: 50 }]}>
+                  <TouchableOpacity
+                    style={[styles.button, { backgroundColor: 'transparent' }]}
+                    onPress={handleSignup}>
+                    <Text
+                      style={[
+                        styles.buttonText,
+                        { color: 'rgb(245, 245, 245)' },
+                      ]}>
+                      Créer un compte
+                    </Text>
+                  </TouchableOpacity>
+                </LinearGradient>
 
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={handleCancel}
-              >
-                <Text style={styles.cancelButtonText}>Annuler</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
+                <LinearGradient
+                  colors={['#E2A5EC', '#A5A7EC']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.gradient, { width: '75%', height: 50 }]}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleCancel}>
+                    <Text style={styles.buttonText}>Annuler</Text>
+                  </TouchableOpacity>
+                </LinearGradient>
+              </View>
+            </KeyboardAvoidingView>
+          </View>
         </Modal>
 
-        <Text style={styles.already}>Vous possédez déja un compte ? Connectez-vous</Text>
-
-        <TouchableOpacity
-          style={[styles.button, styles.signinButton]}
-          onPress={() => setSigninOpen(true)}
-        >
-          <Text style={styles.buttonText}>Connexion</Text>
-        </TouchableOpacity>
-
+        {/* ───── ⋆ ───── Modal Sign Up ───── ⋆ ───── */}
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={signinOpen}
-          onRequestClose={handleCancel}
-        >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.modalContainer}
-          >
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Connexion a ConcertPal</Text>
+          onRequestClose={handleCancel}>
+          <View style={styles.modalOverlay}>
+            <Pressable style={styles.modalBackground} onPress={handleCancel} />
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Connexion a ConcertPal</Text>
 
-              <TextInput
-                style={styles.input}
-                placeholder="nom d'utilisateur"
-                value={usernameIn}
-                onChangeText={setUsernameIn}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Mot de passe"
-                secureTextEntry
-                value={passwordIn}
-                onChangeText={setPasswordIn}
-              />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Nom d'utilisateur"
+                  value={usernameIn}
+                  onChangeText={setUsernameIn}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Mot de passe"
+                  secureTextEntry
+                  value={passwordIn}
+                  onChangeText={setPasswordIn}
+                />
 
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleSignin}
-              >
-                <Text style={styles.buttonText} onPress={handleSignin}>
-                  Connexion
-                </Text>
-              </TouchableOpacity>
+                <LinearGradient
+                  colors={['#E2A5EC', '#A5A7EC']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.gradient, { width: '75%', height: 50 }]}>
+                  <TouchableOpacity
+                    style={[styles.button, { backgroundColor: 'transparent' }]}
+                    onPress={handleSignin}>
+                    <Text
+                      style={[
+                        styles.buttonText,
+                        { color: 'rgb(245, 245, 245)' },
+                      ]}>
+                      Connexion
+                    </Text>
+                  </TouchableOpacity>
+                </LinearGradient>
 
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={handleCancel}
-              >
-                <Text style={styles.cancelButtonText}>Annuler</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
+                <LinearGradient
+                  colors={['#E2A5EC', '#A5A7EC']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.gradient, { width: '75%', height: 50 }]}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleCancel}>
+                    <Text style={styles.buttonText}>Annuler</Text>
+                  </TouchableOpacity>
+                </LinearGradient>
+              </View>
+            </KeyboardAvoidingView>
+          </View>
         </Modal>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3c3149",
-    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  btnContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+  wrapper: {
+    backgroundColor: 'rgba(245, 245, 245, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '95%',
+    height: '75%',
+    alignSelf: 'flex-start',
+    borderTopRightRadius: 150,
+    borderBottomRightRadius: 150,
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontWeight: 'bold',
+    color: 'rgb(120, 122, 197)',
     marginBottom: 8,
-    textAlign: "center",
+    textAlign: 'center',
   },
-  join: {
-    fontSize: 18,
-    color: "#FFFFFF",
-    marginBottom: 30,
-    textAlign: "center",
-  },
-  already: {
-    color: "#FFFFFF",
+  paragraph: {
+    color: 'rgb(120, 122, 197)',
     marginTop: 30,
     marginBottom: 10,
+    left: 10,
   },
   button: {
-    backgroundColor: "#6366F1",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    width: "100%",
-    marginVertical: 8,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgb(245, 245, 245)',
+    borderRadius: 11,
+  },
+  gradient: {
+    padding: 2,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: 'rgb(120, 122, 197)',
     fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-  modalContainer: {
+  modalOverlay: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(29, 3, 0, 0.6)',
   },
   modalContent: {
-    backgroundColor: "#2A2A2A",
+    backgroundColor: 'rgb(245, 245, 245)',
     margin: 20,
-    borderRadius: 15,
+    borderRadius: 12,
     padding: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalTitle: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontWeight: 'bold',
+    color: 'rgb(120, 122, 197)',
     marginBottom: 20,
-    textAlign: "center",
+    textAlign: 'center',
   },
   input: {
-    backgroundColor: "#3A3A3A",
-    padding: 15,
-    borderRadius: 8,
-    color: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
     marginBottom: 15,
+    paddingVertical: 5,
+    width: '90%'
   },
   modalButton: {
-    backgroundColor: "#6366F1",
+    backgroundColor: '#6366F1',
     padding: 15,
     borderRadius: 8,
     marginTop: 10,
   },
   cancelButton: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     padding: 15,
     borderRadius: 8,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: "#6366F1",
+    borderColor: '#6366F1',
   },
   cancelButtonText: {
-    color: "#6366F1",
-    textAlign: "center",
+    color: '#6366F1',
+    textAlign: 'center',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   signinButton: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: "#6366F1",
+    borderColor: '#6366F1',
   },
 });

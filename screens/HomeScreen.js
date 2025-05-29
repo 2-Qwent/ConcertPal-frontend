@@ -9,6 +9,7 @@ import {
   ScrollView,
   ImageBackground,
   Pressable,
+  SafeAreaView
 } from "react-native";
 import { Button } from "@ant-design/react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -143,7 +144,27 @@ export default function HomeScreen() {
       style={StyleSheet.absoluteFill}
       resizeMode="cover"
     >
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        {/* ───── ⋆ ───── Purge store ───── ⋆ ─────
+        <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  borderColor: "red",
+                  width: 90,
+                  height: 20,
+                  backgroundColor: "white",
+                  borderWidth: 1,
+                },
+              ]}
+              onPress={() => {
+                persistor.purge();
+              }}
+            >
+              <Text style={{ color: "red", fontSize: 10 }}>X purge store</Text>
+        </TouchableOpacity> */}
+
+        {/* ───── ⋆ ───── Rechercher un concert ───── ⋆ ───── */}
         <LinearGradient
           colors={["#A5ECC0", "#E2A5EC"]}
           start={{ x: 0, y: 0 }}
@@ -157,8 +178,20 @@ export default function HomeScreen() {
             <Text>Rechercher un concert</Text>
           </TouchableOpacity>
         </LinearGradient>
-        {/* <Text>Feed</Text> */}
+        
+        {/* ───── ⋆ ───── Timeline ───── ⋆ ───── */}
         <View style={styles.timelineContainer}>
+          <ScrollView
+            style={{
+              maxHeight: '95%',
+              width: "100%",
+              margin: 10,
+              borderRadius: 12,
+            }}
+          >
+            {timeline}
+          </ScrollView>
+
           {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
           <LinearGradient
             colors={["#A5ECC0", "#E2A5EC"]}
@@ -190,24 +223,6 @@ export default function HomeScreen() {
             reloadFunction={reloadFunction}
           />
         </View>
-        {/* ───── ⋆ ───── Purge store ───── ⋆ ───── */}
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {
-              borderColor: "red",
-              width: 90,
-              height: 20,
-              backgroundColor: "white",
-              borderWidth: 1,
-            },
-          ]}
-          onPress={() => {
-            persistor.purge();
-          }}
-        >
-          <Text style={{ color: "red", fontSize: 10 }}>X purge store</Text>
-        </TouchableOpacity>
 
         {/* ───── ⋆ ───── searchModal ───── ⋆ ───── */}
         <Modal
@@ -308,7 +323,7 @@ export default function HomeScreen() {
             </View>
           </View>
         </Modal>
-      </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
@@ -316,8 +331,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    top: '-50',
-    justifyContent: 'center',
+    paddingTop: 30,
+    paddingBottom: 70,
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   modalOverlay: {
@@ -387,7 +403,7 @@ const styles = StyleSheet.create({
     borderColor: '#D7D7D7',
     borderRadius: 12,
     width: '95%',
-    height: 550,
+    height: '90%',
     justifyContent: 'center',
     alignItems: 'center',
   },
