@@ -368,7 +368,7 @@ export default function ProfileScreen({ navigation }) {
           end={{ x: 1, y: 0 }}
           style={[styles.gradient, { width: 340, height: 40 }]}>
           <TouchableOpacity
-            style={styles.buttonAdd}
+            style={styles.button}
             onPress={() => handleAddPostModal()}>
             <Text style={{ color: '#565656' }}>Type...</Text>
           </TouchableOpacity>
@@ -489,14 +489,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgb(245, 245, 245)',
-    borderRadius: 11,
-  },
-  buttonAdd: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    paddingLeft: 10,
-    backgroundColor: 'rgb(250, 250, 250)',
     borderRadius: 11,
   },
   contentContainer: {
