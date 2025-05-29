@@ -178,7 +178,7 @@ export default function HomeScreen() {
             <Text>Rechercher un concert</Text>
           </TouchableOpacity>
         </LinearGradient>
-        
+
         {/* ───── ⋆ ───── Timeline ───── ⋆ ───── */}
         <View style={styles.timelineContainer}>
 

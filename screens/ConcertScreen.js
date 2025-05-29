@@ -23,15 +23,15 @@ export default function ConcertScreen({ route }) {
   const [reload, setReload] = useState(false); // Reload
   const [isVisible, setIsVisible] = useState(false); // Modal pour ajouter un post
 
-  console.log("concertpost", concertPosts)
 
-    const handleAddPostModal = () => {
+
+  const handleAddPostModal = () => {
     setIsVisible(true);
   };
 
-    const reloadFunction = () => {
-      setReload(!reload);
-    };
+  const reloadFunction = () => {
+    setReload(!reload);
+  };
 
   useEffect(() => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getUserZone/${concertId}/${user.token}`)
