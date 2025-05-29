@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, Animated } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, Animated, Dimensions } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -39,7 +39,12 @@ const store = configureStore({
 });
 
 const persistor = persistStore(store);
-export {persistor}
+export { persistor }
+
+const { width } = Dimensions.get('window');
+const horizontalMargin = width * 0.15; // déjà présent
+const tabSize = Math.round(width * 0.15); // 15% de la largeur de l'écran pour chaque cadre
+const iconSize = Math.round(tabSize * 0.5); // icône à 50% du cadre
 
 const TabNavigator = () => {
   const [animationStart, setAnimationStart] = useState(false); //Etat pour le déclenchement de l'animation
@@ -61,7 +66,7 @@ const TabNavigator = () => {
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
-      }).start(); 
+      }).start();
     }
   }, [animationStart]);
 
@@ -69,17 +74,11 @@ const TabNavigator = () => {
     <View style={{ flex: 1 }}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size, focused }) => {
+          tabBarIcon: ({ focused }) => {
             let iconName = "";
-
-            if (route.name === "Profile") {
-              iconName = "user-circle";
-            } else if (route.name === "Messages") {
-              iconName = "envelope";
-            } else if (route.name === "Home") {
-              iconName = "home";
-            }
-
+            if (route.name === "Profile") iconName = "user-circle";
+            else if (route.name === "Messages") iconName = "envelope";
+            else if (route.name === "Home") iconName = "home";
             return (
               <View
                 style={[
@@ -87,7 +86,7 @@ const TabNavigator = () => {
                   { backgroundColor: focused ? "#E2A5EC" : "#A5ECC0" },
                 ]}
               >
-                <FontAwesome name={iconName} size={30} color="#fff" />
+                <FontAwesome name={iconName} size={iconSize} color="#fff" />
               </View>
             );
           },
@@ -112,7 +111,7 @@ const TabNavigator = () => {
       >
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Messages" component={MessagesScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen}/>
+        <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
       <TouchableOpacity
         style={{
@@ -161,21 +160,21 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   tab: {
-    height: 70,
-    width: 70,
+    height: tabSize,
+    width: tabSize,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 12,
-    margin: 20,
+    borderRadius: tabSize / 4,
   },
   tabBarStyle: {
     position: 'absolute',
     bottom: 40,
-    left: 60,
-    right: 60,
+    left: horizontalMargin,
+    right: horizontalMargin,
     backgroundColor: 'rgb(245, 245, 245)',
     borderRadius: 12,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
 });

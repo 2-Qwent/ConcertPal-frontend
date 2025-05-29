@@ -14,7 +14,7 @@ const mediaData = [
 ];
 
 export default function UserProfileScreen({ route, navigation }) {
-  const { username, userToken } = route.params; // données de l'utilisateur visité
+  const { username, userToken, userAvatar } = route.params; // données de l'utilisateur visité
   const [activeTab, setActiveTab] = useState('concerts'); // onglet actif
   const [concerts, setConcerts] = useState([]) // liste des concerts de l'utilisateur
   const [posts, setPosts] = useState([]) // liste des posts de l'utilisateur
@@ -110,6 +110,7 @@ export default function UserProfileScreen({ route, navigation }) {
     navigation.navigate('ChatScreen', {
       sender: username,
       token: userToken,
+      avatar: userAvatar,
     });
   };
 
@@ -291,13 +292,17 @@ export default function UserProfileScreen({ route, navigation }) {
       <View style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10 }}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10, marginLeft: 10 }}>
             <FontAwesome name="chevron-left" size={24} color="#565656" />
           </TouchableOpacity>
-          <View style={styles.profilePic}>
-            <FontAwesome name="user-circle" size={80} color="#000000" />
-            <Text>placeholder</Text>
-          </View>
+          <Image
+            source={
+              !userAvatar || userAvatar === "default_avatar"
+                ? require('../assets/default_avatar.png')
+                : { uri: userAvatar }
+            }
+            style={styles.userAvatar}
+          />
           <View style={styles.profileText}>
             <Text style={styles.userName}>{username}</Text>
             <LinearGradient
@@ -537,5 +542,12 @@ const styles = StyleSheet.create({
     color: '#565656',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  userAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
   },
 });

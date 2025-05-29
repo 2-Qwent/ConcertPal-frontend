@@ -24,6 +24,7 @@ import { persistor } from "../App"
 import AddPostModal from "../components/AddPostModal";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function HomeScreen() {
 
@@ -73,9 +74,6 @@ export default function HomeScreen() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setDate(null); // Réinitialiser la date après la recherche
-        setArtist(""); // Réinitialiser l'artiste après la recherche
-        setVenue(""); // Réinitialiser le lieu après la recherche
         const showData = data.concerts.map((show) => ({
           artist: show.name,
           venue: show._embedded?.venues?.[0]?.name || "Lieu inconnu",
@@ -103,6 +101,10 @@ export default function HomeScreen() {
     setDate(selectedDate);
     setShowPicker(false);
   };
+
+  const handleBackBtn = () => {
+    setConcerts([]); // Réinitialiser la liste des concerts
+  }
 
   const concertsList = concerts.map((data, i) => {
     return (
@@ -286,12 +288,20 @@ export default function HomeScreen() {
                 </>
               ) : (
                 <>
-                  <Text style={styles.title}>Résultats</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                    <TouchableOpacity onPress={handleBackBtn} style={{ marginRight: 50 }}>
+                      <FontAwesome name="chevron-left" size={24} color="#565656" />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Résultats</Text>
+                  </View>
                   <ScrollView style={{ maxHeight: 400, marginBottom: 10 }}>
                     {concertsList}
                   </ScrollView>
                   <Button
                     onPress={() => {
+                      setDate(null); // Réinitialiser la date après la recherche
+                      setArtist(""); // Réinitialiser l'artiste après la recherche
+                      setVenue(""); // Réinitialiser le lieu après la recherche
                       setConcerts([]);
                       setModalVisible(false);
                     }}
@@ -328,7 +338,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginBottom: 10,
     fontWeight: 'bold',
   },
   input: {
