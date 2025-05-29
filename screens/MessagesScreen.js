@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View, TouchableOpacity, ImageBackground, SafeAreaView } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableOpacity, ImageBackground, SafeAreaView, Image } from 'react-native';
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -33,6 +33,7 @@ export default function MessagesScreen({ navigation }) {
     navigation.navigate("ChatScreen", {
       sender: sender.destinataire.username,
       token: sender.destinataire.token,
+      avatar: sender.destinataire.avatar,
     });
   };
 
@@ -45,12 +46,14 @@ export default function MessagesScreen({ navigation }) {
         style={styles.postWrapper}
         key={i}
       >
-        <View style={styles.profilePic}>
-          <FontAwesome name="user-circle" size={45} color="#000000" />
-          <Text style={{ fontSize: 7, color: "rgba(0,0,0,0.5)" }}>
-            placeholder profile pic
-          </Text>
-        </View>
+        <Image
+          source={
+            !data.destinataire.avatar || data.destinataire.avatar === "default_avatar"
+              ? require('../assets/default_avatar.png')
+              : { uri: data.destinataire.avatar }
+          }
+          style={styles.userAvatar}
+        />
         <View>
           <View
             style={{
@@ -127,6 +130,8 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomColor: '#A5ECC0',
     borderBottomWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   messageBody: {
     width: 250,
@@ -143,5 +148,12 @@ const styles = StyleSheet.create({
   date: {
     color: '#565656',
     fontSize: 12,
+  },
+  userAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
   },
 });
