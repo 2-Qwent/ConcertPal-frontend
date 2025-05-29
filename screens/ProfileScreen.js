@@ -92,6 +92,14 @@ export default function ProfileScreen({ navigation }) {
     });
   }
 
+  const handleNavigate = (user) => {
+    navigation.navigate('UserProfileScreen', {
+      username: user.username,
+      userToken: user.token,
+      userAvatar: user.avatar,
+    });
+  };
+
 
   useEffect(() => {
     if (!isFocused) return;
@@ -177,8 +185,19 @@ export default function ProfileScreen({ navigation }) {
         key={i}
         style={styles.modalItem}
       >
-        <Text>{user.username}</Text>
-        <Text>{user.avatar}</Text>
+        <TouchableOpacity onPress={() => handleNavigate(user)}>
+          <Image
+            source={
+              !user.avatar || user.avatar === "default_avatar"
+                ? require('../assets/default_avatar.png')
+                : { uri: user.avatar }
+            }
+            style={styles.userFollowAvatar}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate(user)}>
+          <Text style={{ fontWeight: "bold" }}>{user.username}</Text>
+        </TouchableOpacity>
       </View>
     )
   })
@@ -221,8 +240,19 @@ export default function ProfileScreen({ navigation }) {
         key={i}
         style={styles.modalItem}
       >
-        <Text>{user.username}</Text>
-        <Text>{user.avatar}</Text>
+        <TouchableOpacity onPress={() => handleNavigate(user)}>
+          <Image
+            source={
+              !user.avatar || user.avatar === "default_avatar"
+                ? require('../assets/default_avatar.png')
+                : { uri: user.avatar }
+            }
+            style={styles.userFollowAvatar}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigate(user)}>
+          <Text style={{ fontWeight: "bold" }}>{user.username}</Text>
+        </TouchableOpacity>
       </View>
     )
   })
@@ -356,13 +386,13 @@ export default function ProfileScreen({ navigation }) {
                   <LinearGradient
                     colors={['rgb(165, 167, 236)', 'rgb(245, 245, 245)']}
                     style={styles.tab}>
-                      <Text style={{ color: '#565656'}}>
-                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                      </Text>
-                    </LinearGradient>
+                    <Text style={{ color: '#565656' }}>
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </Text>
+                  </LinearGradient>
                 ) : (
                   <View style={styles.tab}>
-                    <Text style={{ color: 'rgb(120, 122, 197)'}}>
+                    <Text style={{ color: 'rgb(120, 122, 197)' }}>
                       {tab.charAt(0).toUpperCase() + tab.slice(1)}
                     </Text>
                   </View>
@@ -561,6 +591,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#D7D7D7',
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
   modalCloseButton: {
     marginTop: 10,
@@ -581,5 +613,13 @@ const styles = StyleSheet.create({
   chevron: {
     height: 30,
     bottom: 20,
+  },
+  userFollowAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#A5ECC0',
+    marginRight: 10,
   },
 });

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from "react";
 import Pusher from 'pusher-js/react-native';
@@ -10,7 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default function ChatScreen({ route }) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
-  const { sender, token } = route.params;
+  const { sender, token, avatar } = route.params;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
@@ -59,13 +59,34 @@ export default function ChatScreen({ route }) {
 
   const renderItem = ({ item }) => (
     <View
-      style={[
-        styles.messageBubble,
-        item.sender === myToken ? styles.myMessage : styles.otherMessage,
-      ]}>
-      <Text style={[item.sender === myToken ? styles.myMessageText : styles.messageText,]}>
-        {item.message}
-      </Text>
+      style={{
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: item.sender === myToken ? 'flex-end' : 'flex-start', // Aligne à droite pour myMessage
+      }}
+    >
+      {item.sender !== myToken && (
+        <Image
+          source={
+            !avatar || avatar === "default_avatar"
+              ? require('../assets/default_avatar.png')
+              : { uri: avatar }
+          }
+          style={styles.userAvatar}
+        />
+      )}
+      <View
+        style={[
+          styles.messageBubble,
+          item.sender === myToken ? styles.myMessage : styles.otherMessage,
+        ]}>
+        <Text style={[item.sender === myToken ? styles.myMessageText : styles.messageText,]}>
+          {item.message}
+        </Text>
+      </View>
+      {item.sender === myToken && (
+        <View style={{ width: 30, height: 30, marginRight: 10 }} /> // Espace pour aligner myMessage
+      )}
     </View>
   );
 
@@ -73,42 +94,44 @@ export default function ChatScreen({ route }) {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 60}>
+      keyboardVerticalOffset={0}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-        <View style={styles.headContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{ marginRight: 10 }}>
-            <FontAwesome name="chevron-left" size={24} color="#565656" />
-          </TouchableOpacity>
-          <Text style={styles.head}>Messages avec {sender}</Text>
-        </View>
-        <View style={styles.messagerieWrapper}>
-          <FlatList
-            data={messages}
-            renderItem={renderItem}
-            keyExtractor={(_, i) => i.toString()}
-            style={{ flex: 1, width: '100%' }}
-            contentContainerStyle={{ padding: 10 }}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <LinearGradient
-            colors={['#E2A5EC', '#A5A7EC']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={[styles.gradient, { width: '75%', height: 50 }]}>
-            <TextInput
-              style={styles.input}
-              value={input}
-              multiline
-              onChangeText={setInput}
-              placeholder="Écrire un message..."
+        <View style={{ flex: 1 }}>
+          <View style={styles.headContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{ marginRight: 10 }}>
+              <FontAwesome name="chevron-left" size={24} color="#565656" />
+            </TouchableOpacity>
+            <Text style={styles.head}>Messages avec {sender}</Text>
+          </View>
+          <View style={styles.messagerieWrapper}>
+            <FlatList
+              data={messages}
+              renderItem={renderItem}
+              keyExtractor={(_, i) => i.toString()}
+              style={{ flex: 1, width: '100%' }}
+              contentContainerStyle={{ padding: 10 }}
             />
-          </LinearGradient>
-          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>Envoyer</Text>
-          </TouchableOpacity>
+          </View>
+          <View style={styles.inputContainer}>
+            <LinearGradient
+              colors={['#E2A5EC', '#A5A7EC']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.gradient, { width: '75%', height: 50 }]}>
+              <TextInput
+                style={styles.input}
+                value={input}
+                multiline
+                onChangeText={setInput}
+                placeholder="Écrire un message..."
+              />
+            </LinearGradient>
+            <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>Envoyer</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -118,14 +141,13 @@ export default function ChatScreen({ route }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   headContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     width: '95%',
-    marginBottom: 20,
+    margin: 10,
   },
   head: {
     width: '90%',
@@ -150,7 +172,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 10,
+    paddingHorizontal: 10,
     borderTopWidth: 1,
     borderColor: '#eee',
     backgroundColor: '#fafafa',
@@ -212,5 +234,12 @@ const styles = StyleSheet.create({
   myMessageText: {
     fontSize: 16,
     color: '#565656',
+  },
+  userAvatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 10,
+    alignSelf: 'flex-end',
   },
 });
