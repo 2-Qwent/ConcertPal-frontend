@@ -180,7 +180,7 @@ export default function UserProfileScreen({ route, navigation }) {
     <Modal
       visible={unfollowModalVisible}
       transparent
-      animationType="slide"
+      animationType="fade"
       onRequestClose={() => setUnfollowModalVisible(false)}
     >
       <View style={{

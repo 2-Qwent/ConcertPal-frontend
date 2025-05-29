@@ -116,7 +116,7 @@ const TabNavigator = () => {
       <TouchableOpacity
         style={{
           position: "absolute",
-          bottom: isReallyVisible ? 100 : 0, // pour laisser de l’espace quand tab bar visible
+          bottom: isReallyVisible ? 100 : 0,
           padding: 10,
           borderRadius: 30,
           bottom: 40,
@@ -126,7 +126,7 @@ const TabNavigator = () => {
         }}
         onPress={() => setAnimationStart((prev) => !prev)}
       >
-        <FontAwesome name={isReallyVisible ? 'chevron-down' : 'chevron-up'} size={25} color="#a5ecc0" />
+        <FontAwesome name={isReallyVisible ? 'chevron-down' : 'chevron-up'} size={25} color="rgb(245, 245, 245)" />
       </TouchableOpacity>
     </View>
   );

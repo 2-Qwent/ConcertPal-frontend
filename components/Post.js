@@ -12,6 +12,7 @@ export default function Post(props) {
   const user = useSelector((state) => state.user.value);
   const token = user.token;
   const [trashIcon, setTrashIcon] = useState(false);
+  const [commentTrash, setCommentTrash] = useState(false)
   const dispatch = useDispatch();
   const navigation = useNavigation();
   moment.locale('fr'); // Heure en français
@@ -20,6 +21,14 @@ export default function Post(props) {
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([])
+
+  const fullConcertName = `${props.concert?.artist} - ${props.concert?.city}`
+  const concertName = 
+    props.concert?.artist && props.concert.artist.length > 15
+      ? (`${props.concert?.artist.slice(0, 15) + '...'} - ${props.concert?.city}`)
+      : fullConcertName
+
+  
 
   //affiche l'icone de suppression si le token de l'auteur correspond à celui de l'utilisateur
   useEffect(() => {
@@ -100,6 +109,38 @@ export default function Post(props) {
       });
   };
 
+  //like un commentaire
+  const handleLikeComment = (commentId) => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/likes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: token,
+        _id: commentId,
+      }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/post/${props._id}`)
+          .then((response) => response.json())
+          .then(() => {
+            fetchComments();
+          });
+      });
+  };
+
+  //supprimer un commentaire
+  const handleDeleteComment = (commentId) => {
+    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/${commentId}`, {
+      method: 'DELETE'
+    })
+      .then(response => response.json())
+      .then(() => {
+        fetchComments()
+        props.reloadFunction()
+      })
+  }
+
   // ───── ⋆ ───── Fetch les commentaires ───── ⋆ ─────
   const fetchComments = () => [
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/post/${props._id}`)
@@ -124,6 +165,7 @@ export default function Post(props) {
 
   const commentsList = comments.map((comment, i) => {
     const formattedDate = moment(comment.date).fromNow()
+    const isCommentLiked = comment.likes?.some((e) => e === token) || false;
     return (
       <View key={i} style={styles.commentContainer}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -147,32 +189,25 @@ export default function Post(props) {
         <Text style={styles.postText}>{comment.text}</Text>
         <View style={styles.icons}>
           <TouchableOpacity>
-            <View style={{ flexDirection: 'row' }}>
-              <FontAwesome
-                style={{ marginHorizontal: 20 }}
-                name='reply'
-                size={18}
-              />
-              <Text>0</Text>
-            </View>
           </TouchableOpacity>
           <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleLikeComment(comment._id)}>
               <FontAwesome
                 style={{
-                  color: '#1D0322',
+                  color: isCommentLiked ? '#F16364' : '#1D0322',
                   marginHorizontal: 20,
                 }}
                 name="heart"
                 size={18}
               />
             </TouchableOpacity>
-            <Text>0 like. Zero.</Text>
+            <Text>{comment.likes.length}</Text>
           </View>
-          {trashIcon && (
+          {comment.author.token === token && (
             <TouchableOpacity
               style={{ paddingHorizontal: 10 }}
-              onPress={() => handleDeletePost()}>
+              onPress={() => handleDeleteComment(comment._id)}
+              >
               <FontAwesome
                 style={{ marginHorizontal: 20, color: '#565656' }}
                 name="trash"
@@ -203,6 +238,11 @@ export default function Post(props) {
 
       {/*───── ⋆ ───── Post Content ───── ⋆ ─────*/}
       <View style={styles.content}>
+        {props.concert?.artist && (
+        <View style={styles.concertNameContainer}>
+          <Text style={styles.concertNameText}>{concertName}</Text>
+        </View>
+        )}
         {/* ───── ⋆ ───── Username + Date ───── ⋆ ─────*/}
         <View style={styles.info}>
           <TouchableOpacity onPress={() => viewProfile(props.author)}>
@@ -328,7 +368,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   postText: {
-    marginBottom: 5,
+    marginBottom: 7,
     fontSize: 13,
     color: '#464646',
     left: 10,
@@ -358,6 +398,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginLeft: 5,
     marginRight: 5,
+  },
+  concertNameText: {
+    color: 'grey',
+    fontSize: 10
+  },
+  concertNameContainer: {
+    marginBottom: 3,
+    left: 10
   },
   userAvatar: {
     width: 60,

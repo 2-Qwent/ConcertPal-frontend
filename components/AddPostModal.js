@@ -12,6 +12,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { addPost } from "../reducers/post";
 import CameraModal from "./CameraModal";
 import { LinearGradient } from "expo-linear-gradient";
+import { Dropdown } from 'react-native-element-dropdown';
+import moment from "moment";
+
 
 export default function AddPostModal({
   isVisible,
@@ -22,13 +25,25 @@ export default function AddPostModal({
   const token = useSelector((state) => state.user.value.token);
   const dispatch = useDispatch();
   const [showCamera, setShowCamera] = useState(false);
+  const concerts = useSelector((state) => state.concerts.value) || []; // Récupération des concerts de l'utilisateur via le store Redux
+  const [value, setValue] = useState(null); // Valeur de l'item sélectionné dans le menu dropdown
+
+  //Données des concerts pour le menu dropdown
+  const concertData = concerts.map((concert) => ({
+    label: `${concert.artist} - ${concert.city} - ${moment(concert.date).format('L')}`,
+    value: concert._id,
+    artist: concert.artist,
+    city: concert.city,
+    date: concert.date,
+  }));
+  
 
   //créer un post
   const newPost = () => {
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: postContent }),
+      body: JSON.stringify({ text: postContent, concertId: value }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -42,6 +57,7 @@ export default function AddPostModal({
   //annuler la création du post
   const handleCancelPost = () => {
     setPostContent("");
+    setValue(null)
     setShowCamera(false);
     setIsVisible(false);
   };
@@ -58,18 +74,21 @@ export default function AddPostModal({
         visible={isVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setIsVisible(false)}>
+        onRequestClose={() => setIsVisible(false)}
+      >
         <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <Pressable
             style={styles.modalBackground}
-            onPress={() => setIsVisible(false)}
+            onPress={() => {setIsVisible(false); setValue(null)}}
           />
           <LinearGradient
-            colors={['#A5ECC0', '#E2A5EC']}
+            colors={["#A5ECC0", "#E2A5EC"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.gradient, { width: '90%', height: 200 }]}>
+            style={[styles.gradient, { width: "90%", height: 200 }]}
+          >
             <View style={styles.modalContainer}>
               <TextInput
                 placeholder="Ajouter un post"
@@ -80,22 +99,53 @@ export default function AddPostModal({
               />
               <View style={styles.tabContainer}>
                 <TouchableOpacity style={styles.tab} onPress={newPost}>
-                  <Text style={{ color: 'white' }}>Poster</Text>
+                  <Text style={{ color: "white" }}>Poster</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.tab}
                   onPress={() => {
                     setIsVisible(false);
                     setTimeout(() => setShowCamera(true), 500);
-                  }}>
-                  <Text style={{ color: 'white' }}>Photo</Text>
+                  }}
+                >
+                  <Text style={{ color: "white" }}>Photo</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.tab}
-                  onPress={() => handleCancelPost()}>
-                  <Text style={{ color: 'white' }}>Annuler</Text>
+                  onPress={() => handleCancelPost()}
+                >
+                  <Text style={{ color: "white" }}>Annuler</Text>
                 </TouchableOpacity>
               </View>
+              <Dropdown
+                style={styles.dropdownMenu}
+                placeholder="Rechercher un concert"
+                data={concertData}
+                search
+                searchPlaceholder="Choisissez un concert"
+                onChange={(item) => {
+                  setValue(item.value);
+                }}
+                value={value}
+                labelField="label"
+                valueField="value"
+                renderItem={(item) => (
+                  <View style={{ padding: 10 }}>
+                    <Text style={{ fontWeight: "bold" }}>{item.artist}</Text>
+                    <Text>
+                      {item.city} - {moment(item.date).format("L")}
+                    </Text>
+                  </View>
+                )}
+              />
+              {value && (
+                <TouchableOpacity
+                  style={{ marginTop: 8, alignSelf: "center" }}
+                  onPress={() => setValue(null)}
+                >
+                  <Text style={{ color: "#A5A7EC" }}>Effacer la sélection</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </LinearGradient>
         </View>
@@ -151,4 +201,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(29, 3, 0, 0.6)',
   },
+  dropdownMenu: {
+    width: '60%',
+    height: 50
+  }
 });
