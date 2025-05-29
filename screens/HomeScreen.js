@@ -178,19 +178,9 @@ export default function HomeScreen() {
             <Text>Rechercher un concert</Text>
           </TouchableOpacity>
         </LinearGradient>
-        
+
         {/* ───── ⋆ ───── Timeline ───── ⋆ ───── */}
         <View style={styles.timelineContainer}>
-          <ScrollView
-            style={{
-              maxHeight: '95%',
-              width: "100%",
-              margin: 10,
-              borderRadius: 12,
-            }}
-          >
-            {timeline}
-          </ScrollView>
 
           {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
           <LinearGradient

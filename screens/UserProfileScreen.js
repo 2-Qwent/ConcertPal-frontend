@@ -82,7 +82,7 @@ export default function UserProfileScreen({ route, navigation }) {
         artist={data.artist}
         date={data.date}
         seatmap={data.seatmap}
-        id={data.id}
+        id={data._id}
         screen="UserProfile"
       />
     );
