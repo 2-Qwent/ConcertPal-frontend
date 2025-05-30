@@ -95,6 +95,7 @@ export default function ProfileScreen({ navigation }) {
     });
   }
 
+  // Navigation vers le profil de l'utilisateur cliqué
   const handleNavigate = (user) => {
     navigation.navigate('UserProfileScreen', {
       username: user.username,
