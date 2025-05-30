@@ -150,23 +150,23 @@ export default function ProfileScreen({ navigation }) {
 
   //Liste des posts de l'utilisateur
   const userPosts = filteredPosts
-  .filter((data) => data && data.likes && data.comments && data.author)
-  .map((data, i) => {
-    const isLiked = data.likes.some((post) => post === token);
-    return (
-      <Post
-        key={i}
-        username={data.author.username}
-        text={data.text}
-        date={moment(data.date).fromNow()}
-        nbLikes={data.likes.length}
-        nbComs={data.comments.length}
-        isLiked={isLiked}
-        reloadFunction={reloadFunction}
-        {...data}
-      />
-    );
-  });
+    .filter((data) => data && data.likes && data.comments && data.author)
+    .map((data, i) => {
+      const isLiked = data.likes.some((post) => post === token);
+      return (
+        <Post
+          key={i}
+          username={data.author.username}
+          text={data.text}
+          date={moment(data.date).fromNow()}
+          nbLikes={data.likes.length}
+          nbComs={data.comments.length}
+          isLiked={isLiked}
+          reloadFunction={reloadFunction}
+          {...data}
+        />
+      );
+    });
 
   // Liste des médias de l'utilisateur
   const media = mediaData.map((data, i) => {
@@ -225,13 +225,15 @@ export default function ProfileScreen({ navigation }) {
           onPress={() => setFollowingModal(false)}
         />
         <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFollowingModal(false)}
+            >
+              <FontAwesome name="times" size={24} color="#565656" />
+            </TouchableOpacity>
+          </View>
           <ScrollView style={styles.modalList}>{followingDisplay}</ScrollView>
-          <TouchableOpacity
-            onPress={() => setFollowingModal(false)}
-            style={styles.modalCloseButton}
-          >
-            <Text style={styles.modalCloseText}>Fermer</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -280,13 +282,15 @@ export default function ProfileScreen({ navigation }) {
           onPress={() => setFollowersModal(false)}
         />
         <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFollowersModal(false)}
+            >
+              <FontAwesome name="times" size={24} color="#565656" />
+            </TouchableOpacity>
+          </View>
           <ScrollView style={styles.modalList}>{followersDisplay}</ScrollView>
-          <TouchableOpacity
-            onPress={() => setFollowersModal(false)}
-            style={styles.modalCloseButton}
-          >
-            <Text style={styles.modalCloseText}>Fermer</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -625,5 +629,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#A5ECC0',
     marginRight: 10,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    width: '100%',
   },
 });

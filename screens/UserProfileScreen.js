@@ -205,7 +205,7 @@ export default function UserProfileScreen({ route, navigation }) {
   // ───── ⋆ ───── Affichage des followers de l'utilisateur visité ───── ⋆ ─────
   const followersDispay = followersList.map((user, i) => {
     return (
-      <View key={i} style={{ padding: 10, borderBottomWidth: 1, borderColor: '#D7D7D7' }}>
+      <View key={i} style={styles.modalItem}>
         <TouchableOpacity onPress={() => handleNavigate(user)}>
           <Image
             source={
@@ -242,15 +242,17 @@ export default function UserProfileScreen({ route, navigation }) {
           onPress={() => setFollowersModal(false)}
         />
         <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFollowersModal(false)}
+            >
+              <FontAwesome name="times" size={24} color="#565656" />
+            </TouchableOpacity>
+          </View>
           <ScrollView style={styles.modalList}>
             {followersDispay}
           </ScrollView>
-          <TouchableOpacity
-            onPress={() => setFollowersModal(false)}
-            style={styles.modalCloseButton}
-          >
-            <Text style={styles.modalCloseText}>Fermer</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -261,7 +263,7 @@ export default function UserProfileScreen({ route, navigation }) {
     return (
       <View
         key={i}
-        style={{ padding: 10, borderBottomWidth: 1, borderColor: "#D7D7D7" }}
+        style={styles.modalItem}
       >
         <TouchableOpacity onPress={() => handleNavigate(user)}>
           <Image
@@ -299,15 +301,17 @@ export default function UserProfileScreen({ route, navigation }) {
           onPress={() => setFollowingModal(false)}
         />
         <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFollowingModal(false)}
+            >
+              <FontAwesome name="times" size={24} color="#565656" />
+            </TouchableOpacity>
+          </View>
           <ScrollView style={styles.modalList}>
             {followingDispay}
           </ScrollView>
-          <TouchableOpacity
-            onPress={() => setFollowingModal(false)}
-            style={styles.modalCloseButton}
-          >
-            <Text style={styles.modalCloseText}>Fermer</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -502,7 +506,6 @@ const styles = StyleSheet.create({
   },
   concertContainerTop: {
     width: '100%',
-    // backgroundColor: 'aqua',
     height: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -560,6 +563,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#D7D7D7',
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
   modalCloseButton: {
     marginTop: 10,
@@ -579,5 +584,21 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#A5ECC0",
+  },
+  userFollowAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
+    marginRight: 10,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    width: '100%',
   },
 });
