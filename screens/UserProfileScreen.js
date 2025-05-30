@@ -326,13 +326,16 @@ export default function UserProfileScreen({ route, navigation }) {
       <View style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10, marginLeft: 10 }}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ marginRight: 10, marginLeft: 10 }}
+          >
             <FontAwesome name="chevron-left" size={24} color="#565656" />
           </TouchableOpacity>
           <Image
             source={
               !userAvatar || userAvatar === "default_avatar"
-                ? require('../assets/default_avatar.png')
+                ? require("../assets/default_avatar.png")
                 : { uri: userAvatar }
             }
             style={styles.userAvatar}
@@ -367,16 +370,20 @@ export default function UserProfileScreen({ route, navigation }) {
         </View>
         <View style={styles.followContent}>
           <TouchableOpacity
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
             onPress={() => setFollowingModal(true)}
           >
-            <Text style={styles.followText}>{followingList.length} abonnements</Text>
+            <Text style={styles.followText}>
+              {followingList.length} abonnements
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
             onPress={() => setFollowersModal(true)}
           >
-            <Text style={styles.followText}>{followersList.length} abonnés</Text>
+            <Text style={styles.followText}>
+              {followersList.length} abonnés
+            </Text>
           </TouchableOpacity>
           {followersModalContent}
           {followingModalContent}
@@ -406,21 +413,33 @@ export default function UserProfileScreen({ route, navigation }) {
           </View>
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
-            {activeTab === "concerts" && (
-              <ScrollView
-                style={{
-                  maxHeight: "92%",
-                  width: "100%",
-                  borderRadius: 12,
-                }}
-              >
-                {userConcerts}
-              </ScrollView>
+            {activeTab === "concerts" &&
+              (userConcerts.length > 0 ? (
+                <ScrollView
+                  style={{
+                    maxHeight: "92%",
+                    width: "100%",
+                    borderRadius: 12,
+                  }}
+                >
+                  {userConcerts}
+                </ScrollView>
+              ) : (
+                <Text style={styles.emptyTabText}>
+                  Cet utilisateur n'a pas ajouté de concert à sa liste.
+                </Text>
+              ))}
+            {activeTab === "posts" &&
+              (userPosts.length > 0 ? (
+                <ScrollView>{userPosts}</ScrollView>
+              ) : (
+                <Text style={styles.emptyTabText}>
+                  Cet utilisateur n'a pas créé de post.
+                </Text>
+              ))}
+            {activeTab === "media" && (
+              <View style={styles.mediaContainer}>{media}</View>
             )}
-            {activeTab === "posts" && <ScrollView>{userPosts}</ScrollView>}
-            <View style={styles.mediaContainer}>
-              {activeTab === "media" && media}
-            </View>
           </View>
         </View>
       </View>
@@ -600,5 +619,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 10,
     width: '100%',
+  },
+  emptyTabText: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#565656",
   },
 });
