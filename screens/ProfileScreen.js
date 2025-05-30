@@ -30,7 +30,6 @@ import { persistor } from "../App"
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
 
-import { persistor } from "../App"
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -441,10 +440,11 @@ export default function ProfileScreen({ navigation }) {
             {activeTab === "posts" &&
               (userPosts.length > 0 ? (
                 <ScrollView
-                style={{
-                  maxHeight: '88%',
-                  width: '100%',
-                  borderRadius: 12,}}
+                  style={{
+                    maxHeight: '88%',
+                    width: '100%',
+                    borderRadius: 12,
+                  }}
                 >{userPosts}</ScrollView>
               ) : (
                 <Text style={styles.emptyTabText}>
