@@ -173,22 +173,9 @@ export default function AddPostModal({
                 style={styles.input}
               />
               <View style={styles.tabContainer}>
-                <LinearGradient
-                  colors={["#A5ECC0", "#E2A5EC"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={[styles.gradient, { width: 85, height: 53 }]}
-                >
                   <TouchableOpacity style={styles.tab} onPress={newPost}>
-                    <Text style={{ color: "#1D0322" }}>Poster</Text>
+                    <Text style={{ color: "#fff", fontWeight: 'bold' }}>Poster</Text>
                   </TouchableOpacity>
-                </LinearGradient>
-                <LinearGradient
-                  colors={["#A5ECC0", "#E2A5EC"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={[styles.gradient, { width: 85, height: 53 }]}
-                >
                   <TouchableOpacity
                     style={styles.tab}
                     onPress={() => {
@@ -196,22 +183,14 @@ export default function AddPostModal({
                       setTimeout(() => setShowCamera(true), 500);
                     }}
                   >
-                    <Text style={{ color: "#1D0322" }}>Photo</Text>
+                    <Text style={{ color: "#fff", fontWeight: 'bold' }}>Photo</Text>
                   </TouchableOpacity>
-                </LinearGradient>
-                <LinearGradient
-                  colors={["#A5ECC0", "#E2A5EC"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={[styles.gradient, { width: 85, height: 53 }]}
-                >
                   <TouchableOpacity
-                    style={styles.tab}
+                    style={styles.cancelTab}
                     onPress={() => handleCancelPost()}
                   >
-                    <Text style={{ color: "#1D0322" }}>Annuler</Text>
+                    <Text style={{ color: 'rgb(120, 122, 197)' }}>Annuler</Text>
                   </TouchableOpacity>
-                </LinearGradient>
               </View>
               <View style={{ marginVertical: 10 }}>
                 {defaultConcertId ? (
@@ -257,7 +236,7 @@ export default function AddPostModal({
                       }}
                       onPress={() => setConcertModalVisible(true)}
                     >
-                      <Text style={{ color: "#1D0322" }}>
+                      <Text style={{ color: 'rgb(120, 122, 197)' }}>
                         {selectedConcert
                           ? `${selectedConcert.artist} - ${
                               selectedConcert.city
@@ -314,10 +293,20 @@ const styles = StyleSheet.create({
   tab: {
     width: 80,
     height: 50,
+    backgroundColor: "#A5ECC0",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  cancelTab: {
+    width: 80,
+    height: 50,
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
+    borderColor: "#A5ECC0",
+    borderWidth: 2,
   },
   gradient: {
     padding: 2,
