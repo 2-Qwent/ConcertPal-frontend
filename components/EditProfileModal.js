@@ -29,7 +29,7 @@ const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction }) => 
       setIsLoading(true);
       const formData = new FormData();
 
-      if (username !== user.username) {
+      if (username && username !== user.username) {
         formData.append('username', username);
       }
 
@@ -41,14 +41,12 @@ const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction }) => 
         });
       }
 
-      console.log("FormData:", formData);
       const response = await fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/user/${user.token}`, {
         method: 'PUT',
         body: formData,
       });
 
       const data = await response.json();
-      console.log(data)
       if (data.success) {
         reloadFunction();
         setIsVisible(false);
