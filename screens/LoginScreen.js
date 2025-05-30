@@ -10,7 +10,8 @@ import {
   Modal,
   ImageBackground,
   Pressable,
-  Image
+  Image,
+  Alert
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../reducers/user";
@@ -60,15 +61,19 @@ export default function LoginScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
-        dispatch(login(data.token));
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "TabNavigator" }],
-        });
-        setPasswordIn("");
-        setUsernameIn("");
-        setSigninOpen(false);
+        if (data.result) {
+          dispatch(login(data.token));
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "TabNavigator" }],
+          });
+          setPasswordIn("");
+          setUsernameIn("");
+          setSigninOpen(false);
+        } else {
+          Alert.alert("Erreur", "Nom d'utilisateur ou mot de passe incorrect")
+          setPasswordIn("")
+        }
       });
   };
 
