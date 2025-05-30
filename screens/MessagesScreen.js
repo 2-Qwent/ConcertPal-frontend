@@ -12,6 +12,9 @@ export default function MessagesScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const [messagesData, setMessagesData] = useState([]);
   useEffect(() => {
+    if (!user.token) {
+      navigation.navigate("Login");
+    }
     if (!isFocused) return;
     fetch(
       `http://${process.env.EXPO_PUBLIC_IP}:3000/messages/last/${user.token}`

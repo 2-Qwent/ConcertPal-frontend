@@ -54,6 +54,9 @@ export default function HomeScreen() {
   }
 
   useEffect(() => {
+    if (!user.token) {
+      navigation.navigate("Login");
+    }
     if (!isFocused) return;
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
       .then((response) => response.json())
@@ -128,23 +131,23 @@ export default function HomeScreen() {
   });
 
   const timeline = posts
-  .filter((data) => data && data.likes && data.comments && data.author)
-  .map((data, i) => {
-    const isLiked = data.likes?.some((post) => post === token) || false;
-    return (
-      <Post
-        key={i}
-        username={data.author?.username}
-        text={data.text}
-        date={moment(data.date).fromNow()}
-        nbLikes={data.likes.length}
-        nbComs={data.comments.length}
-        isLiked={isLiked}
-        reloadFunction={reloadFunction}
-        {...data}
-      />
-    );
-  });
+    .filter((data) => data && data.likes && data.comments && data.author)
+    .map((data, i) => {
+      const isLiked = data.likes?.some((post) => post === token) || false;
+      return (
+        <Post
+          key={i}
+          username={data.author?.username}
+          text={data.text}
+          date={moment(data.date).fromNow()}
+          nbLikes={data.likes.length}
+          nbComs={data.comments.length}
+          isLiked={isLiked}
+          reloadFunction={reloadFunction}
+          {...data}
+        />
+      );
+    });
 
   return (
     <ImageBackground
@@ -180,7 +183,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={[styles.button, { width: '100%', height: '100%' }]}
             onPress={() => setModalVisible(true)}>
-            <Text style={[styles.buttonText, { fontWeight: 'bold', color:'#1D0E22' }]}>Rechercher un concert</Text>
+            <Text style={[styles.buttonText, { fontWeight: 'bold', color: '#1D0E22' }]}>Rechercher un concert</Text>
           </TouchableOpacity>
         </LinearGradient>
 
@@ -329,7 +332,7 @@ export default function HomeScreen() {
                   <ScrollView style={{ maxHeight: 400, marginBottom: 10 }}>
                     {concertsList}
                   </ScrollView>
-                  
+
                   <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <LinearGradient
                       colors={['#E2A5EC', '#A5A7EC']}

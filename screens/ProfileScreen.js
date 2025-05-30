@@ -106,6 +106,9 @@ export default function ProfileScreen({ navigation }) {
 
 
   useEffect(() => {
+    if (!user.token) {
+      navigation.navigate("Login");
+    }
     if (!isFocused) return;
     fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`) // Récupération des données de l'utilisateur
       .then((response) => response.json())
