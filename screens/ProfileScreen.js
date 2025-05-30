@@ -25,7 +25,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from '@react-navigation/native';
-
+import { persistor } from "../App"
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
 
@@ -149,7 +149,9 @@ export default function ProfileScreen({ navigation }) {
   });
 
   //Liste des posts de l'utilisateur
-  const userPosts = filteredPosts.map((data, i) => {
+  const userPosts = filteredPosts
+  .filter((data) => data && data.likes && data.comments && data.author)
+  .map((data, i) => {
     const isLiked = data.likes.some((post) => post === token);
     return (
       <Post

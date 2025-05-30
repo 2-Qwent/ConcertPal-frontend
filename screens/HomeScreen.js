@@ -121,7 +121,9 @@ export default function HomeScreen() {
     );
   });
 
-  const timeline = posts.map((data, i) => {
+  const timeline = posts
+  .filter((data) => data && data.likes && data.comments && data.author)
+  .map((data, i) => {
     const isLiked = data.likes?.some((post) => post === token) || false;
     return (
       <Post

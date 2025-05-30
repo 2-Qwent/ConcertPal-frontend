@@ -12,7 +12,6 @@ export default function Post(props) {
   const user = useSelector((state) => state.user.value);
   const token = user.token;
   const [trashIcon, setTrashIcon] = useState(false);
-  const [commentTrash, setCommentTrash] = useState(false)
   const dispatch = useDispatch();
   const navigation = useNavigation();
   moment.locale('fr'); // Heure en français
@@ -29,13 +28,19 @@ export default function Post(props) {
       : fullConcertName
 
   
-
-  //affiche l'icone de suppression si le token de l'auteur correspond à celui de l'utilisateur
-  useEffect(() => {
-    if (props.author.token === token) {
-      setTrashIcon(true);
+  const handleConcertNav = () => {
+    if (props.concert && props.concert._id) {
+      navigation.navigate("ConcertScreen", {
+        concertId: props.concert._id,
+        artist: props.concert.artist,
+        city: props.concert.city,
+        venue: props.concert.venue,
+        seatmap: props.concert.seatmap,
+        pic: props.concert.pic,
+        date: props.concert.date,
+      });
     }
-  }, []);
+  };
 
   //like un post
   const handleLikePost = () => {
@@ -239,9 +244,9 @@ export default function Post(props) {
       {/*───── ⋆ ───── Post Content ───── ⋆ ─────*/}
       <View style={styles.content}>
         {props.concert?.artist && (
-        <View style={styles.concertNameContainer}>
+        <TouchableOpacity style={styles.concertNameContainer} onPress={() => handleConcertNav()}>
           <Text style={styles.concertNameText}>{concertName}</Text>
-        </View>
+        </TouchableOpacity>
         )}
         {/* ───── ⋆ ───── Username + Date ───── ⋆ ─────*/}
         <View style={styles.info}>
@@ -295,7 +300,7 @@ export default function Post(props) {
             </TouchableOpacity>
             <Text>{props.nbLikes}</Text>
           </View>
-          {trashIcon && (
+          {props.author.token === token && (
             <TouchableOpacity
               style={{ paddingHorizontal: 10 }}
               onPress={() => handleDeletePost()}>

@@ -302,6 +302,7 @@ export default function ConcertScreen({ route }) {
           isVisible={isVisible}
           setIsVisible={setIsVisible}
           reloadFunction={reloadFunction}
+          defaultConcertId={concertId}
         />
         <ScrollView style={styles.wrapper}>
           {userPosts.length === 0 ? (
