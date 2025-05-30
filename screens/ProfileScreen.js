@@ -491,8 +491,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   userAvatar: {
-    width: 90,
-    height: 90,
+    width: 80,
+    height: 80,
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#A5ECC0",
