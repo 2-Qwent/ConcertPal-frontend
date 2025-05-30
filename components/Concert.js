@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
-    backgroundColor: '#ff5c5c',
+    backgroundColor: '#A5A7EC',
     padding: 6,
     borderRadius: 5,
     alignSelf: 'flex-start',

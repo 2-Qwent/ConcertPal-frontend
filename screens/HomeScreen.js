@@ -148,10 +148,9 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={require("../assets/IMG_background.png")}
+      source={require('../assets/IMG_background.png')}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover"
-    >
+      resizeMode="cover">
       <SafeAreaView style={styles.container}>
         {/* ───── ⋆ ───── Purge store ───── ⋆ ─────
         <TouchableOpacity
@@ -174,44 +173,38 @@ export default function HomeScreen() {
 
         {/* ───── ⋆ ───── Rechercher un concert ───── ⋆ ───── */}
         <LinearGradient
-          colors={["#A5ECC0", "#E2A5EC"]}
+          colors={['#A5ECC0', '#E2A5EC']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[styles.gradient, { width: 350, height: 50 }]}
-        >
+          style={[styles.gradient, { width: 350, height: 60 }]}>
           <TouchableOpacity
-            style={[styles.button, { width: "100%", height: "100%" }]}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text>Rechercher un concert</Text>
+            style={[styles.button, { width: '100%', height: '100%' }]}
+            onPress={() => setModalVisible(true)}>
+            <Text style={[styles.buttonText, { fontWeight: 'bold', color:'#1D0E22' }]}>Rechercher un concert</Text>
           </TouchableOpacity>
         </LinearGradient>
 
         {/* ───── ⋆ ───── Timeline ───── ⋆ ───── */}
         <View style={styles.timelineContainer}>
-
           {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
           <LinearGradient
-            colors={["#A5ECC0", "#E2A5EC"]}
+            colors={['#A5ECC0', '#E2A5EC']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[styles.gradient, { width: 340, height: 40 }]}
-          >
+            style={[styles.gradient, { width: 340, height: 40 }]}>
             <TouchableOpacity
               style={styles.buttonAdd}
-              onPress={() => handleAddPostModal()}
-            >
-              <Text style={{ color: "#565656" }}>Écrire un post...</Text>
+              onPress={() => handleAddPostModal()}>
+              <Text style={{ color: '#565656' }}>Écrire un post...</Text>
             </TouchableOpacity>
           </LinearGradient>
           <ScrollView
             style={{
               maxHeight: '100%',
-              width: "100%",
+              width: '100%',
               margin: 10,
               borderRadius: 12,
-            }}
-          >
+            }}>
             {timeline}
           </ScrollView>
           {/* ───── ⋆ ───── Post modal ───── ⋆ ───── */}
@@ -227,8 +220,7 @@ export default function HomeScreen() {
           visible={modalVisible}
           transparent
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
-        >
+          onRequestClose={() => setModalVisible(false)}>
           <View style={styles.modalOverlay}>
             <Pressable
               style={styles.modalBackground}
@@ -256,11 +248,10 @@ export default function HomeScreen() {
 
                   <TouchableOpacity
                     style={styles.datePicker}
-                    onPress={() => setShowPicker(true)}
-                  >
+                    onPress={() => setShowPicker(true)}>
                     <Icon name="calendar" size={20} color="#333" />
                     <Text style={styles.dateText}>
-                      {date ? date.toISOString().split("T")[0] : "Date"}
+                      {date ? date.toISOString().split('T')[0] : 'Date'}
                     </Text>
                   </TouchableOpacity>
 
@@ -276,46 +267,88 @@ export default function HomeScreen() {
                   {date && (
                     <Button
                       onPress={() => setDate(null)}
-                      style={{ marginBottom: 10 }}
-                    >
+                      style={{ marginBottom: 10 }}>
                       Effacer la date
                     </Button>
                   )}
 
-                  <View style={styles.buttons}>
-                    <Button type="primary" onPress={handleSearch}>
-                      Rechercher
-                    </Button>
-                    <Button
-                      onPress={() => setModalVisible(false)}
-                      style={{ marginTop: 10 }}
-                    >
-                      Annuler
-                    </Button>
+                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <LinearGradient
+                      colors={['#E2A5EC', '#A5A7EC']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={[styles.gradient, { width: '75%', height: 50 }]}>
+                      <TouchableOpacity
+                        style={[
+                          styles.button,
+                          { backgroundColor: 'transparent' },
+                        ]}
+                        onPress={handleSearch}>
+                        <Text
+                          style={[
+                            styles.buttonText,
+                            { color: 'rgb(245, 245, 245)' },
+                          ]}>
+                          Rechercher
+                        </Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+
+                    <LinearGradient
+                      colors={['#E2A5EC', '#A5A7EC']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={[styles.gradient, { width: '75%', height: 50 }]}>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => setModalVisible(false)}>
+                        <Text style={styles.buttonText}>Annuler</Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
                   </View>
                 </>
               ) : (
                 <>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                    <TouchableOpacity onPress={handleBackBtn} style={{ marginRight: 50 }}>
-                      <FontAwesome name="chevron-left" size={24} color="#565656" />
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginBottom: 10,
+                    }}>
+                    <TouchableOpacity
+                      onPress={handleBackBtn}
+                      style={{ marginRight: 50 }}>
+                      <FontAwesome
+                        name="chevron-left"
+                        size={24}
+                        color="#565656"
+                      />
                     </TouchableOpacity>
                     <Text style={styles.title}>Résultats</Text>
                   </View>
                   <ScrollView style={{ maxHeight: 400, marginBottom: 10 }}>
                     {concertsList}
                   </ScrollView>
-                  <Button
-                    onPress={() => {
-                      setDate(null); // Réinitialiser la date après la recherche
-                      setArtist(""); // Réinitialiser l'artiste après la recherche
-                      setVenue(""); // Réinitialiser le lieu après la recherche
-                      setConcerts([]);
-                      setModalVisible(false);
-                    }}
-                  >
-                    Fermer
-                  </Button>
+                  
+                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <LinearGradient
+                      colors={['#E2A5EC', '#A5A7EC']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={[styles.gradient, { width: '75%', height: 50 }]}>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => {
+                          setDate(null); // Réinitialiser la date après la recherche
+                          setArtist(''); // Réinitialiser l'artiste après la recherche
+                          setVenue(''); // Réinitialiser le lieu après la recherche
+                          setConcerts([]);
+                          setModalVisible(false);
+                        }}>
+                        <Text style={styles.buttonText}>Fermer</Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+                  </View>
                 </>
               )}
             </View>
@@ -345,8 +378,11 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: 'rgb(120, 122, 197)',
+    marginBottom: 8,
+    textAlign: 'center',
   },
   input: {
     borderBottomWidth: 1,
@@ -372,12 +408,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    width: 200,
-    height: 30,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgb(245, 245, 245)',
     borderRadius: 11,
+  },
+  buttonText: {
+    color: 'rgb(120, 122, 197)',
+    fontSize: 16,
+    textAlign: 'center',
   },
   gradient: {
     padding: 2,
