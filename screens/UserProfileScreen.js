@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { newFollow, unfollow, setFollowers, setFollowing } from "../reducers/following";
 import { LinearGradient } from 'expo-linear-gradient';
 
+
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
   require("../assets/placeholderConcertPics/20230826_220425.jpg"),
@@ -573,9 +574,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  userAvatar: {
-    width: 80,
-    height: 80,
+  userFollowAvatar: {
+    width: 40,
+    height: 40,
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#A5ECC0",

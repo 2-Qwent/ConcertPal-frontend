@@ -29,6 +29,8 @@ import { useIsFocused } from '@react-navigation/native';
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
 
+import { persistor } from "../App"
+
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
   require("../assets/placeholderConcertPics/20230826_220425.jpg"),
