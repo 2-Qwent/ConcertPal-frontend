@@ -55,15 +55,16 @@ export default function Concert(props) {
   };
 
   const handlePress = () => {
-    navigation.navigate('ConcertScreen', {
-      artist: props.artist,
-      date: props.date,
-      venue: props.venue,
-      city: props.city,
-      pic: props.pic,
-      seatmap: props.seatmap,
-      concertId: props.id,
-    });
+    props.screen !== 'Home' &&
+      navigation.navigate('ConcertScreen', {
+        artist: props.artist,
+        date: props.date,
+        venue: props.venue,
+        city: props.city,
+        pic: props.pic,
+        seatmap: props.seatmap,
+        concertId: props.id,
+      });
   }
 
   const onDelete = (props) => {

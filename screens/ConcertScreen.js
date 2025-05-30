@@ -208,6 +208,14 @@ export default function ConcertScreen({ route }) {
               onPress={() => setModalVisible(false)}
             />
             <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <FontAwesome name="times" size={24} color="#565656" />
+                </TouchableOpacity>
+              </View>
               <Image
                 style={styles.fullscreenSeatmap}
                 source={{ uri: seatmap }}
@@ -395,7 +403,6 @@ const styles = StyleSheet.create({
     elevation: 5,
     width: "95%",
     height: "90%",
-    justifyContent: "center",
     alignItems: "center",
   },
   fullscreenSeatmap: {
@@ -403,6 +410,7 @@ const styles = StyleSheet.create({
     height: "90%",
     borderRadius: 8,
     resizeMode: "contain",
+    marginTop: -90,
   },
   input: {
     width: 300,
@@ -445,5 +453,19 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#A5ECC0",
     marginRight: 10,
+  },
+  closeButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    width: '100%',
+    zIndex: 1,
   },
 });
