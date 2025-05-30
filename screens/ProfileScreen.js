@@ -25,6 +25,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from '@react-navigation/native';
+import { persistor } from "../App"
 
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
@@ -151,7 +152,9 @@ export default function ProfileScreen({ navigation }) {
   });
 
   //Liste des posts de l'utilisateur
-  const userPosts = filteredPosts.map((data, i) => {
+  const userPosts = filteredPosts
+  .filter((data) => data && data.likes && data.comments && data.author)
+  .map((data, i) => {
     const isLiked = data.likes.some((post) => post === token);
     return (
       <Post
@@ -294,9 +297,10 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/IMG_background.png')}
+      source={require("../assets/IMG_background.png")}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover">
+      resizeMode="cover"
+    >
       <SafeAreaView style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
@@ -304,7 +308,7 @@ export default function ProfileScreen({ navigation }) {
             <Image
               source={
                 !activeUser.avatar || activeUser.avatar === "default_avatar"
-                  ? require('../assets/default_avatar.png')
+                  ? require("../assets/default_avatar.png")
                   : { uri: activeUser.avatar }
               }
               style={styles.userAvatar}
@@ -313,27 +317,31 @@ export default function ProfileScreen({ navigation }) {
           <View style={styles.profileText}>
             <Text style={styles.userName}>{activeUser.username}</Text>
             <LinearGradient
-              colors={['#A5ECC0', '#E2A5EC']}
+              colors={["#A5ECC0", "#E2A5EC"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}>
+              style={[styles.gradient, { width: 200, height: 30 }]}
+            >
               <TouchableOpacity style={styles.button}>
                 <Text
-                  style={{ color: '#565656' }}
-                  onPress={() => setIsEditModalVisible(true)}>
+                  style={{ color: "#565656" }}
+                  onPress={() => setIsEditModalVisible(true)}
+                >
                   Modifier mon profil
                 </Text>
               </TouchableOpacity>
             </LinearGradient>
             <LinearGradient
-              colors={['#A5ECC0', '#E2A5EC']}
+              colors={["#A5ECC0", "#E2A5EC"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}>
+              style={[styles.gradient, { width: 200, height: 30 }]}
+            >
               <TouchableOpacity
                 onPress={() => handleLogoutPress()}
-                style={styles.button}>
-                <Text style={{ color: '#565656' }}>Me déconnecter</Text>
+                style={styles.button}
+              >
+                <Text style={{ color: "#565656" }}>Me déconnecter</Text>
               </TouchableOpacity>
             </LinearGradient>
 
@@ -348,14 +356,16 @@ export default function ProfileScreen({ navigation }) {
         <View style={styles.followContent}>
           <TouchableOpacity
             onPress={() => setFollowingModal(true)}
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
             <Text style={styles.followText}>
               {followingList.length} abonnements
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setFollowersModal(true)}
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
             <Text style={styles.followText}>
               {followersList.length} abonnés
             </Text>
@@ -365,14 +375,15 @@ export default function ProfileScreen({ navigation }) {
         </View>
         {/* ───── ⋆ ───── Add post ───── ⋆ ───── */}
         <LinearGradient
-          colors={['#A5ECC0', '#E2A5EC']}
+          colors={["#A5ECC0", "#E2A5EC"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[styles.gradient, { width: 340, height: 40 }]}>
+          style={[styles.gradient, { width: 340, height: 40 }]}
+        >
           <TouchableOpacity
-            style={styles.buttonAdd}
+            style={[styles.button, { alignItems: 'flex-start', paddingLeft: 10 }]}
             onPress={() => handleAddPostModal()}>
-            <Text style={{ color: '#565656' }}>Type...</Text>
+            <Text style={{ color: '#565656' }}>Écrire un post...</Text>
           </TouchableOpacity>
         </LinearGradient>
         <AddPostModal
@@ -384,19 +395,20 @@ export default function ProfileScreen({ navigation }) {
         <View style={styles.contentContainer}>
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
-            {['concerts', 'posts', 'media'].map((tab, i) => (
+            {["concerts", "posts", "media"].map((tab, i) => (
               <TouchableOpacity key={i} onPress={() => handleTabPress(tab)}>
                 {activeTab === tab ? (
                   <LinearGradient
-                    colors={['rgb(165, 167, 236)', 'rgb(245, 245, 245)']}
-                    style={styles.tab}>
-                    <Text style={{ color: '#565656' }}>
+                    colors={["rgb(165, 167, 236)", "rgb(245, 245, 245)"]}
+                    style={styles.tab}
+                  >
+                    <Text style={{ color: "#565656" }}>
                       {tab.charAt(0).toUpperCase() + tab.slice(1)}
                     </Text>
                   </LinearGradient>
                 ) : (
                   <View style={styles.tab}>
-                    <Text style={{ color: 'rgb(120, 122, 197)' }}>
+                    <Text style={{ color: "rgb(120, 122, 197)" }}>
                       {tab.charAt(0).toUpperCase() + tab.slice(1)}
                     </Text>
                   </View>
@@ -406,36 +418,38 @@ export default function ProfileScreen({ navigation }) {
           </View>
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
-            {activeTab === 'concerts' && (
-              <ScrollView
+            {activeTab === "concerts" &&
+              (userConcerts.length > 0 ? (
+                <ScrollView
+                  style={{
+                    maxHeight: "92%",
+                    width: "100%",
+                    borderRadius: 12,
+                  }}
+                >
+                  {userConcerts}
+                </ScrollView>
+              ) : (
+                <Text style={styles.emptyTabText}>
+                  Vous n'avez pas ajouté de concert à votre liste.
+                </Text>
+              ))}
+            {activeTab === "posts" &&
+              (userPosts.length > 0 ? (
+                <ScrollView
                 style={{
                   maxHeight: '88%',
                   width: '100%',
-                  borderRadius: 12,
-                }}>
-                {userConcerts}
-              </ScrollView>
+                  borderRadius: 12,}}
+                >{userPosts}</ScrollView>
+              ) : (
+                <Text style={styles.emptyTabText}>
+                  Vous n'avez pas créé de post.
+                </Text>
+              ))}
+            {activeTab === "media" && (
+              <View style={styles.mediaContainer}>{media}</View>
             )}
-            {activeTab === 'posts' && (
-              <ScrollView
-                style={{
-                  maxHeight: '88%',
-                  width: '100%',
-                  borderRadius: 12,
-                }}>
-                {userPosts}
-              </ScrollView>
-            )}
-            <ScrollView
-              style={{
-                maxHeight: '88%',
-                width: '100%',
-                borderRadius: 12,
-              }}>
-              <View style={styles.mediaContainer}>
-                {activeTab === 'media' && media}
-              </View>
-            </ScrollView>
           </View>
         </View>
       </SafeAreaView>
@@ -448,32 +462,32 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 30,
     paddingBottom: 75,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   aboutUser: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   profilePic: {
-    width: '40%',
+    width: "40%",
     height: 130,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   userAvatar: {
     width: 80,
     height: 80,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: '#A5ECC0',
+    borderColor: "#A5ECC0",
   },
   profileText: {
-    width: '60%',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    width: "60%",
+    justifyContent: "flex-start",
+    alignItems: "center",
     paddingTop: 8,
   },
   userName: {
@@ -482,65 +496,65 @@ const styles = StyleSheet.create({
   gradient: {
     padding: 2,
     borderRadius: 12,
-    justifyContent: 'center',
+    justifyContent: "center",
     margin: 10,
   },
   button: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgb(245, 245, 245)',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgb(245, 245, 245)",
     borderRadius: 11,
   },
   buttonAdd: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
     paddingLeft: 10,
-    backgroundColor: 'rgb(250, 250, 250)',
+    backgroundColor: "rgb(250, 250, 250)",
     borderRadius: 11,
   },
   contentContainer: {
-    backgroundColor: 'rgb(245, 245, 245)',
-    width: '95%',
-    height: '65%',
+    backgroundColor: "rgb(245, 245, 245)",
+    width: "95%",
+    height: "65%",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#D7D7D7',
+    borderColor: "#D7D7D7",
   },
   tabContainer: {
-    flexDirection: 'row',
-    width: '100%',
+    flexDirection: "row",
+    width: "100%",
     marginTop: 15,
     paddingBottom: 15,
-    justifyContent: 'space-around',
+    justifyContent: "space-around",
     borderBottomWidth: 1,
-    borderColor: '#D7D7D7',
+    borderColor: "#D7D7D7",
   },
   tab: {
     width: 100,
     height: 50,
-    color: 'rgb(245, 245, 245)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    color: "rgb(245, 245, 245)",
+    justifyContent: "center",
+    alignItems: "center",
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
   concert: {
-    width: '100%',
+    width: "100%",
     borderBottomWidth: 1,
-    borderColor: '#D7D7D7',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#D7D7D7",
+    justifyContent: "center",
+    alignItems: "center",
     paddingBottom: 15,
   },
   concertContainerTop: {
-    width: '100%',
+    width: "100%",
     height: 50,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
   },
   image: {
     width: 140,
@@ -549,70 +563,70 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   mediaContainer: {
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexWrap: "wrap",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   followContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    width: "100%",
     paddingVertical: 10,
     height: 40,
   },
   followText: {
-    color: 'rgb(120, 122, 197)',
-    textAlign: 'center',
+    color: "rgb(120, 122, 197)",
+    textAlign: "center",
     fontSize: 16,
   },
   modalBackground: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: "rgba(0,0,0,0.3)",
     zIndex: 1,
   },
   modalContainer: {
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width: '85%',
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "85%",
     maxHeight: 350,
     borderRadius: 16,
     padding: 20,
     zIndex: 2,
   },
   modalList: {
-    width: '100%',
+    width: "100%",
     marginBottom: 16,
   },
   modalItem: {
-    width: '100%',
+    width: "100%",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderColor: '#D7D7D7',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    borderColor: "#D7D7D7",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "flex-start",
   },
   modalCloseButton: {
     marginTop: 10,
-    backgroundColor: '#A5ECC0',
+    backgroundColor: "#A5ECC0",
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 24,
   },
   modalCloseText: {
-    color: '#565656',
-    fontWeight: 'bold',
+    color: "#565656",
+    fontWeight: "bold",
     fontSize: 16,
   },
   tabContent: {
     paddingBottom: 5,
-    height: '94%',
+    height: "94%",
   },
   chevron: {
     height: 30,
@@ -623,7 +637,12 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#A5ECC0',
+    borderColor: "#A5ECC0",
     marginRight: 10,
+  },
+  emptyTabText: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#565656",
   },
 });

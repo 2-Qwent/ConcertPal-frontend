@@ -133,7 +133,6 @@ const TabNavigator = () => {
 };
 
 export default function App() {
-  persistor.purge()
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

@@ -9,7 +9,8 @@ import {
   ScrollView,
   ImageBackground,
   Pressable,
-  SafeAreaView
+  SafeAreaView,
+  Alert,
 } from "react-native";
 import { Button } from "@ant-design/react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -62,6 +63,11 @@ export default function HomeScreen() {
   }, [reload, isFocused]);
 
   const handleSearch = () => {
+    if (!artist.trim() && !venue.trim() && !date) {
+      Alert.alert("Erreur", "Veuillez remplir au moins un champ pour rechercher un concert.");
+      return;
+    }
+
     const searchParams = { artist, venue };
     if (date) {
       searchParams.date = date.toISOString().split("T")[0];
@@ -121,7 +127,9 @@ export default function HomeScreen() {
     );
   });
 
-  const timeline = posts.map((data, i) => {
+  const timeline = posts
+  .filter((data) => data && data.likes && data.comments && data.author)
+  .map((data, i) => {
     const isLiked = data.likes?.some((post) => post === token) || false;
     return (
       <Post
@@ -193,12 +201,12 @@ export default function HomeScreen() {
               style={styles.buttonAdd}
               onPress={() => handleAddPostModal()}
             >
-              <Text style={{ color: "#565656" }}>Type...</Text>
+              <Text style={{ color: "#565656" }}>Écrire un post...</Text>
             </TouchableOpacity>
           </LinearGradient>
           <ScrollView
             style={{
-              maxHeight: 550,
+              maxHeight: '100%',
               width: "100%",
               margin: 10,
               borderRadius: 12,

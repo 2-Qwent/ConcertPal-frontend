@@ -295,13 +295,14 @@ export default function ConcertScreen({ route }) {
             style={styles.buttonAdd}
             onPress={() => handleAddPostModal()}
           >
-            <Text style={{ color: "#565656" }}>Type...</Text>
+            <Text style={{ color: "#565656" }}>Écrire un post...</Text>
           </TouchableOpacity>
         </LinearGradient>
         <AddPostModal
           isVisible={isVisible}
           setIsVisible={setIsVisible}
           reloadFunction={reloadFunction}
+          defaultConcertId={concertId}
         />
         <ScrollView style={styles.wrapper}>
           {userPosts.length === 0 ? (
