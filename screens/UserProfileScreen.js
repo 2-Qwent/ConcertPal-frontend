@@ -83,8 +83,6 @@ export default function UserProfileScreen({ route, navigation }) {
       userToken: user.token,
       userAvatar: user.avatar,
     });
-    setFollowersModal(false);
-    setFollowingModal(false);
   };
 
   // ───── ⋆ ───── Liste des concerts de l'utilisateur ───── ⋆ ─────

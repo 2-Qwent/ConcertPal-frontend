@@ -191,7 +191,10 @@ export default function ProfileScreen({ navigation }) {
         key={i}
         style={styles.modalItem}
       >
-        <TouchableOpacity onPress={() => handleNavigate(user)}>
+        <TouchableOpacity onPress={() => {
+          handleNavigate(user)
+        }
+        }>
           <Image
             source={
               !user.avatar || user.avatar === "default_avatar"
