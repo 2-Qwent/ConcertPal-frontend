@@ -9,7 +9,8 @@ import {
   Platform,
   Modal,
   ImageBackground,
-  Pressable
+  Pressable,
+  Image
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../reducers/user";
@@ -89,6 +90,10 @@ export default function LoginScreen({ navigation }) {
       resizeMode="cover">
       <View style={styles.container}>
         <View style={styles.wrapper}>
+        <Image
+          source={require('../assets/IMG_Logo_03.png')}
+          style={{ width:150, height:150, marginBottom:20 }}
+          />
           <Text style={styles.title}>Bienvenue sur ConcertPal</Text>
           <Text style={styles.paragraph}>Vous n'avez pas de compte?</Text>
 

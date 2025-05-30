@@ -193,12 +193,12 @@ export default function HomeScreen() {
               style={styles.buttonAdd}
               onPress={() => handleAddPostModal()}
             >
-              <Text style={{ color: "#565656" }}>Type...</Text>
+              <Text style={{ color: "#565656" }}>Écrire un post...</Text>
             </TouchableOpacity>
           </LinearGradient>
           <ScrollView
             style={{
-              maxHeight: 550,
+              maxHeight: '100%',
               width: "100%",
               margin: 10,
               borderRadius: 12,

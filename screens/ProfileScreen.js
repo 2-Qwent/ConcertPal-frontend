@@ -25,6 +25,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { setFollowing, setFollowers } from "../reducers/following";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from '@react-navigation/native';
+import { persistor } from "../App"
 
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
@@ -368,9 +369,9 @@ export default function ProfileScreen({ navigation }) {
           end={{ x: 1, y: 0 }}
           style={[styles.gradient, { width: 340, height: 40 }]}>
           <TouchableOpacity
-            style={styles.buttonAdd}
+            style={[styles.button, { alignItems: 'flex-start', paddingLeft: 10 }]}
             onPress={() => handleAddPostModal()}>
-            <Text style={{ color: '#565656' }}>Type...</Text>
+            <Text style={{ color: '#565656' }}>Écrire un post...</Text>
           </TouchableOpacity>
         </LinearGradient>
         <AddPostModal
@@ -489,14 +490,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgb(245, 245, 245)',
-    borderRadius: 11,
-  },
-  buttonAdd: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    paddingLeft: 10,
-    backgroundColor: 'rgb(250, 250, 250)',
     borderRadius: 11,
   },
   contentContainer: {
