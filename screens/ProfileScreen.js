@@ -26,6 +26,7 @@ import { setFollowing, setFollowers } from "../reducers/following";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from '@react-navigation/native';
 import { persistor } from "../App"
+
 import { addPost } from "../reducers/post";
 import * as ImagePicker from 'expo-image-picker';
 
@@ -378,10 +379,9 @@ export default function ProfileScreen({ navigation }) {
           style={[styles.gradient, { width: 340, height: 40 }]}
         >
           <TouchableOpacity
-            style={styles.buttonAdd}
-            onPress={() => handleAddPostModal()}
-          >
-            <Text style={{ color: "#565656" }}>Type...</Text>
+            style={[styles.button, { alignItems: 'flex-start', paddingLeft: 10 }]}
+            onPress={() => handleAddPostModal()}>
+            <Text style={{ color: '#565656' }}>Écrire un post...</Text>
           </TouchableOpacity>
         </LinearGradient>
         <AddPostModal
@@ -434,7 +434,12 @@ export default function ProfileScreen({ navigation }) {
               ))}
             {activeTab === "posts" &&
               (userPosts.length > 0 ? (
-                <ScrollView>{userPosts}</ScrollView>
+                <ScrollView
+                style={{
+                  maxHeight: '88%',
+                  width: '100%',
+                  borderRadius: 12,}}
+                >{userPosts}</ScrollView>
               ) : (
                 <Text style={styles.emptyTabText}>
                   Vous n'avez pas créé de post.

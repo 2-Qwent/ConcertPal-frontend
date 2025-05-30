@@ -1,4 +1,16 @@
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, ScrollView, Modal, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ImageBackground,
+  Image,
+  ScrollView,
+  TextInput,
+  Modal,
+  Pressable,
+  SafeAreaView
+} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useEffect, useState } from "react";
 import Concert from "../components/Concert";
@@ -6,6 +18,7 @@ import Post from "../components/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { newFollow, unfollow, setFollowers, setFollowing } from "../reducers/following";
 import { LinearGradient } from 'expo-linear-gradient';
+import { useIsFocused } from '@react-navigation/native';
 
 const mediaData = [
   require("../assets/placeholderConcertPics/20230826_220421.jpg"),
@@ -315,23 +328,21 @@ export default function UserProfileScreen({ route, navigation }) {
 
   return (
     <ImageBackground
-      source={require("../assets/IMG_background.png")}
+      source={require('../assets/IMG_background.png')}
       style={StyleSheet.absoluteFill}
-      resizeMode="cover"
-    >
-      <View style={styles.container}>
+      resizeMode="cover">
+      <SafeAreaView style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            style={{ marginRight: 10, marginLeft: 10 }}
-          >
+            style={{ marginRight: 10, marginLeft: 10 }}>
             <FontAwesome name="chevron-left" size={24} color="#565656" />
           </TouchableOpacity>
           <Image
             source={
-              !userAvatar || userAvatar === "default_avatar"
-                ? require("../assets/default_avatar.png")
+              !userAvatar || userAvatar === 'default_avatar'
+                ? require('../assets/default_avatar.png')
                 : { uri: userAvatar }
             }
             style={styles.userAvatar}
@@ -339,26 +350,23 @@ export default function UserProfileScreen({ route, navigation }) {
           <View style={styles.profileText}>
             <Text style={styles.userName}>{username}</Text>
             <LinearGradient
-              colors={["#A5ECC0", "#E2A5EC"]}
+              colors={['#A5ECC0', '#E2A5EC']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}
-            >
+              style={[styles.gradient, { width: 200, height: 30 }]}>
               {followButton}
             </LinearGradient>
             {unfollowModalContent}
             <LinearGradient
-              colors={["#A5ECC0", "#E2A5EC"]}
+              colors={['#A5ECC0', '#E2A5EC']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}
-            >
+              style={[styles.gradient, { width: 200, height: 30 }]}>
               <TouchableOpacity
                 onPress={() => {
                   goToChat(userToken);
                 }}
-                style={styles.button}
-              >
+                style={styles.button}>
                 <Text>Envoyer un message</Text>
               </TouchableOpacity>
             </LinearGradient>
@@ -366,17 +374,15 @@ export default function UserProfileScreen({ route, navigation }) {
         </View>
         <View style={styles.followContent}>
           <TouchableOpacity
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-            onPress={() => setFollowingModal(true)}
-          >
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            onPress={() => setFollowingModal(true)}>
             <Text style={styles.followText}>
               {followingList.length} abonnements
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-            onPress={() => setFollowersModal(true)}
-          >
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            onPress={() => setFollowersModal(true)}>
             <Text style={styles.followText}>
               {followersList.length} abonnés
             </Text>
@@ -388,24 +394,25 @@ export default function UserProfileScreen({ route, navigation }) {
         <View style={styles.contentContainer}>
           {/* ───── ⋆ ───── Tabs ───── ⋆ ───── */}
           <View style={styles.tabContainer}>
-            <TouchableOpacity
-              onPress={() => handleTabPress("concerts")}
-              style={styles.tab}
-            >
-              <Text>Concerts</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleTabPress("posts")}
-              style={styles.tab}
-            >
-              <Text>Posts</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleTabPress("media")}
-              style={styles.tab}
-            >
-              <Text>Media</Text>
-            </TouchableOpacity>
+            {['concerts', 'posts', 'media'].map((tab, i) => (
+              <TouchableOpacity key={i} onPress={() => handleTabPress(tab)}>
+                {activeTab === tab ? (
+                  <LinearGradient
+                    colors={['rgb(165, 167, 236)', 'rgb(245, 245, 245)']}
+                    style={styles.tab}>
+                    <Text style={{ color: '#565656' }}>
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </Text>
+                  </LinearGradient>
+                ) : (
+                  <View style={styles.tab}>
+                    <Text style={{ color: 'rgb(120, 122, 197)' }}>
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            ))}
           </View>
           {/* ───── ⋆ ───── Tab Content ───── ⋆ ───── */}
           <View style={styles.tabContent}>
@@ -427,7 +434,12 @@ export default function UserProfileScreen({ route, navigation }) {
               ))}
             {activeTab === "posts" &&
               (userPosts.length > 0 ? (
-                <ScrollView>{userPosts}</ScrollView>
+                <ScrollView
+                style={{
+                  maxHeight: '88%',
+                  width: '100%',
+                  borderRadius: 12,}}
+                >{userPosts}</ScrollView>
               ) : (
                 <Text style={styles.emptyTabText}>
                   Cet utilisateur n'a pas créé de post.
@@ -438,7 +450,7 @@ export default function UserProfileScreen({ route, navigation }) {
             )}
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
@@ -446,9 +458,10 @@ export default function UserProfileScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 30,
+    paddingBottom: 75,
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
   },
   aboutUser: {
     width: '100%',
@@ -483,12 +496,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgb(245, 245, 245)',
-    borderRadius: 12,
+    borderRadius: 11,
   },
   contentContainer: {
     backgroundColor: 'rgb(245, 245, 245)',
     width: '95%',
-    height: '75%',
+    height: '77%',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#D7D7D7',
@@ -503,13 +516,13 @@ const styles = StyleSheet.create({
     borderColor: '#D7D7D7',
   },
   tab: {
-    width: 80,
+    width: 100,
     height: 50,
     color: 'rgb(245, 245, 245)',
-    backgroundColor: '#A5A7EC',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 12,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   concert: {
     width: '100%',
@@ -521,7 +534,6 @@ const styles = StyleSheet.create({
   },
   concertContainerTop: {
     width: '100%',
-    // backgroundColor: 'aqua',
     height: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -544,9 +556,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingVertical: 10,
-    height: 50,
+    height: 40,
   },
   followText: {
+    color: 'rgb(120, 122, 197)',
     textAlign: 'center',
     fontSize: 16,
   },
@@ -597,7 +610,11 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: "#A5ECC0",
+    borderColor: '#A5ECC0',
+  },
+  tabContent: {
+    paddingBottom: 5,
+    height: '94%',
   },
   emptyTabText: {
     textAlign: "center",
