@@ -22,12 +22,12 @@ export default function Post(props) {
   const [comments, setComments] = useState([])
 
   const fullConcertName = `${props.concert?.artist} - ${props.concert?.city}`
-  const concertName = 
+  const concertName =
     props.concert?.artist && props.concert.artist.length > 15
       ? (`${props.concert?.artist.slice(0, 15) + '...'} - ${props.concert?.city}`)
       : fullConcertName
 
-  
+
   const handleConcertNav = () => {
     if (props.concert && props.concert._id) {
       navigation.navigate("ConcertScreen", {
@@ -77,11 +77,13 @@ export default function Post(props) {
 
   // ───── ⋆ ───── Naviguer vers le profile d'un autre user ───── ⋆ ─────
   const viewProfile = (author) => {
-    navigation.navigate('UserProfileScreen', {
-      username: author.username,
-      userToken: author.token,
-      userAvatar: author.avatar,
-    });
+    author.token === token
+      ? navigation.navigate('TabNavigator', { screen: 'Profile' })
+      : navigation.navigate('UserProfileScreen', {
+        username: author.username,
+        userToken: author.token,
+        userAvatar: author.avatar,
+      });
   };
 
   // ───── ⋆ ───── Poster un commentaire ───── ⋆ ─────
@@ -212,7 +214,7 @@ export default function Post(props) {
             <TouchableOpacity
               style={{ paddingHorizontal: 10 }}
               onPress={() => handleDeleteComment(comment._id)}
-              >
+            >
               <FontAwesome
                 style={{ marginHorizontal: 20, color: '#565656' }}
                 name="trash"
@@ -244,9 +246,9 @@ export default function Post(props) {
       {/*───── ⋆ ───── Post Content ───── ⋆ ─────*/}
       <View style={styles.content}>
         {props.concert?.artist && (
-        <TouchableOpacity style={styles.concertNameContainer} onPress={() => handleConcertNav()}>
-          <Text style={styles.concertNameText}>{concertName}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.concertNameContainer} onPress={() => handleConcertNav()}>
+            <Text style={styles.concertNameText}>{concertName}</Text>
+          </TouchableOpacity>
         )}
         {/* ───── ⋆ ───── Username + Date ───── ⋆ ─────*/}
         <View style={styles.info}>
