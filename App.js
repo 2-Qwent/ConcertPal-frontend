@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, Animated, Dimensions } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Image, Animated, Dimensions, TouchableWithoutFeedback, Pressable } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -93,6 +93,15 @@ const TabNavigator = () => {
           tabBarShowLabel: false,
           headerShown: false,
           tabBarStyle: styles.tabBarStyle,
+          tabBarButton: (props) => (
+            <Pressable
+              {...props}
+              android_ripple={{ color: 'transparent' }}
+              style={props.style}
+            >
+              {props.children}
+            </Pressable>
+          ),
         })}
         tabBar={(props) =>
           isReallyVisible && (
