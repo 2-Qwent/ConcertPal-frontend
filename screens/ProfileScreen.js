@@ -307,53 +307,57 @@ export default function ProfileScreen({ navigation }) {
       <SafeAreaView style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
-          <View style={styles.profilePic}>
-            <Image
-              source={
-                !activeUser.avatar || activeUser.avatar === "default_avatar"
-                  ? require("../assets/default_avatar.png")
-                  : { uri: activeUser.avatar }
-              }
-              style={styles.userAvatar}
-            />
-          </View>
-          <View style={styles.profileText}>
-            <Text style={styles.userName}>{activeUser.username}</Text>
-            <LinearGradient
-              colors={["#A5ECC0", "#E2A5EC"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}
-            >
-              <TouchableOpacity style={styles.button}>
-                <Text
-                  style={{ color: "#565656" }}
-                  onPress={() => setIsEditModalVisible(true)}
+          <View style={styles.header}>
+            <View style={styles.profilePic}>
+              <Image
+                source={
+                  !activeUser.avatar || activeUser.avatar === "default_avatar"
+                    ? require("../assets/default_avatar.png")
+                    : { uri: activeUser.avatar }
+                }
+                style={styles.userAvatar}
+              />
+            </View>
+            <View>
+              <View style={styles.profileText}>
+                <Text style={styles.userName}>{activeUser.username}</Text>
+                <LinearGradient
+                  colors={["#A5ECC0", "#E2A5EC"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.gradient, { width: 200, height: 30 }]}
                 >
-                  Modifier mon profil
-                </Text>
-              </TouchableOpacity>
-            </LinearGradient>
-            <LinearGradient
-              colors={["#A5ECC0", "#E2A5EC"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}
-            >
-              <TouchableOpacity
-                onPress={() => handleLogoutPress()}
-                style={styles.button}
-              >
-                <Text style={{ color: "#565656" }}>Me déconnecter</Text>
-              </TouchableOpacity>
-            </LinearGradient>
+                  <TouchableOpacity style={styles.button}>
+                    <Text
+                      style={{ color: "#565656" }}
+                      onPress={() => setIsEditModalVisible(true)}
+                    >
+                      Modifier mon profil
+                    </Text>
+                  </TouchableOpacity>
+                </LinearGradient>
+                <LinearGradient
+                  colors={["#A5ECC0", "#E2A5EC"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.gradient, { width: 200, height: 30 }]}
+                >
+                  <TouchableOpacity
+                    onPress={() => handleLogoutPress()}
+                    style={styles.button}
+                  >
+                    <Text style={{ color: "#565656" }}>Me déconnecter</Text>
+                  </TouchableOpacity>
+                </LinearGradient>
 
-            <EditProfileModal
-              isVisible={isEditModalVisible}
-              setIsVisible={setIsEditModalVisible}
-              user={activeUser}
-              reloadFunction={reloadFunction2}
-            />
+                <EditProfileModal
+                  isVisible={isEditModalVisible}
+                  setIsVisible={setIsEditModalVisible}
+                  user={activeUser}
+                  reloadFunction={reloadFunction2}
+                />
+              </View>
+            </View>
           </View>
         </View>
         <View style={styles.followContent}>
@@ -476,14 +480,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profilePic: {
+    marginTop: 20,
     width: "40%",
     height: 130,
     justifyContent: "center",
     alignItems: "center",
   },
   userAvatar: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     borderRadius: 40,
     borderWidth: 2,
     borderColor: "#A5ECC0",
@@ -656,4 +661,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "#565656",
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  }
 });

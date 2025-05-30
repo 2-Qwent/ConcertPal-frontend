@@ -83,6 +83,8 @@ export default function UserProfileScreen({ route, navigation }) {
       userToken: user.token,
       userAvatar: user.avatar,
     });
+    setFollowersModal(false);
+    setFollowingModal(false);
   };
 
   // ───── ⋆ ───── Liste des concerts de l'utilisateur ───── ⋆ ─────
@@ -339,42 +341,46 @@ export default function UserProfileScreen({ route, navigation }) {
       <SafeAreaView style={styles.container}>
         {/* ───── ⋆ ───── Top ───── ⋆ ───── */}
         <View style={styles.aboutUser}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{ marginRight: 10, marginLeft: 10 }}>
-            <FontAwesome name="chevron-left" size={24} color="#565656" />
-          </TouchableOpacity>
-          <Image
-            source={
-              !userAvatar || userAvatar === 'default_avatar'
-                ? require('../assets/default_avatar.png')
-                : { uri: userAvatar }
-            }
-            style={styles.userAvatar}
-          />
-          <View style={styles.profileText}>
-            <Text style={styles.userName}>{username}</Text>
-            <LinearGradient
-              colors={['#A5ECC0', '#E2A5EC']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}>
-              {followButton}
-            </LinearGradient>
-            {unfollowModalContent}
-            <LinearGradient
-              colors={['#A5ECC0', '#E2A5EC']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[styles.gradient, { width: 200, height: 30 }]}>
-              <TouchableOpacity
-                onPress={() => {
-                  goToChat(userToken);
-                }}
-                style={styles.button}>
-                <Text>Envoyer un message</Text>
-              </TouchableOpacity>
-            </LinearGradient>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{ marginLeft: 20 }}>
+              <FontAwesome name="chevron-left" size={24} color="#565656" />
+            </TouchableOpacity>
+            <Image
+              source={
+                !userAvatar || userAvatar === 'default_avatar'
+                  ? require('../assets/default_avatar.png')
+                  : { uri: userAvatar }
+              }
+              style={styles.userAvatar}
+            />
+            <View>
+              <View style={styles.profileText}>
+                <Text style={styles.userName}>{username}</Text>
+                <LinearGradient
+                  colors={['#A5ECC0', '#E2A5EC']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.gradient, { width: 200, height: 30 }]}>
+                  {followButton}
+                </LinearGradient>
+                {unfollowModalContent}
+                <LinearGradient
+                  colors={['#A5ECC0', '#E2A5EC']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.gradient, { width: 200, height: 30 }]}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      goToChat(userToken);
+                    }}
+                    style={styles.button}>
+                    <Text>Envoyer un message</Text>
+                  </TouchableOpacity>
+                </LinearGradient>
+              </View>
+            </View>
           </View>
         </View>
         <View style={styles.followContent}>
@@ -440,10 +446,11 @@ export default function UserProfileScreen({ route, navigation }) {
             {activeTab === "posts" &&
               (userPosts.length > 0 ? (
                 <ScrollView
-                style={{
-                  maxHeight: '88%',
-                  width: '100%',
-                  borderRadius: 12,}}
+                  style={{
+                    maxHeight: '88%',
+                    width: '100%',
+                    borderRadius: 12,
+                  }}
                 >{userPosts}</ScrollView>
               ) : (
                 <Text style={styles.emptyTabText}>
@@ -612,13 +619,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  userFollowAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: '#A5ECC0',
-  },
   tabContent: {
     paddingBottom: 5,
     height: '94%',
@@ -630,6 +630,15 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#A5ECC0",
     marginRight: 10,
+  },
+  userAvatar: {
+    width: 85,
+    height: 85,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#A5ECC0",
+    marginRight: 10,
+    marginLeft: -20,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -644,4 +653,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "#565656",
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  }
 });
