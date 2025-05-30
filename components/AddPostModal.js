@@ -68,6 +68,7 @@ export default function AddPostModal({
     setIsVisible(false);
   };
 
+  // Fermer la caméra
   const handleCameraClose = () => {
     setShowCamera(false);
     setIsVisible(true);
@@ -91,9 +92,15 @@ export default function AddPostModal({
         onPress={() => setConcertModalVisible(false)}
       >
         <View style={styles.modalConcertListContainer}>
-          <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-            Choisis un concert
+          {concerts.length === 0 ? (
+          <Text style={{ fontWeight: "bold", marginBottom: 10, textAlign: 'center' }}>
+            Aucun concert dans ma liste
           </Text>
+          ) : (
+            <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
+            Choisir un concert
+          </Text>
+          )}
           <ScrollView>
             {concerts.map((concert, i) => (
               <TouchableOpacity
