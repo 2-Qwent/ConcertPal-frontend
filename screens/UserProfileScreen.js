@@ -77,6 +77,7 @@ export default function UserProfileScreen({ route, navigation }) {
     setActiveTab(tabName);
   };
 
+  // Navigation vers le profil de l'utilisateur
   const handleNavigate = (user) => {
     navigation.navigate('UserProfileScreen', {
       username: user.username,
@@ -104,7 +105,7 @@ export default function UserProfileScreen({ route, navigation }) {
 
   // ───── ⋆ ───── Liste des posts de l'utilisateur ───── ⋆ ─────
   const userPosts = posts.map((data, i) => {
-    // const isLiked = data.likes.some((data) => data === myToken);
+    const isLiked = data.likes.some((data) => data === token);
     return (
       <Post
         key={i}
@@ -112,8 +113,8 @@ export default function UserProfileScreen({ route, navigation }) {
         text={data.text}
         date={data.date}
         nbLikes={data.likes.length}
-        // isLiked={isLiked}
-        // reloadFunction={reloadFunction}
+        isLiked={isLiked}
+        reloadFunction={reloadFunction}
         {...data}
       />
     );
