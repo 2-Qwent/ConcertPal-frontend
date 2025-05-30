@@ -176,7 +176,7 @@ export default function HomeScreen() {
           colors={['#A5ECC0', '#E2A5EC']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={[styles.gradient, { width: 350, height: 60 }]}>
+          style={[styles.gradient, { width: 350, height: 50 }]}>
           <TouchableOpacity
             style={[styles.button, { width: '100%', height: '100%' }]}
             onPress={() => setModalVisible(true)}>
