@@ -325,7 +325,7 @@ export default function ProfileScreen({ navigation }) {
                 style={styles.userAvatar}
               />
             </View>
-            <View>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               <View style={styles.profileText}>
                 <Text style={styles.userName}>{activeUser.username}</Text>
                 <LinearGradient
@@ -436,7 +436,7 @@ export default function ProfileScreen({ navigation }) {
               (userConcerts.length > 0 ? (
                 <ScrollView
                   style={{
-                    maxHeight: "92%",
+                    maxHeight: "87%",
                     width: "100%",
                     borderRadius: 12,
                   }}
@@ -452,7 +452,7 @@ export default function ProfileScreen({ navigation }) {
               (userPosts.length > 0 ? (
                 <ScrollView
                   style={{
-                    maxHeight: '88%',
+                    maxHeight: '87%',
                     width: '100%',
                     borderRadius: 12,
                   }}
@@ -492,6 +492,7 @@ const styles = StyleSheet.create({
     height: 130,
     justifyContent: "center",
     alignItems: "center",
+    left: 10,
   },
   userAvatar: {
     width: 80,
@@ -505,6 +506,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingTop: 8,
+    right: 10,
   },
   userName: {
     fontSize: 36,
