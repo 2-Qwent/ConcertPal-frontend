@@ -34,7 +34,7 @@ export default function ConcertScreen({ route }) {
   };
 
   useEffect(() => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getUserZone/${concertId}/${user.token}`)
+    fetch(`http://https://concert-pal-backend.vercel.app/concerts/getUserZone/${concertId}/${user.token}`)
       .then(res => res.json())
       .then(data => {
         if (data.result && data.zone) {
@@ -43,7 +43,7 @@ export default function ConcertScreen({ route }) {
           setMyZone(null);
         }
       });
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getPosts/${concertId}`)
+    fetch(`http://https://concert-pal-backend.vercel.app/concerts/getPosts/${concertId}`)
       .then(res => res.json())
       .then(data => {
         if (data.result) {
@@ -80,7 +80,7 @@ export default function ConcertScreen({ route }) {
       alert("Merci de renseigner une zone !");
       return;
     }
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/addZone/${user.token}`, {
+    fetch(`https://concert-pal-backend.vercel.app/concerts/addZone/${user.token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -102,7 +102,7 @@ export default function ConcertScreen({ route }) {
   }
 
   const handleShowZoneUsers = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/getZoneUsers/${concertId}/${myZone}`)
+    fetch(`https://concert-pal-backend.vercel.app/concerts/getZoneUsers/${concertId}/${myZone}`)
       .then(res => res.json())
       .then(data => {
         if (data.result) {
@@ -115,7 +115,7 @@ export default function ConcertScreen({ route }) {
   };
 
   const handleConcertUsers = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/concertUsers/${concertId}`)
+    fetch(`https://concert-pal-backend.vercel.app/users/concertUsers/${concertId}`)
       .then(res => res.json())
       .then(data => {
         if (data.result) {

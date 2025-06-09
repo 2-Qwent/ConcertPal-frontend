@@ -58,7 +58,7 @@ export default function HomeScreen() {
       navigation.navigate("Login");
     }
     if (!isFocused) return;
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
+    fetch(`https://concert-pal-backend.vercel.app/posts`)
       .then((response) => response.json())
       .then((data) => {
         dispatch(setPosts(data.posts));
@@ -76,7 +76,7 @@ export default function HomeScreen() {
       searchParams.date = date.toISOString().split("T")[0];
     }
 
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts`, {
+    fetch(`https://concert-pal-backend.vercel.app/concerts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(searchParams),

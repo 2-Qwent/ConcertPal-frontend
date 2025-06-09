@@ -19,7 +19,7 @@ export default function ChatScreen({ route }) {
   const channelName = [myToken, otherToken].sort().join('-');
 
   useEffect(() => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/messages/chat-${channelName}`)
+    fetch(`https://concert-pal-backend.vercel.app/messages/chat-${channelName}`)
       .then(res => res.json())
       .then(data => {
         if (data.result) setMessages(data.history);
@@ -45,7 +45,7 @@ export default function ChatScreen({ route }) {
   const handleSend = () => {
     if (!input.trim()) return;
 
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/messages/send`, {
+    fetch(`https://concert-pal-backend.vercel.app/messages/send`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

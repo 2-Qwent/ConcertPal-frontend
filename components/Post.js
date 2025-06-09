@@ -44,7 +44,7 @@ export default function Post(props) {
 
   //like un post
   const handleLikePost = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/likes`, {
+    fetch(`https://concert-pal-backend.vercel.app/posts/likes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -54,7 +54,7 @@ export default function Post(props) {
     })
       .then((response) => response.json())
       .then(() => {
-        fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts`)
+        fetch(`https://concert-pal-backend.vercel.app/posts`)
           .then((response) => response.json())
           .then((data) => {
             dispatch(setPosts(data.posts));
@@ -65,7 +65,7 @@ export default function Post(props) {
 
   //supprimer un post
   const handleDeletePost = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${props._id}`, {
+    fetch(`https://concert-pal-backend.vercel.app/posts/${props._id}`, {
       method: 'DELETE',
     })
       .then((response) => response.json())
@@ -91,7 +91,7 @@ export default function Post(props) {
     if (!commentText) return
 
     fetch(
-      `http://${process.env.EXPO_PUBLIC_IP}:3000/comments/${token}/${props._id}`,
+      `https://concert-pal-backend.vercel.app/comments/${token}/${props._id}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -118,7 +118,7 @@ export default function Post(props) {
 
   //like un commentaire
   const handleLikeComment = (commentId) => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/likes`, {
+    fetch(`https://concert-pal-backend.vercel.app/comments/likes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -128,7 +128,7 @@ export default function Post(props) {
     })
       .then((response) => response.json())
       .then(() => {
-        fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/post/${props._id}`)
+        fetch(`https://concert-pal-backend.vercel.app/comments/post/${props._id}`)
           .then((response) => response.json())
           .then(() => {
             fetchComments();
@@ -138,7 +138,7 @@ export default function Post(props) {
 
   //supprimer un commentaire
   const handleDeleteComment = (commentId) => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/${commentId}`, {
+    fetch(`https://concert-pal-backend.vercel.app/comments/${commentId}`, {
       method: 'DELETE'
     })
       .then(response => response.json())
@@ -150,7 +150,7 @@ export default function Post(props) {
 
   // ───── ⋆ ───── Fetch les commentaires ───── ⋆ ─────
   const fetchComments = () => [
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/comments/post/${props._id}`)
+    fetch(`https://concert-pal-backend.vercel.app/comments/post/${props._id}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {

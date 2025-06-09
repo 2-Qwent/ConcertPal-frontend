@@ -33,7 +33,7 @@ export default function Concert(props) {
     }
 
     fetch(
-      `http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/add/${user.token}`,
+      `https://concert-pal-backend.vercel.app/concerts/add/${user.token}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,7 +68,7 @@ export default function Concert(props) {
   }
 
   const onDelete = (props) => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/delete/${user.token}`,
+    fetch(`https://concert-pal-backend.vercel.app/concerts/delete/${user.token}`,
       {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },

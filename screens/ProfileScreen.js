@@ -69,7 +69,7 @@ export default function ProfileScreen({ navigation }) {
 
   const reloadFunction2 = async () => {
     try {
-      const response = await fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/user/${user.token}`, {
+      const response = await fetch(`https://concert-pal-backend.vercel.app/users/user/${user.token}`, {
         method: 'PUT',
       });
       const data = await response.json();
@@ -110,12 +110,12 @@ export default function ProfileScreen({ navigation }) {
       navigation.navigate("Login");
     }
     if (!isFocused) return;
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/${token}`) // Récupération des données de l'utilisateur
+    fetch(`https://concert-pal-backend.vercel.app/users/${token}`) // Récupération des données de l'utilisateur
       .then((response) => response.json())
       .then((data) => {
         setActiveUser(data.user);
       });
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${token}`) // Récupération des concerts de l'utilisateur
+    fetch(`https://concert-pal-backend.vercel.app/concerts/${token}`) // Récupération des concerts de l'utilisateur
       .then((response) => response.json())
       .then((data) => {
         // On mappe pour renommer _id en id
@@ -125,12 +125,12 @@ export default function ProfileScreen({ navigation }) {
         }));
         dispatch(setConcerts(concertsWithId));
       });
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/following/${token}`) // Récupération des utilisateurs suivis
+    fetch(`https://concert-pal-backend.vercel.app/users/following/${token}`) // Récupération des utilisateurs suivis
       .then((response) => response.json())
       .then((data) => {
         dispatch(setFollowing(data.following));
       })
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/followers/${token}`) // Récupérer la liste des followers
+    fetch(`https://concert-pal-backend.vercel.app/users/followers/${token}`) // Récupérer la liste des followers
       .then((response) => response.json())
       .then((data) => {
         dispatch(setFollowers(data.followers));

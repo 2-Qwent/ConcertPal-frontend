@@ -29,7 +29,7 @@ export default function LoginScreen({ navigation }) {
   const [passwordIn, setPasswordIn] = useState("");
 
   const handleSignup = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/signup`, {
+    fetch(`https://concert-pal-backend.vercel.app/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -54,7 +54,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleSignin = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/signin`, {
+    fetch(`https://concert-pal-backend.vercel.app/users/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: usernameIn, password: passwordIn }),

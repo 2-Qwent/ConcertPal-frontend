@@ -46,7 +46,7 @@ export default function AddPostModal({
     if (!postContent.trim()) {
       Alert.alert("Erreur", "Le contenu du post ne peut pas être vide.")
     }
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${token}`, {
+    fetch(`https://concert-pal-backend.vercel.app/posts/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: postContent, concertId: value }),

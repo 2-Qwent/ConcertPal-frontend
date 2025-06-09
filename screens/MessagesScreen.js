@@ -17,7 +17,7 @@ export default function MessagesScreen({ navigation }) {
     }
     if (!isFocused) return;
     fetch(
-      `http://${process.env.EXPO_PUBLIC_IP}:3000/messages/last/${user.token}`
+      `https://concert-pal-backend.vercel.app/messages/last/${user.token}`
     )
       .then((response) => response.json())
       .then((data) => {

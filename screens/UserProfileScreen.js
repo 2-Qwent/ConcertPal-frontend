@@ -51,22 +51,22 @@ export default function UserProfileScreen({ route, navigation }) {
 
 
   useEffect(() => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/concerts/${userToken}`) // Récupération des concerts de l'utilisateur visité
+    fetch(`https://concert-pal-backend.vercel.app/concerts/${userToken}`) // Récupération des concerts de l'utilisateur visité
       .then((response) => response.json())
       .then((data) => {
         setConcerts(data.list);
       });
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/posts/${userToken}`) // Récupération des posts de l'utiilsateur visité
+    fetch(`https://concert-pal-backend.vercel.app/posts/${userToken}`) // Récupération des posts de l'utiilsateur visité
       .then((response) => response.json())
       .then((data) => {
         setPosts(data.posts);
       });
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/followers/${userToken}`) // Récupération des followers de l'utilisateur visité
+    fetch(`https://concert-pal-backend.vercel.app/users/followers/${userToken}`) // Récupération des followers de l'utilisateur visité
       .then((response) => response.json())
       .then((data) => {
         setFollowersList(data.followers)
       })
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/following/${userToken}`) // Récupération des utilisateurs suivis par l'utilisateur visité
+    fetch(`https://concert-pal-backend.vercel.app/users/following/${userToken}`) // Récupération des utilisateurs suivis par l'utilisateur visité
       .then((response) => response.json())
       .then((data) => {
         setFollowingList(data.following);
@@ -139,7 +139,7 @@ export default function UserProfileScreen({ route, navigation }) {
 
   // ───── ⋆ ───── Suivre l'utilisateur visité ───── ⋆ ─────
   const followUser = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/follow/${token}`, {
+    fetch(`https://concert-pal-backend.vercel.app/users/follow/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ friendToken: userToken }),
@@ -159,7 +159,7 @@ export default function UserProfileScreen({ route, navigation }) {
 
   // ───── ⋆ ───── Se désabonner de l'utilisateur visité ───── ⋆ ─────
   const unfollowUser = () => {
-    fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/unfollow/${token}`, {
+    fetch(`https://concert-pal-backend.vercel.app/users/unfollow/${token}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ friendToken: userToken }),

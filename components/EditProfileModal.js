@@ -41,7 +41,7 @@ const EditProfileModal = ({ isVisible, setIsVisible, user, reloadFunction }) => 
         });
       }
 
-      const response = await fetch(`http://${process.env.EXPO_PUBLIC_IP}:3000/users/user/${user.token}`, {
+      const response = await fetch(`https://concert-pal-backend.vercel.app/users/user/${user.token}`, {
         method: 'PUT',
         body: formData,
       });
